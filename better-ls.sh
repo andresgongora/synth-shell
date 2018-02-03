@@ -49,12 +49,12 @@
 function beter-ls()
 {
 	if [ $# -eq 0 ]	# If no arguments passed
-	 	then
-	 	## First implied . and .. directories
-	 	/usr/bin/ls -d .  -l --color=auto --human-readable --time-style=long-iso --group-directories-first;
-	 	/usr/bin/ls -d .. -l --color=auto --human-readable --time-style=long-iso --group-directories-first;
-	 	
-	 	echo ""
+		then
+		## First implied . and .. directories
+		/usr/bin/ls -d .  -l --color=auto --human-readable --time-style=long-iso --group-directories-first;
+		/usr/bin/ls -d .. -l --color=auto --human-readable --time-style=long-iso --group-directories-first;
+
+		echo ""
 	 	
 		## First visible directories, then visible files
 		/usr/bin/ls -d * -lA --color=auto --human-readable --time-style=long-iso --group-directories-first;
@@ -81,5 +81,5 @@ function beter-ls()
 alias ls='beter-ls'
 
 
-# EOF
+### EOF ###
 
