@@ -33,7 +33,7 @@
 ##	INSTALLATION:
 ##	Copy this script to your home folder and rename it to ".fancy-bash-promt.sh"
 ##	Run this command from any terminal: 
-##		echo "source ~/.fancy-bash-promt" >> ~/.bashrc
+##		echo "source ~/.fancy-bash-promt.sh" >> ~/.bashrc
 ##
 ##	Alternatively, copy the content of this file into your .bashrc file
 ##
@@ -49,7 +49,7 @@
 ##	  A small helper function to generate color formating codes from simple
 ##	  number codes (defined below as local variables for convenience).
 ##
-##	* bash_promtp()
+##	* bash_prompt()
 ##	  This function colorizes the bash promt. The exact color scheme can be
 ##	  configured here. The structure of the function is as follows:
 ##		1. A. Definition of available colors for 16 bits.
@@ -184,11 +184,13 @@ bash_prompt() {
 	
 	
 	## 256 COLOR CODES
+	local NO_FORMAT="\[\033[0m\]"
 	local ORANGE_BOLD="\[\033[1;38;5;208m\]"
 	local TOXIC_GREEN_BOLD="\[\033[1;38;5;118m\]"
 	local RED_BOLD="\[\033[1;38;5;1m\]"
 	local CYAN_BOLD="\[\033[1;38;5;87m\]"
 	local BLACK_BOLD="\[\033[1;38;5;0m\]"
+	local WHITE_BOLD="\[\033[1;38;5;15m\]"
 	local GRAY_BOLD="\[\033[1;90m\]"
 	local BLUE_BOLD="\[\033[1;38;5;74m\]"
 	
@@ -273,7 +275,7 @@ bash_prompt() {
 		FONT_COLOR_1=$WHITE; BACKGROUND_1=$BLACK; TEXTEFFECT_1=$BOLD
 		FONT_COLOR_2=$WHITE; BACKGROUND_2=$D_GRAY; TEXTEFFECT_2=$BOLD
 		FONT_COLOR_3=$BLACK; BACKGROUND_3=$L_CYAN; TEXTEFFECT_3=$BOLD
-		PROMT_FORMAT=$GRAY_BOLD
+		PROMT_FORMAT=$CYAN_BOLD
 	fi
 	
 	
@@ -365,6 +367,8 @@ bash_prompt() {
 	############################################################################
 
 	PS1="\n${PROMT_USER}${SEPARATOR_1}${PROMT_HOST}${SEPARATOR_2}${PROMT_PWD}${SEPARATOR_3}${PROMT_INPUT}"
+
+	
 
 	## For terminal line coloring, leaving the rest standard
 	none="$(tput sgr0)"
