@@ -11,7 +11,7 @@ terminal_packages="rsync atop htop iotop minicom tmux lm_sensors i2c_tools rar u
 desktop_packages="redshift faience-icon-theme owncloud-client gparted nemo nemo-fileroller nemo-preview nemo-share ffmpeg ffmpegthumbnailer gparted gnome-disk-utility autokey-py3"
 
 # WEB BROWSERS AND DOWNLOAD AGENTS
-web_packages="firefox chromium flashplugin firefox-i18n-es-es eamspeak3 deluge"
+web_packages="firefox chromium flashplugin firefox-i18n-es-es teamspeak3 deluge"
 
 # TEXT AND DOCUMENT PROCESSING TOOLS
 office_packages="libreoffice-fresh mousepad gimp calibre kdegraphics-okular inkscape hunspell-en hunspell-es evince acroread acroread-fonts"

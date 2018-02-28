@@ -56,7 +56,9 @@
 ##		1. B. Definition of some colors for 256 bits (add your own).
 ##		2. Configuration >> EDIT YOUR PROMT HERE<<.
 ##		4. Generation of color codes.
-##		5. Formating of the bash promt.
+##		5. Generation of window title (some terminal expect the first
+##		   part of $PS1 to be the window title)
+##		6. Formating of the bash promt ($PS1).
 ##
 ##	* Main script body:	
 ##	  It calls the adequate helper functions to colorize your promt and sets
@@ -362,11 +364,25 @@ bash_prompt() {
 
 
 	############################################################################
+	## WINDOW TITLE                                                           ##
+	## Prevent messed up terminal-window titles                               ##
+	############################################################################
+	case $TERM in
+	xterm*|rxvt*)
+		local TITLEBAR='\[\033]0;\u:${NEW_PWD}\007\]'
+		;;
+	*)
+		local TITLEBAR=""
+		;;
+	esac
+
+
+
+	############################################################################
 	## BASH PROMT                                                             ##
 	## Generate promt and remove format from the rest                         ##
 	############################################################################
-
-	PS1="\n${PROMT_USER}${SEPARATOR_1}${PROMT_HOST}${SEPARATOR_2}${PROMT_PWD}${SEPARATOR_3}${PROMT_INPUT}"
+	PS1="$TITLEBAR\n${PROMT_USER}${SEPARATOR_1}${PROMT_HOST}${SEPARATOR_2}${PROMT_PWD}${SEPARATOR_3}${PROMT_INPUT}"
 
 	
 

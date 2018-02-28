@@ -40,39 +40,62 @@
 ################################################################################
 ## ECHO HELPERS (Inspired by Zach Holman)
 
+
+## TEXT FORMATING
+TXT_NORMAL='\033[0m'
+TXT_HEADER='\033[1;97m'
+TXT_INFO='\033[0;34m'
+TXT_SUCCESS='\033[0;32m'
+TXT_USER='\033[0;33m'
+TXT_WARN='\033[1;33m'
+TXT_FAIL='\033[1;31m'
+
+
+## MESSAGE BANNER
+MSG_PLAIN="      "
+MSG_INFO="[ ${TXT_INFO}..${TXT_NORMAL} ]"
+MSG_USER="[ ${TXT_USER}??${TXT_NORMAL} ]"
+MSG_SUCCESS="[ ${TXT_SUCCESS}OK${TXT_NORMAL} ]"
+MSG_WARN="[ ${TXT_WARN}!!${TXT_NORMAL} ]"
+MSG_FAIL="[${TXT_FAIL}FAIL${TXT_NORMAL}]"
+
+
 printHeader ()
 {
-	printf "\n\n\r	\033[1;37m$1\n"
+	printf "\n\r\t${TXT_HEADER}$1${TXT_NORMAL}\n\n"
+}
+
+printPlain ()
+{
+	printf "\r\t${MSG_PLAIN} $1\n"
 }
 
 printInfo ()
 {
-	printf "\r	[ \033[00;34m..\033[0m ] $1\n"
+	printf "\r\t${MSG_INFO} $1\n"
 }
 
-printPromt ()
+printUser ()
 {
-	printf "\r	[ \033[0;33m??\033[0m ] $1"
+	printf "\r\t${MSG_USER} $1\n"
 }
 
 printSuccess ()
 {
-	printf "\r\033[2K	[ \033[00;32mOK\033[0m ] $1\n"
+	printf "\r\t${MSG_SUCCESS} $1\n"
 }
-
 
 printWarn ()
 {
-	printf "\r\033[2K	[ \033[00;33m!!\033[0m ] $1\n"
+	printf "\r\t${MSG_WARN} $1\n"
 }
 
 printFail ()
 {
-	printf "\r\033[2K	[\033[0;31mFAIL\033[0m] $1\n"
+	printf "\r\t${MSG_FAIL} $1\n"
 	echo ''
 	exit
 }
-
 
 
 ################################################################################

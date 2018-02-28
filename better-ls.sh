@@ -46,25 +46,23 @@
 ##  FUNCTION                                                                  ##
 ################################################################################
 
-function beter-ls()
+function better-ls()
 {
-	if [ $# -eq 0 ]	# If no arguments passed
-		then
-		## First implied . and .. directories
-		/usr/bin/ls -d .  -l --color=auto --human-readable --time-style=long-iso --group-directories-first;
-		/usr/bin/ls -d .. -l --color=auto --human-readable --time-style=long-iso --group-directories-first;
+	if [ $# -eq 0 ]		# If no arguments passed
+	then
 
-		echo ""
-	 	
-		## First visible directories, then visible files
-		/usr/bin/ls -d * -lA --color=auto --human-readable --time-style=long-iso --group-directories-first;
-		
-		echo ""
+		## Implied . and .., visible folders, then visible files
+		/usr/bin/ls -d {.,..,*} -lA --color=auto --human-readable --time-style=long-iso --group-directories-first;
+	
 		
 		## Then hidden directories and finally hidden files
 		## -d		list folders/files themselves, not their content
-		## .!(|.)	anything starting with '.' and not followed by '|.', meaning either nothing or another '.'  
-		/usr/bin/ls -d .!(|.) -l --color=auto --hide='..' --human-readable --time-style=long-iso --group-directories-first;		
+		## .!(|.)	anything starting with '.' and not followed by '|.', meaning either nothing or another '.'
+		if [ -d .!(|.) ]
+		then
+			echo ""
+			/usr/bin/ls -d .!(|.) -l --color=auto --hide='..' --human-readable --time-style=long-iso --group-directories-first;
+		fi
 		
 	else
 		## Add user argument
@@ -78,7 +76,7 @@ function beter-ls()
 ##  ALIAS                                                                     ##
 ################################################################################
 
-alias ls='beter-ls'
+alias ls='better-ls'
 
 
 ### EOF ###
