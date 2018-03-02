@@ -45,19 +45,20 @@
 ##	=====
 ##
 ## 	shopt -s extglob 
-##		This must be enabled for extglob wildcards to work (eg !)
+##		This must be enabled for extglob wildcards to work (eg !).
 ##
-## 	files=$(/usr/bin/ls * 2> /dev/null | wc -l)
+## 	files=$(/usr/bin/ls -U * 2> /dev/null | wc -l)
 ##		Create a list of all files in '*' and count it with wc -l
-##		If zero there is no file
+##		If zero there is no file. -U disables sorting for
+##		shorter response times.
 ##
-##	hidden_files=$(/usr/bin/ls -d .!(|.) 2> /dev/null | wc -l)
+##	hidden_files=$(/usr/bin/ls -U -d .!(|.) 2> /dev/null | wc -l)
 ##		Same as above, but for '.!(|.)', which includes all
-##		hidden files but ommits '.' and '..'
+##		hidden files but ommits '.' and '..' .
 ##
 ##	.!(|.)
 ##		Anything starting with '.' and not followed by '|.',
-##		meaning either nothing or another '.'
+##		meaning either nothing or another '.' .
 ##
 
 
@@ -69,7 +70,7 @@ if [ $# -eq 0 ]		# If no arguments passed
 then
 
 	## IF THE CURRENT FOLDER IS NOT EMPTY -> Display all
-	files=$(/usr/bin/ls * 2> /dev/null | wc -l)	
+	files=$(/usr/bin/ls -U * 2> /dev/null | wc -l)	
 	if [ "$files" != "0" ]
 	then 
 		## List implied . and .., visible folders, then visible files
@@ -78,7 +79,7 @@ then
 
 
 		## List hidden folders and files (only if they exist)
-		hidden_files=$(/usr/bin/ls -d .!(|.) 2> /dev/null | wc -l)	
+		hidden_files=$(/usr/bin/ls -U -d .!(|.) 2> /dev/null | wc -l)	
 		if [ "$hidden_files" != "0" ]
 		then
 			echo ""
