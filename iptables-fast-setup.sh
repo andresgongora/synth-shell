@@ -231,7 +231,7 @@ reapplyLXCdefaultRules() {
 	iptables -A FORWARD	-o $LXC_INTERFACE                       -j ACCEPT
 	iptables -A FORWARD	-i $LXC_INTERFACE                       -j ACCEPT
 
-	iptables -t nat	   -A POSTROUTING -s $LXC_NETWORK ! -d $LXC_NETWORK     -j MASQUERADE
+	iptables -t nat	   -A POSTROUTING -s $LXC_NETWORK ! -d $LXC_NETWORK          -j MASQUERADE
 	iptables -t mangle -A POSTROUTING -o $LXC_INTERFACE -p udp -m udp --dport 68 -j CHECKSUM --checksum-fill
 
 }
@@ -323,6 +323,7 @@ iptables -A INPUT	-m conntrack --ctstate RELATED,ESTABLISHED          -j ACCEPT
 iptables -A INPUT	-i lo                                               -j ACCEPT
 #iptables -A INPUT 	-p 41                                               -j ACCEPT   $com "ICMPv6 Neighbor Discovery"
 iptables -A INPUT	-m conntrack --ctstate INVALID                      -j DROP
+#iptables -A INPUT	-m recent --name BLACKLIST                          -j BLACKLIST
 iptables -A INPUT	-p icmp --icmp-type 8 -m conntrack --ctstate NEW    -j ACCEPT	$com "Allow incomming pings"
 iptables -A INPUT	-p udp -m conntrack --ctstate NEW                   -j UDP
 iptables -A INPUT	-p tcp --syn -m conntrack --ctstate NEW             -j TCP
@@ -347,12 +348,20 @@ iptables -A INPUT 	-j REJECT --reject-with icmp-proto-unreachable
 
 
 
+##------------------------------------------------------------------------------
+##	BLACKLIST CHAIN
+##------------------------------------------------------------------------------
+#iptables -A BLACKLIST 	-m recent --name BLACKLIST --rttl --rcheck         \
+#                      	--seconds   10 --hitcount  4                       \
+#                     	-j DROP	$com "Rate limit 3 in 10s"
+
 
 ##------------------------------------------------------------------------------
 ##	TCP CHAIN
 ##------------------------------------------------------------------------------
 
 iptables -A TCP 	-p tcp --dport 22               -j SSH		$com "SSH: send to SSH chain"
+
 #iptables -A TCP 	-p tcp --dport 80               -j ACCEPT	$com "PORT 80 for web server"
 #iptables -A TCP 	-p tcp --dport 443              -j ACCEPT	$com "PORT 443 for SSL (https) web server"
 #iptables -A TCP 	-p tcp --dport 10011		-j ACCEPT	$com "Team Speak 3 Server: Query Port"
@@ -429,9 +438,10 @@ iptables -A UDP -p udp                          -j REJECT --reject-with icmp-por
 ##------------------------------------------------------------------------------
 ##	SSH CHAIN WITH LOGGING-ATTEMPT RATE-LIMITING
 ##------------------------------------------------------------------------------
-#iptables -A SSH -m recent --name SSH-RL --rttl --rcheck --seconds   10 --hitcount  4 -j DROP    $com "Rate limit 3 in 10s"
-#iptables -A SSH -m recent --name SSH-RL --rttl --rcheck --seconds 1800 --hitcount 31 -j DROP    $com "Protect against slow attacks"
+iptables -A SSH -m recent --name SSH-RL --rttl --rcheck --seconds   10 --hitcount  4 -j DROP    $com "Rate limit 3 in 10s"
+iptables -A SSH -m recent --name SSH-RL --rttl --rcheck --seconds 1800 --hitcount 31 -j DROP    $com "Protect against slow attacks"
 iptables -A SSH -m recent --name SSH-RL --set --rsource -j ACCEPT  $com "Remmember attempt, but otherwise accept it"    
+
 
 
 
@@ -456,10 +466,13 @@ iptables -A SSH -m recent --name SSH-RL --set --rsource -j ACCEPT  $com "Remmemb
 
 reapplyLXCdefaultRules
 
+## 2018 TELEOLFACTION GIRAFF EXPERIMENT
 forwardLXCport  tcp     8000            10.0.3.202      8000            # MQTT
 forwardLXCport  tcp     8002            10.0.3.202      8002            # MQTT
 forwardLXCport  udp     8000            10.0.3.202      8000            # MQTT
-forwardLXCport  udp     8000            10.0.3.202      8002            # MQTT
+forwardLXCport  udp     8002            10.0.3.202      8002            # MQTT
+forwardLXCport  tcp     8080            10.0.3.202      8080            # NODEJS
+forwardLXCport  udp     8080            10.0.3.202      8080            # NODEJS
 
 
 
