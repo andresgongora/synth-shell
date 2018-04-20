@@ -26,13 +26,16 @@
 ##	This is a helper script to set IPTABLES up
 ##
 ##
-##	1. Flush all rules
+##	1. Flush all rules, accept all IPv4 (for now) and drop all IPv6
 ##	2. Create new chains: TCP, UDP and VPN
 ##	3. General rules, redirect TCP, UDP and VPN to their specific chains
 ##		3.1 Incomming
 ##		3.2 Forward
 ##		3.3 Outgoing
 ##	4. Specific rules for TCP, UDP and VPN
+##	5. Apply default policies:
+##		5.1 IPv4: Accept output, filter input/forward
+##		5.2 Ipv6: Drop all
 ##		
 ##
 ##	To make these settings permanent (hold after reboot), run as root:
@@ -153,6 +156,12 @@ fi
 
 flushIptables() {
 
+	## ACCEPT ALL IPv4
+	iptables -P FORWARD	ACCEPT
+	iptables -P OUTPUT	ACCEPT
+	iptables -P INPUT	ACCEPT
+
+
 	## FLUSH ALL TABLES
 	for table in $(</proc/net/ip_tables_names)
 	do 
@@ -161,19 +170,25 @@ flushIptables() {
 		iptables -t $table -Z 
 	done
 
-	## ACCEPT ALL
-	iptables -P FORWARD	ACCEPT
-	iptables -P OUTPUT	ACCEPT
-	iptables -P INPUT	ACCEPT
 
+	## FLUSH IPv6 TABLES
+	ip6tables -F
+	ip6tables -X
+	ip6tables -Z
 }
 
 
 applyDefaultPolicy() {
 
+	## IPv4
 	iptables -P FORWARD	DROP
 	iptables -P OUTPUT	ACCEPT
 	iptables -P INPUT	DROP
+
+	## IPv6
+	ip6tables -P FORWARD	DROP
+	ip6tables -P OUTPUT	DROP
+	ip6tables -P INPUT	DROP
 }
 
 
@@ -181,7 +196,7 @@ printRules() {
 
 	echo ""
 	echo "+----------------------------------------------------------------------------+"
-	echo "|                              FILTER RULES                                  |"
+	echo "|                            IPv4 FILTER RULES                               |"
 	echo "+----------------------------------------------------------------------------+"
 	echo ""
 	sudo iptables -nL -t filter
@@ -190,10 +205,19 @@ printRules() {
 	echo ""
 	echo ""
 	echo "+----------------------------------------------------------------------------+"
-	echo "|                                NAT RULES                                   |"
+	echo "|                            IPv4 NAT RULES                                  |"
 	echo "+----------------------------------------------------------------------------+"
 	echo ""
 	sudo iptables -nL -t nat
+
+
+	echo ""
+	echo ""
+	echo "+----------------------------------------------------------------------------+"
+	echo "|                               IPv6 RULES                                   |"
+	echo "+----------------------------------------------------------------------------+"
+	echo ""
+	sudo ip6tables -nL
 
 
 	echo ""
@@ -360,22 +384,25 @@ iptables -A INPUT 	-j REJECT --reject-with icmp-proto-unreachable
 ##	TCP CHAIN
 ##------------------------------------------------------------------------------
 
+#iptables -A TCP 	-p tcp --dport 21               -j ACCEPT	$com "FTP Commands"
 iptables -A TCP 	-p tcp --dport 22               -j SSH		$com "SSH: send to SSH chain"
-
+#iptables -A TCP 	-p tcp --dport 53               -j ACCEPT	$com "unbound DNS server"
 #iptables -A TCP 	-p tcp --dport 80               -j ACCEPT	$com "PORT 80 for web server"
 #iptables -A TCP 	-p tcp --dport 443              -j ACCEPT	$com "PORT 443 for SSL (https) web server"
-#iptables -A TCP 	-p tcp --dport 10011		-j ACCEPT	$com "Team Speak 3 Server: Query Port"
-#iptables -A TCP 	-p tcp --dport 30033 		-j ACCEPT	$com "Team Speak 3 Server: File Transfer"
-#iptables -A TCP 	-p tcp --dport 40000:40010      -j ACCEPT	$com "Deluge"
-#iptables -A TCP 	-p tcp --dport 8112             -j ACCEPT	$com "Deluge-web"
-#iptables -A TCP 	-p tcp --dport 58846		-j ACCEPT	$com "Deluge-daemon"
+
+#iptables -A TCP 	-p tcp --dport 2869             -j ACCEPT	$com "UPnP"
 #iptables -A TCP 	-p tcp --dport 3306             -j ACCEPT	$com "MariaDB"
-#iptables -A TCP 	-p tcp --dport 53               -j ACCEPT	$com "unbound DNS server"
-#iptables -A TCP 	-p tcp --dport 21               -j ACCEPT	$com "FTP Commands"
-#iptables -A TCP 	-p tcp --dport 40011:40019	-j ACCEPT	$com "FTP Data"
 #iptables -A TCP 	-p tcp --dport 8096             -j ACCEPT	$com "emby htpp"
 #iptables -A TCP 	-p tcp --dport 8020             -j ACCEPT	$com "emby https"
-#iptables -A TCP 	-p tcp--dport 2869              -j ACCEPT	$com "UPnP"
+#iptables -A TCP 	-p tcp --dport 8112             -j ACCEPT	$com "Deluge-web"
+iptables -A TCP 	-p tcp --dport 24800             -j ACCEPT	$com "Synergy Server"
+#iptables -A TCP 	-p tcp --dport 10011		-j ACCEPT	$com "Team Speak 3 Server: Query Port"
+#iptables -A TCP 	-p tcp --dport 30033 		-j ACCEPT	$com "Team Speak 3 Server: File Transfer"
+#iptables -A TCP 	-p tcp --dport 40011:40019	-j ACCEPT	$com "FTP Data"
+#iptables -A TCP 	-p tcp --dport 40000:40010      -j ACCEPT	$com "Deluge"
+#iptables -A TCP 	-p tcp --dport 58846		-j ACCEPT	$com "Deluge-daemon"
+
+
 
 
 ## TCP PORTSCAN PROTECTION

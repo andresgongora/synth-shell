@@ -26,6 +26,11 @@
 ## FLUSH ALL RULES
 ##
 
+iptables -P FORWARD	ACCEPT
+iptables -P OUTPUT	ACCEPT
+iptables -P INPUT	ACCEPT
+
+
 for table in $(</proc/net/ip_tables_names)
 do 
 	iptables -t $table -F
@@ -33,9 +38,7 @@ do
 	iptables -t $table -Z 
 done
 
-iptables -P FORWARD	ACCEPT
-iptables -P OUTPUT	ACCEPT
-iptables -P INPUT	ACCEPT
+
 
 
 
