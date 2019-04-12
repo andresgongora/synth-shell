@@ -26,21 +26,21 @@
 ##	DESCRIPTION:
 ##	This scripts prints to terminal a summary of your systems' status. This
 ##	includes basic information about the OS and the CPU, as well as
-##	system resources, possible errors, and suspicios system activity.
+##	system resources, possible errors, and suspicions system activity.
 ##
 ##
 ##	CUSTOMIZATION:
 ##	Scroll down to the CUSTOMIZATION section to modify the logo and colors.
 ##
 ##
-##	INSTALATION:
+##	INSTALLATION:
 ##	Simply copy and paste this file into your ~/.bashrc file, or source
-##	it externaly (recommended).
+##	it externally (recommended).
 ##
 ##
 ##	TODO
-## 	Add a menu script that allows me to run some extra diagnotstics, or
-##	byd efault (hitting enter), go into a simple terminal.
+## 	Add a menu script that allows me to run some extra diagnostics, or
+##	by default (hitting enter), go into a simple terminal.
 ##	Said options could include stuff like:
 ##		journalctl -p 3 -xb
 ##		netstat -atp #add -n to show IPs instead of host names
