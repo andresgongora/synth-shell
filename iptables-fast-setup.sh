@@ -145,6 +145,13 @@ fi
 
 
 
+
+
+
+
+
+
+
 ################################################################################
 ##	FUNCTIONS
 ################################################################################
@@ -257,7 +264,6 @@ reapplyLXCdefaultRules() {
 
 	iptables -t nat	   -A POSTROUTING -s $LXC_NETWORK ! -d $LXC_NETWORK          -j MASQUERADE
 	iptables -t mangle -A POSTROUTING -o $LXC_INTERFACE -p udp -m udp --dport 68 -j CHECKSUM --checksum-fill
-
 }
 
 
@@ -321,6 +327,14 @@ forwardLXCport() {
 	                        -j ACCEPT
 
 }
+
+
+
+
+
+
+
+
 
 
 ################################################################################
@@ -387,8 +401,8 @@ iptables -A INPUT 	-j REJECT --reject-with icmp-proto-unreachable
 #iptables -A TCP 	-p tcp --dport 21               -j ACCEPT	$com "FTP Commands"
 iptables -A TCP 	-p tcp --dport 22               -j SSH		$com "SSH: send to SSH chain"
 #iptables -A TCP 	-p tcp --dport 53               -j ACCEPT	$com "unbound DNS server"
-#iptables -A TCP 	-p tcp --dport 80               -j ACCEPT	$com "PORT 80 for web server"
-#iptables -A TCP 	-p tcp --dport 443              -j ACCEPT	$com "PORT 443 for SSL (https) web server"
+iptables -A TCP 	-p tcp --dport 80               -j ACCEPT	$com "PORT 80 for web server"
+iptables -A TCP 	-p tcp --dport 443              -j ACCEPT	$com "PORT 443 for SSL (https) web server"
 
 #iptables -A TCP 	-p tcp --dport 2869             -j ACCEPT	$com "UPnP"
 #iptables -A TCP 	-p tcp --dport 3306             -j ACCEPT	$com "MariaDB"
@@ -486,12 +500,15 @@ iptables -A SSH -m recent --name SSH-RL --set --rsource -j ACCEPT  $com "Remmemb
 
 
 
-
-################################################################################
+##------------------------------------------------------------------------------
 ##	LXC
-################################################################################
+##------------------------------------------------------------------------------
 
 reapplyLXCdefaultRules
+
+##
+## forwardLXCport PROTOCOL	PORT-TO-MAP-TO	TARGET-LXC-IP	PORT-ON-LXC
+##
 
 ## 2018 TELEOLFACTION GIRAFF EXPERIMENT
 forwardLXCport  tcp     8000            10.0.3.202      8000            # MQTT
@@ -501,12 +518,29 @@ forwardLXCport  udp     8002            10.0.3.202      8002            # MQTT
 forwardLXCport  tcp     8080            10.0.3.202      8080            # NODEJS
 forwardLXCport  udp     8080            10.0.3.202      8080            # NODEJS
 
+forwardLXCport  tcp     80              10.0.3.101      80              # http
+forwardLXCport  udp     80              10.0.3.101      80              # http
+forwardLXCport  tcp     443             10.0.3.101      443             # https
+forwardLXCport  udp     443             10.0.3.101      443             # https
+
+forwardLXCport  tcp     58846           10.0.3.102      58846           # deluged
+forwardLXCport  udp     58846           10.0.3.102      58846           # deluged
+forwardLXCport  tcp     40000:40015     10.0.3.102      40000:40015     # deluged
+forwardLXCport  udp     40000:40015     10.0.3.102      40000:40015     # deluged
+
+forwardLXCport  tcp     8096            10.0.3.103      8096            # emby
+forwardLXCport  udp     8096            10.0.3.103      8096            # emby
+
+#forwardLXCport  tcp       53            10.0.3.104      53              # dns
+#forwardLXCport  udp       53            10.0.3.104      53              # dns
+#forwardLXCport  tcp     8053            10.0.3.104      8053            # pihole web
+#forwardLXCport  udp     8053            10.0.3.104      8053            # pihole web
 
 
-################################################################################
+
+##------------------------------------------------------------------------------
 ##	DEFAULT POLICY
-################################################################################
-
+##------------------------------------------------------------------------------
 
 applyDefaultPolicy
 printRules
