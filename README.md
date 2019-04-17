@@ -11,7 +11,7 @@ The original authors, if known, are referenced within the individual scripts.
 #                                    License
 <!--------------------------------------+-------------------------------------->
 
-Copyright (c) 2019, Andres Gongora - www.andresgongora.com
+Copyright (c) 2017-2019, Andres Gongora - www.andresgongora.com
 
 * This software is released under a GPLv3 license.
   Read [license-GPLv3.txt](LICENSE),
