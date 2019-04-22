@@ -1,5 +1,5 @@
 <!--------------------------------------+-------------------------------------->
-#                                    scripts
+#                                  Introduction
 <!--------------------------------------+-------------------------------------->
 My personal collection of bash scripts. Some are actually useful ;)
 
@@ -10,11 +10,16 @@ If you recognize a script segment as your own (or know the author) and the file
 has no reference or it is wrong, kindly let me know.
 
 
+
+<!--------------------------------------+-------------------------------------->
+#                                    Overview
+<!--------------------------------------+-------------------------------------->
+
 | Folder                	| Script                         	| Description                                          	|
 |-----------------------	|--------------------------------	|------------------------------------------------------	|
 |                       	|                                	|                                                      	|
-| others                	| libnotify-log.py               	|                                                      	|
-| others                	| my-pulsedroid                  	|                                                      	|
+| others                	| libnotify-log.py               	| ?                                                    	|
+| others                	| my-pulsedroid                  	| ?                                                    	|
 |                       	|                                	|                                                      	|
 | maintenance/archlinux 	| archlinux-update-helper.sh     	| An attempt to make ArchLinux updates more convenient 	|
 | maintenance/archlinux 	| yaourt-setup.sh               	| Quick install many usefull packages                  	|
@@ -34,6 +39,23 @@ has no reference or it is wrong, kindly let me know.
 | utils                    	| my-audacious-delete.sh            | Delete from HDD currently playing track              	|
 | utils                    	| steam.sh                          | Helper script to fix steam of linux                  	|
 
+
+
+<!--------------------------------------+-------------------------------------->
+#                                  Installation
+<!--------------------------------------+-------------------------------------->
+
+These are simple scripts which do not require an installation as such.
+However, some script might depend on third party packages which might require
+your manual intervention. CHeck the content of each script for details.
+
+Some general remarks:
+
+* Remember to allow the escripts to execute (i.e. chmod +x script_name).
+* Some scripts are very useful if you call them with a keyboard shortcut.
+* Others are meant to work with cron
+* Usually, the scripts inside "terminal" are meant to be copied into
+your ~/.bashrc file, or alternatively, sourced from within.
 
 
 
