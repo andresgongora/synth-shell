@@ -22,20 +22,85 @@
 
 ##
 ##	DESCRIPTION:
+##	Very simple script to load configuration parameters into other scripts.
+##	It can be used to retrieve all sorts of variables from a configuration
+##	file, such that the script and its configuration parameters may be
+##	kept completely separated
+##
+##
+##
+##
+##	EXAMPLE:
+##	Assume the file "/home/user/config" exists and contains:
+##		user_number 7	#This is a configuration value##
+##	Then, its possible to write the following script:
+##		MY_VAR=$(LoadParam user_number "/home/user/config")
+##		echo "$MY_VAR"##
+##	which will print a 7 to terminal.
 ## 
+##
+##
+##
+##	FUNCTION USAGE
+##	The core of this script is the function "LoadParam".
+##	The moment this file is sourced into a script, said function should
+##	become available. As for its parameters, it allows for three possible
+##	modes of operation:
+##
+##	* LoadParam KEY:
+##		This way of calling the function assumes that the file
+##		"./config" exists in the same folder as the script that
+##		is loading the configuration. It only requires one parameter.
+##
+##		KEY:		The name of the variable inside of the conf file
+##
+##	* LoadParam KEY FILE:
+##		KEY:		The name of the variable inside of the conf file
+##		FILE:		The path to the conf file
+##
+##	* LoadParam KEY FALLBACK FILE:
+##		This function call is more resilient, as it uses the value in
+##		fallback if for whatever reason the KEY can not be located
+##		inside the conf file, or if the conf file is missing.
+##
+##		KEY:		The name of the variable inside of the conf file
+##		FILE:		The path to the conf file
+##		FALLBACK:	Fallback value if KEY or FILE not found
+##
+##
+##
+##	CONFIGURATION FILES
+##	* Each line is expected to contain a ingle KEY-VALUE pair.
+##		* The first word in a line will be treated as the KEY.
+##		  It may contain no spaces inside, but accepts all sort of
+##		  punctuation marks if desired (e.g. .,-_).
+##		* The configuration value follows the KEY after a space or tab.
+##		  The value can be anything from a single integer to a string.
+##	 	  It can contian any number of words, spaces and tabs,
+##		  but not 'new line' characters
+##
+##	* Empty lines and comments (starting with #) are ignored.
+##
+##	* A KEY-VALUE pair might be followd by a comment (again, 
+##	  starting with #) which will be trimmed before loading the data.
+##	
+##
+##
+##
+##	ERROR HANDLING
+##	This script-function returns the following exit codes:
+##	* Exit code 0        Success
+##	* Exit code 1        Could not load configuration
+##
 
 
 
-##	If any fails (exit code not 0), stop script
-##	Exit code 0        Success
-##	Exit code 1        General errors, Miscellaneous errors, such as "divide by zero" and other impermissible operations
-##	Exit code 2        Misuse of shell builtins (according to Bash documentation)        Example: empty_function() {}
+##==============================================================================
+##  FUNCTION
+##==============================================================================
+
+## Halt if exit code not 0
 set -e
-
-
-##==============================================================================
-##  FUNCTIONS
-##==============================================================================
 
 LoadParam() {
 
@@ -71,8 +136,16 @@ LoadParam() {
 
 	## Check if file exists
 	if [ ! -f "$FILE" ]; then
-		echo "Configuration file $FILE does not exist."
-		exit 1
+		## File does not exist
+		if [ -z "$FALLBACK" ]; then
+			## Also, no fallback value
+			echo "Configuration file $FILE does not exist."
+			exit 1
+		else
+			## Return fallback value instead, but warn user
+			echo "Configuration file $FILE does not exist. Resorting for $KEY to fallback value: $FALLBACK"
+			echo -n "$FALLBACK"
+		fi
 	fi
 
 
@@ -95,7 +168,7 @@ LoadParam() {
 
 		else
 			## Otherwise, just warn the user and use fallback
-			echo "$KEY parameter not found in $FILE. Restorting to fallback value: $FALLBACK"
+			echo "$KEY parameter not found in $FILE. Resorting to fallback value: $FALLBACK"
 			echo -n "$FALLBACK"
 		fi
 
@@ -111,6 +184,12 @@ LoadParam() {
 
 }
 
+
+
+
+##==============================================================================
+##  FOR DEBUGGING ONLY
+##==============================================================================
 
 
 #NAME=$(LoadParam NAME2)
