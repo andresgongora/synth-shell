@@ -11,6 +11,7 @@ has no reference or it is wrong, kindly let me know.
 
 
 
+
 <!--------------------------------------+-------------------------------------->
 #                                    Overview
 <!--------------------------------------+-------------------------------------->
@@ -34,10 +35,11 @@ has no reference or it is wrong, kindly let me know.
 | terminal              	| fancy-bash-promt.sh            	| PowerLine style bash prompt                           |
 | terminal              	| status.sh                      	| Bash promt greeter with status report               	|
 |                       	|                                	|                                                      	|
-| utils                    	| invert-colors.sh                  | Invert X11 colors                                    	|
-| utils                    	| listtty.sh                        | Display available tty interfaces                     	|
-| utils                    	| my-audacious-delete.sh            | Delete from HDD currently playing track              	|
-| utils                    	| steam.sh                          | Helper script to fix steam of linux                  	|
+| utils                    	| invert-colors.sh                 	| Invert X11 colors                                    	|
+| utils                    	| listtty.sh                        	| Display available tty interfaces                     	|
+| utils                    	| my-audacious-delete.sh            	| Delete from HDD currently playing track              	|
+| utils                    	| steam.sh                          	| Helper script to fix steam of linux                  	|
+
 
 
 
@@ -56,6 +58,25 @@ Some general remarks:
 * Others are meant to work with cron
 * Usually, the scripts inside "terminal" are meant to be copied into
 your ~/.bashrc file, or alternatively, sourced from within.
+
+
+
+
+<!--------------------------------------+-------------------------------------->
+#                                   Contribute
+<!--------------------------------------+-------------------------------------->
+
+This project is only possible thanks to the effort of and passion of many, 
+including mentors, developers, and of course, our beloved coffe vending machine.
+If you like this collection of scripts and want to contribute in any way,
+you are most welcome.
+
+### Help us improve
+
+*   [Report a bug](https://github.com/andresgongora/scripts/issues): if you notice that something is not right, tell us. We'll try to fix it ASAP.
+*   Become a developer: fork this repo and become an active developer!
+*   Push your one-time changes: even if its a tiny change, feel free to fill in a pull-request :)
+
 
 
 
