@@ -24,8 +24,8 @@
 ##	DESCRIPTION:
 ##	Very simple script to load configuration parameters into other scripts.
 ##	It can be used to retrieve all sorts of variables from a configuration
-##	file, such that the script and its configuration parameters may be
-##	kept completely separated
+##	file, such that a script and its configuration parameters may be kept
+##	in completely separated file
 ##
 ##
 ##
@@ -48,7 +48,7 @@
 ##	modes of operation:
 ##
 ##	* LoadParam KEY:
-##		This way of calling the function assumes that the file
+##		This way of calling the function assumes that the invoking file
 ##		"./config" exists in the same folder as the script that
 ##		is loading the configuration. It only requires one parameter.
 ##
@@ -100,7 +100,7 @@
 ##==============================================================================
 
 ## Halt if exit code not 0
-set -e
+#set -e
 
 LoadParam() {
 
@@ -153,12 +153,12 @@ LoadParam() {
 	## Read configuration
 	## Get lines containing the KEY at the beginning
 	## Remove empty lines; comments (lines); trailing comments
-	CONFIG=$(cat $FILE | grep -E "^$KEY\s" | sed '/^$/d;/^\#/d;/\#.*$/d;/\n/d')
+	CONFIG_LINE=$(cat $FILE | grep -E "^$KEY\s" | sed '/^$/d;/^\#/d;/\#.*$/d;/\n/d;')
 
 
     
 	## Check number of lines
-	NUM_VAR=$(echo -n "$CONFIG" | grep -c -E "^$KEY\s")
+	NUM_VAR=$(echo -n "$CONFIG_LINE" | grep -c -E "^$KEY\s")
 	if [ "$NUM_VAR" -eq 0 ]; then
 		## Key not found in configuration:
 		if [ -z "$FALLBACK" ]; then
@@ -174,8 +174,9 @@ LoadParam() {
 
 	elif [ "$NUM_VAR" -eq 1 ]; then
 		## 1 Key-Value pair found: Strip value and return it
-    		VALUE=$(echo "$CONFIG" | sed "s/$KEY\s*//")
-    		echo -n "$VALUE"
+		## Remove " characters from the beguinning and end (only)
+    		CONFIG_VALUE=$(echo "$CONFIG_LINE" | sed "s/$KEY\s*//" | sed "s/^\"//;s/\"$//")
+    		echo -n "$CONFIG_VALUE"
 
 	else
 		echo "$KEY was found more than once in $FILE."
@@ -214,3 +215,5 @@ LoadParam() {
 
 #NAME=$(LoadParam STR "8" "./config")
 #echo "$NAME"
+
+
