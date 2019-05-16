@@ -131,6 +131,7 @@ CRIT_CPU_PERCENT=50
 CRIT_MEM_PERCENT=75
 CRIT_SWAP_PERCENT=25
 CRIT_HDD_PERCENT=80
+MAX_DIGITS=5
 
 
 ## =============================================================================
@@ -205,6 +206,14 @@ printLastLogins()
 ##	STATUS MESSAGES
 ## =============================================================================
 
+## GENERATE PROPER AMOUNT OF PAD
+i=0
+while [ $i -lt $MAX_DIGITS ]; do
+	PAD="${PAD} "
+	i=$[$i+1]
+done
+
+
 ## KERNEL INFO
 KERNEL=$(uname -r)
 KERNEL=$(echo -e "${COLOR_INFO}Kernel\t\t${COLOR_HL}$KERNEL${NC}")
@@ -257,8 +266,6 @@ else
 fi
 
 
-PAD="   "
-
 ## CPU LOAD
 CPU_AVG=$(cat /proc/loadavg | awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}')
 CPU_MAX=$(cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l)
@@ -270,36 +277,36 @@ CPU_LOAD=$(echo -e "${COLOR_INFO}Sys load avg\t$CPU_BAR ${COLOR_HL}${CPU_PER:0:9
 
 ## MEMORY
 MEM_INFO=$(free -m | head -n 2 | tail -n 1)
-MEM_CURRENT=$(echo "$MEM_INFO" | awk '{mem=($2-$7)} END {printf "%4.0f", mem}')
+MEM_CURRENT=$(echo "$MEM_INFO" | awk '{mem=($2-$7)} END {printf "%5.0f", mem}')
 MEM_MAX=$(echo "$MEM_INFO" | awk '{mem=($2)} END {printf "%1.0f", mem}')
 MEM_BAR=$(printBar $MEM_CURRENT $MEM_MAX $BAR_LENGTH $CRIT_MEM_PERCENT)
 MEM_MAX=$MEM_MAX$PAD
-MEM_USAGE=$(echo -e "${COLOR_INFO}Memory\t\t$MEM_BAR ${COLOR_HL}$MEM_CURRENT${COLOR_INFO}/${COLOR_HL}${MEM_MAX:0:4} MB${NC}")
+MEM_USAGE=$(echo -e "${COLOR_INFO}Memory\t\t$MEM_BAR ${COLOR_HL}${MEM_CURRENT:0:${MAX_DIGITS}}${COLOR_INFO}/${COLOR_HL}${MEM_MAX:0:${MAX_DIGITS}} MB${NC}")
 
 
 ## SWAP
 SWAP_INFO=$(free -m | tail -n 1)
-SWAP_CURRENT=$(echo "$SWAP_INFO" | awk '{SWAP=($3)} END {printf "%4.0f", SWAP}')
+SWAP_CURRENT=$(echo "$SWAP_INFO" | awk '{SWAP=($3)} END {printf "%5.0f", SWAP}')
 SWAP_MAX=$(echo "$SWAP_INFO" | awk '{SWAP=($2)} END {printf "%1.0f", SWAP}')
 SWAP_BAR=$(printBar $SWAP_CURRENT $SWAP_MAX $BAR_LENGTH $CRIT_SWAP_PERCENT)
 SWAP_MAX=$SWAP_MAX$PAD
-SWAP_USAGE=$(echo -e "${COLOR_INFO}Swap\t\t$SWAP_BAR ${COLOR_HL}$SWAP_CURRENT${COLOR_INFO}/${COLOR_HL}${SWAP_MAX:0:4} MB${NC}")
+SWAP_USAGE=$(echo -e "${COLOR_INFO}Swap\t\t$SWAP_BAR ${COLOR_HL}${SWAP_CURRENT:0:${MAX_DIGITS}}${COLOR_INFO}/${COLOR_HL}${SWAP_MAX:0:${MAX_DIGITS}} MB${NC}")
 
 
 ## HDD /
-ROOT_CURRENT=$(df -BG / | grep "/" | awk '{key=($3)} END {printf "%4.0f", key}')
+ROOT_CURRENT=$(df -BG / | grep "/" | awk '{key=($3)} END {printf "%5.0f", key}')
 ROOT_MAX=$(df -BG "/" | grep "/" | awk '{key=($2)} END {printf "%1.0f", key}')
 ROOT_BAR=$(printBar $ROOT_CURRENT $ROOT_MAX $BAR_LENGTH $CRIT_HDD_PERCENT)
 ROOT_MAX=$ROOT_MAX$PAD
-ROOT_USAGE=$(echo -e "${COLOR_INFO}Storage /\t$ROOT_BAR ${COLOR_HL}$ROOT_CURRENT${COLOR_INFO}/${COLOR_HL}${ROOT_MAX:0:4} GB${NC}")
+ROOT_USAGE=$(echo -e "${COLOR_INFO}Storage /\t$ROOT_BAR ${COLOR_HL}${ROOT_CURRENT:0:${MAX_DIGITS}}${COLOR_INFO}/${COLOR_HL}${ROOT_MAX:0:${MAX_DIGITS}} GB${NC}")
 
 
 ## HDD /home
-HOME_CURRENT=$(df -BG ~ | grep "/" | awk '{key=($3)} END {printf "%4.0f", key}')
+HOME_CURRENT=$(df -BG ~ | grep "/" | awk '{key=($3)} END {printf "%5.0f", key}')
 HOME_MAX=$(df -BG ~ | grep "/" | awk '{key=($2)} END {printf "%1.0f", key}')
 HOME_BAR=$(printBar $HOME_CURRENT $HOME_MAX $BAR_LENGTH $CRIT_HDD_PERCENT)
 HOME_MAX=$HOME_MAX$PAD
-HOME_USAGE=$(echo -e "${COLOR_INFO}Storage /home\t$HOME_BAR ${COLOR_HL}$HOME_CURRENT${COLOR_INFO}/${COLOR_HL}${HOME_MAX:0:4} GB${NC}")
+HOME_USAGE=$(echo -e "${COLOR_INFO}Storage /home\t$HOME_BAR ${COLOR_HL}${HOME_CURRENT:0:${MAX_DIGITS}}${COLOR_INFO}/${COLOR_HL}${HOME_MAX:0:${MAX_DIGITS}} GB${NC}")
 
 ## =============================================================================
 
@@ -384,5 +391,3 @@ printHeader
 #printLastLogins
 printSystemctl
 printTop
-
-
