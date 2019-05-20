@@ -41,21 +41,7 @@
 ##	Simply copy and paste this file into your ~/.bashrc file, or source
 ##	it externally (recommended).
 ##
-##
-##	TODO
-## 	Add a menu script that allows me to run some extra diagnostics, or
-##	by default (hitting enter), go into a simple terminal.
-##	Said options could include stuff like:
-##		journalctl -p 3 -xb
-##		netstat -atp #add -n to show IPs instead of host names
-##		find -xtype l -print # Find broken symlinks
-##		dmesg -TP --level=err,crit,alert,emerg
-##
-##
-##	SOURCES
-##	https://wiki.archlinux.org/index.php/System_maintenance
-##	https://unix.stackexchange.com/questions/125726/important-scripts-useful-for-a-linux-system-administrator
-##
+
 
 
 ##==============================================================================
@@ -210,23 +196,19 @@ printLastLogins()
 }
 
 
-## GENERATE PROPER AMOUNT OF PAD
-i=0
-while [ $i -lt $MAX_DIGITS ]; do
-	PAD="${PAD} "
-	i=$[$i+1]
-done
-
-
-## KERNEL INFO
-KERNEL=$(uname -r)
-KERNEL=$(echo -e "${COLOR_INFO}Kernel\t\t${COLOR_HL}$KERNEL${NC}")
-
 
 
 ##------------------------------------------------------------------------------
 printHeader()
 {
+	## GENERATE PROPER AMOUNT OF PAD
+	i=0
+	while [ $i -lt $MAX_DIGITS ]; do
+		PAD="${PAD} "
+		i=$[$i+1]
+	done
+
+
 	## LOGO
 	COLOR_LOGO_01="${COLOR_LOGO}${LOGO_01}${NC}"
 	COLOR_LOGO_02="${COLOR_LOGO}${LOGO_02}${NC}"
