@@ -39,6 +39,14 @@
 ##
 ##
 ##
+##	CONFIGURATION:
+##
+##
+##
+##
+##
+##
+##
 ##	FUNCTIONS:
 ##
 ##	* bash_prompt_command()

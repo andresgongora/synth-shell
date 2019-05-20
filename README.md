@@ -77,6 +77,9 @@ you are most welcome.
 *   Become a developer: fork this repo and become an active developer!
 *   Push your one-time changes: even if its a tiny change, feel free to fill in a pull-request :)
 
+Yoy can find a detailed list of everyone involved in the development of
+these scripts in [AUTHORS.md](AUTHORS.md). Thanks to all of you!
+
 
 
 

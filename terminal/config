@@ -1,0 +1,33 @@
+################################################################################
+##	LOGO
+################################################################################
+
+
+LOGO_01			"        -oydNMMMMNdyo-        "
+LOGO_02			"     -yNMMMMMMMMMMMMMMNy-     "
+LOGO_03			"   .hMMMMMMmhsooshmMMMMMMh.   "
+LOGO_04			"  :NMMMMmo.        .omMMMMN:  "
+LOGO_05			" -NMMMMs    -+ss+-    sMMMMN- "
+LOGO_06			" hMMMMs   -mMMMMMMm-   sMMMMh "
+LOGO_07			"'MMMMM.  'NMMMMMMMMN'  .MMMMM'"
+LOGO_08			"'MMMMM.  'NMMMMMMMMN'   yMMMM'"
+LOGO_09			" hMMMMs   -mMMMMMMMMy.   -yMh "
+LOGO_10			" -NMMMMs    -+ss+yMMMMy.   -. "
+LOGO_11			"  :NMMMMmo.       .yMMMMy.    "
+LOGO_12			"   .hMMMMMMmhsoo-   .yMMMy    "
+LOGO_13			"     -yNMMMMMMMMMy-   .o-     "
+LOGO_14			"        -oydNMMMMNd/          "
+
+LOGO_PADDING		""
+
+
+
+################################################################################
+##	STATUS BARS
+################################################################################
+BAR_LENGTH		15
+CRIT_CPU_PERCENT	50
+CRIT_MEM_PERCENT	75
+CRIT_SWAP_PERCENT	25
+CRIT_HDD_PERCENT	80
+MAX_DIGITS		5
