@@ -73,6 +73,7 @@ you are most welcome.
 
 ### Help us improve
 
+*   Add your own scripts: do you have some cool scripts you wold like to add to this collection? Don't hesitate to create a pull-request or, alternatively, contact the authors over email.
 *   [Report a bug](https://github.com/andresgongora/scripts/issues): if you notice that something is not right, tell us. We'll try to fix it ASAP.
 *   Become a developer: fork this repo and become an active developer!
 *   Push your one-time changes: even if its a tiny change, feel free to fill in a pull-request :)
