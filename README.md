@@ -53,10 +53,11 @@ your manual intervention. CHeck the content of each script for details.
 
 Some general remarks:
 
-* Remember to allow the escripts to execute (i.e. chmod +x script_name).
-* Some scripts are very useful if you call them with a keyboard shortcut.
-* Others are meant to work with cron
-* Usually, the scripts inside "terminal" are meant to be copied into
+* Remember to allow the scripts to execute (i.e. chmod +x script_name).
+* The usefulness of the scripts lays, exclusively, in the way you use them. There are really no rules, but consider the following:
+	* Some scripts are most useful when called with a keyboard shortcut rather than from the terminal. 
+	* Others are meant to work with cron to do periodical work
+	* Usually, the scripts inside "terminal" are meant to be copied into
 your ~/.bashrc file, or alternatively, sourced from within.
 
 
@@ -71,15 +72,25 @@ including mentors, developers, and of course, our beloved coffe vending machine.
 If you like this collection of scripts and want to contribute in any way,
 you are most welcome.
 
-### Help us improve
-
-*   Add your own scripts: do you have some cool scripts you wold like to add to this collection? Don't hesitate to create a pull-request or, alternatively, contact the authors over email.
-*   [Report a bug](https://github.com/andresgongora/scripts/issues): if you notice that something is not right, tell us. We'll try to fix it ASAP.
-*   Become a developer: fork this repo and become an active developer!
-*   Push your one-time changes: even if its a tiny change, feel free to fill in a pull-request :)
-
 Yoy can find a detailed list of everyone involved in the development of
 these scripts in [AUTHORS.md](AUTHORS.md). Thanks to all of you!
+
+
+### Help us improve
+
+* Add your own scripts: do you have some cool scripts you wold like to add to this collection? Don't hesitate to create a pull-request or, alternatively, contact the authors over email.
+* [Report a bug](https://github.com/andresgongora/scripts/issues): if you notice that something is not right, tell us. We'll try to fix it ASAP.
+* Become a developer: fork this repo and become an active developer!
+* Push your one-time changes: even if its a tiny change, feel free to fill in a pull-request :)
+
+
+### Git branches
+
+There are two branches in this repository:
+
+* **master**: this is the main branch, and thus contains fully functional scripts. When you want to use the scripts as a _user_, this is the branch you want to clone or download.
+
+* **develop**: this branch contains all the new features and most recent contributions. It is always _stable_, in the sense that you can use it without major inconveniences. However, because we are still working on it, its very prone to undetected bugs and it might be subject to major unanounced changes. If you want to contribute, this is the branch you should pull-request to.
 
 
 
@@ -96,3 +107,4 @@ Copyright (c) 2014-2019, Andres Gongora - www.andresgongora.com
 
 * If you need a closed-source version of this software
   for commercial purposes, please contact the authors.
+
