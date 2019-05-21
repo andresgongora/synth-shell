@@ -40,6 +40,10 @@ fi
 ## IMPROVED BEHAVIOUR
 alias sudo='\sudo '
 
+if [ "$PS1" ]; then
+	complete -cf sudo
+fi
+
 if [ -f /usr/bin/bat ]; then
         alias cat='bat' ## Replace cat with bat
 fi
