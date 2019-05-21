@@ -2,7 +2,7 @@
 
 ##  +-----------------------------------+-----------------------------------+
 ##  |                                                                       |
-##  |                    CLEAN BASH SYSTEM STATUS REPORT                    |
+##  |                               BETTER LS                               |
 ##  |                                                                       |
 ##  | Copyright (c) 2019, Andres Gongora <mail@andresgongora.com>.          |
 ##  |                                                                       |
