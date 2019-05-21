@@ -2,7 +2,7 @@
 
 ##  +-----------------------------------+-----------------------------------+
 ##  |                                                                       |
-##  |                             SYSTEM ALIASES                            |
+##  |                            BETTER HISTORY                             |
 ##  |                                                                       |
 ##  | Copyright (c) 2019, Andres Gongora <mail@andresgongora.com>.          |
 ##  |                                                                       |
@@ -23,58 +23,28 @@
 
 
 
-
-
-##==============================================================================
-##	SIMPLE COMMAND OPTIONS
-##==============================================================================
-alias grep='\grep --color=auto'
-alias pacman='\pacman --color=auto'
-alias tree='\tree --dirsfirst -C'
-alias dmesg='\dmesg --color=auto --reltime --human --nopager --decode'
-alias free='\free -mht'
-
-
+## TODO: add spacers between different days and sessions, with a beautiful header
+## TODO: Fix line wraps. Maybem put everything inside a pager
+## TODO: Format this script file
 
 
 
 ##==============================================================================
-##	COMMAND OVERRIDES
+##	BETTER TERMINAL HISTORY
 ##==============================================================================
-BETTER_LS_FILE="/home/andy/Software/scripts/terminal/better-ls.sh"
-if [ -f $BETTER_LS_FILE ]; then
-        alias ls="$BETTER_LS_FILE"
+
+MY_BASH_BLUE="\033[0;34m" #Blue
+MY_BASH_NOCOLOR="\033[0m"
+HISTTIMEFORMAT=`echo -e ${MY_BASH_BLUE}[%F %T] $MY_BASH_NOCOLOR `
+export HISTSIZE=10000
+export HISTFILESIZE=50000
+HISTCONTROL=ignoreboth # don't put duplicate lines or lines starting with space in the history.
+
+
+
+## BETTER COMMAND HISTORY (CTRL+r) >>>>>>>UNDER CONSTRUCTION<<<<<<<<<<<<<<<<<<<<
+if [ -f /usr/bin/fzf ]; then
+        alias preview="fzf --preview 'bat --color \"always\" {}'"
+        # add support for ctrl+o to open selected file in VS Code
+        export FZF_DEFAULT_OPTS="--bind='ctrl-o:execute(code {})+abort'"
 fi
-
-if [ -f /usr/bin/prettyping ]; then
-        alias ping='prettyping --nolegend' ## Replace ping with prettyping
-fi
-
-if [ -f /usr/bin/bat ]; then
-        alias cat='bat' ## Replace cat with bat
-fi
-
-BETTER_HISTORY_FILE='/home/andy/Software/scripts/terminal/better-history.sh'
-if [ -f $BETTER_HISTORY_FILE ]; then
-        source "$BETTER_HISTORY_FILE"
-fi
-
-
-
-
-
-##==============================================================================
-##	BETTER SUDO
-##==============================================================================
-
-alias sudo='\sudo '
-
-if [ "$PS1" ]; then
-	complete -cf sudo
-fi
-
-
-
-
-
-### EOF ###
