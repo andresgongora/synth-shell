@@ -24,9 +24,12 @@
 
 
 
-alias ls='~/Software/scripts/terminal/better-ls.sh'
+alias sudo='sudo '
+alias grep='grep --color=auto'
 alias ls='./better-ls.sh'
-alias ls='~/Software/scripts/terminal/better-ls.sh'
+alias pacman='pacman --color=auto'
+
+
 
 
 ## GET LOCATION OF TREE COMMAND -> Check for all possible locations
@@ -40,7 +43,6 @@ fi
 alias tree="$TREE --dirsfirst -C"
 
 
-alias pacman='pacman --color=auto'
 
 
 
