@@ -23,12 +23,29 @@
 
 
 
-
-alias sudo='\sudo '
+## EYECANDY
 alias grep='\grep --color=auto'
-alias ls='~/Software/scripts/terminal/better-ls.sh'
 alias pacman='\pacman --color=auto'
 alias tree='\tree --dirsfirst -C'
-alias dmesh='\dmesg --color=auto --reltime --human --nopager --decode'
+alias dmesg='\dmesg --color=auto --reltime --human --nopager --decode'
+alias ls='~/Software/scripts/terminal/better-ls.sh'
+
+if [ -f /usr/bin/prettyping ]; then
+        alias ping='prettyping --nolegend' ## Replace ping with prettyping
+fi
+
+
+
+
+## IMPROVED BEHAVIOUR
+alias sudo='\sudo '
+
+if [ -f /usr/bin/bat ]; then
+        alias cat='bat' ## Replace cat with bat
+fi
+
+
+
+
 
 
