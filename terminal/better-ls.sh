@@ -74,16 +74,7 @@
 ##==============================================================================
 
 shopt -s extglob
-
-
-
-## GET LOCATION OF LS COMMAND -> Check for all possible locations
-if [ -f "/usr/bin/ls" ]; then
-	LS="/usr/bin/ls"
-elif [ -f "/bin/ls" ]; then
-	LS="/bin/ls"
-fi
-
+LS='ls'
 
 
 ## IF NO ARGUMENTS PASSED -> run better ls version on current folder

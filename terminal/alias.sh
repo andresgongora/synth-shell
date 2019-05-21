@@ -24,39 +24,11 @@
 
 
 
-alias sudo='sudo '
-alias grep='grep --color=auto'
-alias ls='./better-ls.sh'
-alias pacman='pacman --color=auto'
-
-
-
-
-## GET LOCATION OF TREE COMMAND -> Check for all possible locations
-if [ -f "/usr/bin/tree" ]; then
-	TREE="/usr/bin/tree"
-elif [ -f "/bin/tree" ]; then
-	TREE="/bin/tree"
-else
-	echo "tree command not found"
-fi
-alias tree="$TREE --dirsfirst -C"
-
-
-
-
-
-## GET LOCATION OF DMESG COMMAND -> Check for all possible locations
-if [ -f "/usr/bin/dmesg" ]; then
-	DMESG="/usr/bin/dmesg"
-elif [ -f "/bin/dmesg" ]; then
-	DMESG="/bin/dmesg"
-else
-	echo "dmesg command not found"
-fi
-alias dmesg="$DMESG --color=auto --reltime --human --nopager --decode"
-
-
-
+alias sudo='\sudo '
+alias grep='\grep --color=auto'
+alias ls='~/Software/scripts/terminal/better-ls.sh'
+alias pacman='\pacman --color=auto'
+alias tree='\tree --dirsfirst -C'
+alias dmesh='\dmesg --color=auto --reltime --human --nopager --decode'
 
 
