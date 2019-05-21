@@ -23,25 +23,28 @@
 
 
 
-## EYECANDY
+##==============================================================================
+##	SIMPLE COMMAND OPTIONS
+##==============================================================================
 alias grep='\grep --color=auto'
 alias pacman='\pacman --color=auto'
 alias tree='\tree --dirsfirst -C'
 alias dmesg='\dmesg --color=auto --reltime --human --nopager --decode'
-alias ls='~/Software/scripts/terminal/better-ls.sh'
+
+
+
+
+
+##==============================================================================
+##	COMMAND OVERRIDES
+##==============================================================================
+BETTER_LS_FILE='~/Software/scripts/terminal/better-ls.sh'
+if [ -f "$BETTER_LS_FILE" ]; then
+        alias ls="$BETTER_LS_FILE"
+fi
 
 if [ -f /usr/bin/prettyping ]; then
         alias ping='prettyping --nolegend' ## Replace ping with prettyping
-fi
-
-
-
-
-## IMPROVED BEHAVIOUR
-alias sudo='\sudo '
-
-if [ "$PS1" ]; then
-	complete -cf sudo
 fi
 
 if [ -f /usr/bin/bat ]; then
@@ -52,4 +55,17 @@ fi
 
 
 
+##==============================================================================
+##	BETTER SUDO
+##==============================================================================
 
+alias sudo='\sudo '
+
+if [ "$PS1" ]; then
+	complete -cf sudo
+fi
+
+
+
+
+### EOF ###
