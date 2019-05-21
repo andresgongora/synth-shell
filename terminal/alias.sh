@@ -30,6 +30,7 @@ alias grep='\grep --color=auto'
 alias pacman='\pacman --color=auto'
 alias tree='\tree --dirsfirst -C'
 alias dmesg='\dmesg --color=auto --reltime --human --nopager --decode'
+alias free='\free -mht'
 
 
 
