@@ -23,6 +23,8 @@
 
 
 
+
+
 ##==============================================================================
 ##	SIMPLE COMMAND OPTIONS
 ##==============================================================================
@@ -65,6 +67,30 @@ alias sudo='\sudo '
 if [ "$PS1" ]; then
 	complete -cf sudo
 fi
+
+
+
+
+
+##==============================================================================
+##	BETTER TERMINAL HISTORY
+##==============================================================================
+
+MY_BASH_BLUE="\033[0;34m" #Blue
+MY_BASH_NOCOLOR="\033[0m"
+HISTTIMEFORMAT=`echo -e ${MY_BASH_BLUE}[%F %T] $MY_BASH_NOCOLOR `
+export HISTSIZE=10000
+export HISTFILESIZE=50000
+HISTCONTROL=ignoreboth # don't put duplicate lines or lines starting with space in the history.
+## TODO: add spacers between different days and sessions, with a beautiful header
+
+## BETTER COMMAND HISTORY (CTRL+r) >>>>>>>UNDER CONSTRUCTION<<<<<<<<<<<<<<<<<<<<
+if [ -f /usr/bin/fzf ]; then
+        alias preview="fzf --preview 'bat --color \"always\" {}'"
+        # add support for ctrl+o to open selected file in VS Code
+        export FZF_DEFAULT_OPTS="--bind='ctrl-o:execute(code {})+abort'"
+fi
+
 
 
 
