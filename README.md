@@ -5,7 +5,7 @@ My personal collection of bash scripts. Some are actually useful ;)
 
 Note that some snippets (or whole scripts) might be from third parties.
 I collected them over many years from forums, wikis, and chats.
-The original authors, if known, are referenced within the individual scripts,
+The original authors, if known, are referenced within the individual scripts.
 If you recognize a script segment as your own (or know the author) and the file
 has no reference or it is wrong, kindly let me know.
 

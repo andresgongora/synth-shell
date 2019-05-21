@@ -36,7 +36,6 @@
 ##
 ##
 ##
-##
 ##	INSTALLATION:
 ##	Simply copy and paste this file into your ~/.bashrc file, or source
 ##	it externally (recommended).
