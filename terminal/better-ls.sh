@@ -88,7 +88,7 @@ if [ $# -eq 0 ]; then
 
 
 		## List hidden folders and files (only if they exist)
-		hidden_files=$(/usr/bin/ls -U -d .!(|.) 2> /dev/null | wc -l)	
+		hidden_files=$($LS -U -d .!(|.) 2> /dev/null | wc -l)	
 		if [ "$hidden_files" != "0" ]
 		then
 			echo ""
