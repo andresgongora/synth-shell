@@ -19,8 +19,8 @@ has no reference or it is wrong, kindly let me know.
 | Folder                	| Script                         	| Description                                          	|
 |-----------------------	|--------------------------------	|------------------------------------------------------	|
 |                       	|                                	|                                                      	|
-| others                	| libnotify-log.py               	| ?                                                    	|
-| others                	| my-pulsedroid                  	| ?                                                    	|
+| common                      	| color.sh                           	| Colorize and format command line text                	|
+| common                      	| load_config.sh                      	| Retrieve script configurations from a file        	|
 |                       	|                                	|                                                      	|
 | maintenance/archlinux 	| archlinux-update-helper.sh     	| An attempt to make ArchLinux updates more convenient 	|
 | maintenance/archlinux 	| yaourt-setup.sh               	| Quick install many usefull packages                  	|
@@ -30,6 +30,9 @@ has no reference or it is wrong, kindly let me know.
 | maintenance/network   	| scp-speed-test.sh              	| Test remote copy command (SCP) speed                 	|
 | maintenance/services  	| oc-perms.sh                    	| Secure file permissions for OwnCloud - After update  	|
 | maintenance/services  	| sharkoon-renew-certificates.sh 	| Renew certificates for one of my servers             	|
+|                       	|                                	|                                                      	|
+| others                	| libnotify-log.py               	| ?                                                    	|
+| others                	| my-pulsedroid                  	| ?                                                    	|
 |                       	|                                	|                                                      	|
 | terminal              	| alias.sh                      	| Aliases of common commands for better productivity   	|
 | terminal              	| better-history.sh                   	| Configure and wrap the `history` comand             	|
@@ -42,9 +45,8 @@ has no reference or it is wrong, kindly let me know.
 | utils                    	| my-audacious-delete.sh            	| Delete from HDD currently playing track              	|
 | utils                    	| steam.sh                          	| Helper script to fix steam of linux                  	|
 |                       	|                                	|                                                      	|
-| common                      	| color.sh                           	| Colorize and format command line text                	|
-| common                      	| load_config.sh                      	| Retrieve script configurations from a file        	|
-|                       	|                                	|                                                      	|
+
+
 
 
 
