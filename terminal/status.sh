@@ -41,39 +41,6 @@
 
 
 
-##==============================================================================
-##	COLOR DEFINITIONS
-##==============================================================================
-
-## REGULAR COLOROS
-K='\033[0;30m'	# black
-R='\033[0;31m'	# red
-G='\033[0;32m'	# green
-Y='\033[0;33m'	# yellow
-B='\033[0;34m'	# blue
-M='\033[0;35m'	# magenta
-C='\033[0;36m'	# cyan
-W='\033[0;37m'	# white
-	
-## BOLDFACE COLORS
-BFK='\033[1;30m'
-BFR='\033[1;31m'
-BFG='\033[1;32m'
-BFY='\033[1;33m'
-BFB='\033[1;34m'
-BFM='\033[1;35m'
-BFC='\033[1;36m'
-BFW='\033[1;37m'
-BFO='\033[38;5;208m'	# Orange bold
-BFT='\033[38;5;118m'	# Toxic green
-	
-
-
-NC='\033[0m'		# NO COLOR
-
-
-
-
 
 ##==============================================================================
 ##	CONFIGURATION
@@ -141,6 +108,8 @@ COLOR_DECO=$(getFormatCode $TXT_DECO)
 COLOR_OK=$(getFormatCode $TXT_OK)
 COLOR_ERR=$(getFormatCode $TXT_ERR)
 COLOR_LOGO=$(getFormatCode $TXT_LOGO)
+NC=$(getFormatCode -e reset)
+
 
 
 
