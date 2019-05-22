@@ -46,9 +46,10 @@
 ##	CONFIGURATION
 ##==============================================================================
 
-## IMPORT CONFIGURATION
+## IMPORT EXTERNAL SCRIPTS
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source "$DIR/../common/load_config.sh"
+source "$DIR/../common/color.sh"
 CONFIG_FILE="$DIR/config"
 
 
@@ -99,8 +100,6 @@ TXT_LOGO=$(LoadParam "TXT_LOGO" "$CONFIG_FILE")
 ##==============================================================================
 ##	GENERATE TEXT COLOR SEQUENCES
 ##==============================================================================
-
-source $COLOR_SCRIPT
 COLOR_INFO=$(getFormatCode $TXT_INFO)
 COLOR_HL=$(getFormatCode $TXT_HIGHLIGHT)
 COLOR_CRIT=$(getFormatCode $TXT_CRIT)

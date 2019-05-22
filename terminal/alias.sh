@@ -39,7 +39,10 @@ alias free='\free -mht'
 ##==============================================================================
 ##	COMMAND OVERRIDES
 ##==============================================================================
-BETTER_LS_FILE="/home/andy/Software/scripts/terminal/better-ls.sh"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+
+BETTER_LS_FILE="$DIR/better-ls.sh"
 if [ -f $BETTER_LS_FILE ]; then
         alias ls="$BETTER_LS_FILE"
 fi
@@ -52,7 +55,7 @@ if [ -f /usr/bin/bat ]; then
         alias cat='bat' ## Replace cat with bat
 fi
 
-BETTER_HISTORY_FILE='/home/andy/Software/scripts/terminal/better-history.sh'
+BETTER_HISTORY_FILE="$DIR/better-history.sh"
 if [ -f $BETTER_HISTORY_FILE ]; then
         source "$BETTER_HISTORY_FILE"
 fi
