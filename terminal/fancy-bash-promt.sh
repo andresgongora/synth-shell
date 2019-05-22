@@ -2,8 +2,6 @@
 
 ##	+-----------------------------------+-----------------------------------+
 ##	|                                                                       |
-##	|                            FANCY BASH PROMT                           |
-##	|                                                                       |
 ##	| Copyright (c) 2018, Andres Gongora <mail@andresgongora.com>.          |
 ##	|                                                                       |
 ##	| This program is free software: you can redistribute it and/or modify  |

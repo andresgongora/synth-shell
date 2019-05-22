@@ -2,8 +2,6 @@
 
 ##  +-----------------------------------+-----------------------------------+
 ##  |                                                                       |
-##  |                    CLEAN BASH SYSTEM STATUS REPORT                    |
-##  |                                                                       |
 ##  | Copyright (c) 2019, Andres Gongora <mail@andresgongora.com>.          |
 ##  |                                                                       |
 ##  | This program is free software: you can redistribute it and/or modify  |
@@ -82,7 +80,7 @@ BGW='\033[47m'
 NC='\033[0m'		# NO COLOR
 
 
-
+COLOR="/home/andy/Software/scripts/common/color.sh"
 
 
 ##==============================================================================
@@ -209,6 +207,8 @@ printHeader()
 
 
 	## LOGO
+	#COLOR_LOGO_01=$($COLOR $LOGO_01 -c red)
+	#echo -e $COLOR_LOGO_01
 	COLOR_LOGO_01="${COLOR_LOGO}${LOGO_01}${NC}"
 	COLOR_LOGO_02="${COLOR_LOGO}${LOGO_02}${NC}"
 	COLOR_LOGO_03="${COLOR_LOGO}${LOGO_03}${NC}"

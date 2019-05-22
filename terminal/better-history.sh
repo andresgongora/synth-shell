@@ -2,8 +2,6 @@
 
 ##  +-----------------------------------+-----------------------------------+
 ##  |                                                                       |
-##  |                            BETTER HISTORY                             |
-##  |                                                                       |
 ##  | Copyright (c) 2019, Andres Gongora <mail@andresgongora.com>.          |
 ##  |                                                                       |
 ##  | This program is free software: you can redistribute it and/or modify  |
