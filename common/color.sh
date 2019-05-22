@@ -81,12 +81,12 @@
 ##		\e[1;31m Hello World! \e[0m
 ##
 ##	Some formatting sequences are, in fact, comprised of two codes
-##	that must go together. For example, the code 38 tells the terminal
+##	that must go together. For example, the code 38;5; tells the terminal
 ##	that the next code (after the semicolon) should be interpreted as
 ##	a 256 bit formatting color. So, for example, the code 82 is a light
 ##	green. We can paint the text using this code as follows, plus bold
 ##	face as follows - but notice that not all terminal support 256 colors:##	
-##		\e[1;38;82m Hello World! \e[0m
+##		\e[1;38;5;82m Hello World! \e[0m
 ##
 ##	For a detailed list of all codes, this site has an excellent guide:
 ##	https://misc.flogisoft.com/bash/tip_colors_and_formatting
@@ -104,6 +104,10 @@
 ##	color. Addsupport to also detect whether its an effect code.
 ##		Now: getFormatCode blue == getFormatCode -c blue
 ##		Add: getFormatCode bold == getFormatCode -e bold
+##
+##	TODO: Clean up this script. Prevent functions like "get8bitCode()"
+##	to be accessible from outside. These are only a "helper" function
+##	that should only be available to this script
 ##
 
 
@@ -383,9 +387,9 @@ formatText()
 
 #formatText "$@"
 
-FORMATTED_TEXT=$(formatText "HELLO WORLD!!" -c red -b 13 -e bold -e blink -e strikeout)
-echo -e "$FORMATTED_TEXT"
+#FORMATTED_TEXT=$(formatText "HELLO WORLD!!" -c red -b 13 -e bold -e blink -e strikeout)
+#echo -e "$FORMATTED_TEXT"
 
-FORMAT=$(getFormatCode -c blue -b yellow)
-NONE=$(getFormatCode -e none)
-echo -e $FORMAT"Hello"$NONE
+#FORMAT=$(getFormatCode -c blue -b yellow)
+#NONE=$(getFormatCode -e none)
+#echo -e $FORMAT"Hello"$NONE

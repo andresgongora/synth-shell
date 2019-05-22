@@ -67,20 +67,12 @@ BFW='\033[1;37m'
 BFO='\033[38;5;208m'	# Orange bold
 BFT='\033[38;5;118m'	# Toxic green
 	
-## BACKGROUND COLORS
-BGK='\033[40m'
-BGR='\033[41m'
-BGG='\033[42m'
-BGY='\033[43m'
-BGB='\033[44m'
-BGM='\033[45m'
-BGC='\033[46m'
-BGW='\033[47m'
+
 
 NC='\033[0m'		# NO COLOR
 
 
-COLOR="/home/andy/Software/scripts/common/color.sh"
+
 
 
 ##==============================================================================
@@ -111,15 +103,6 @@ LOGO_14=$(LoadParam "LOGO_14" "$CONFIG_FILE")
 LOGO_PADDING=$(LoadParam "LOGO_PADDING" "$CONFIG_FILE")
 
 
-## COLORS
-COLOR_INFO=${W}		# INFO
-COLOR_HL=${BFB}		# HIGHLIGHT
-COLOR_CRIT=${BFY}	# CRITICAL
-COLOR_DCO=${BFW}	# DECORATION
-COLOR_OK=${BFB}		# OK STATUS
-COLOR_ERR=${BFO}	# ERROR
-COLOR_LOGO=${BFB}	# LOGO
-
 
 ## STATUS BARS
 BAR_LENGTH=$(LoadParam "BAR_LENGTH" "$CONFIG_FILE")
@@ -129,6 +112,35 @@ CRIT_SWAP_PERCENT=$(LoadParam "CRIT_SWAP_PERCENT" "$CONFIG_FILE")
 CRIT_HDD_PERCENT=$(LoadParam "CRIT_HDD_PERCENT" "$CONFIG_FILE")
 MAX_DIGITS=$(LoadParam "MAX_DIGITS" "$CONFIG_FILE")
 
+
+## SCRIPT LOCATIONS
+COLOR_SCRIPT=$(LoadParam "COLOR_SCRIPT" "$CONFIG_FILE")
+
+
+## TEXT COLOR
+TXT_INFO=$(LoadParam "TXT_INFO" "$CONFIG_FILE")
+TXT_HIGHLIGHT=$(LoadParam "TXT_HIGHLIGHT" "$CONFIG_FILE")
+TXT_CRIT=$(LoadParam "TXT_CRIT" "$CONFIG_FILE")
+TXT_DECO=$(LoadParam "TXT_DECO" "$CONFIG_FILE")
+TXT_OK=$(LoadParam "TXT_OK" "$CONFIG_FILE")
+TXT_ERR=$(LoadParam "TXT_ERR" "$CONFIG_FILE")
+TXT_LOGO=$(LoadParam "TXT_LOGO" "$CONFIG_FILE")
+
+
+
+
+##==============================================================================
+##	GENERATE TEXT COLOR SEQUENCES
+##==============================================================================
+
+source $COLOR_SCRIPT
+COLOR_INFO=$(getFormatCode $TXT_INFO)
+COLOR_HL=$(getFormatCode $TXT_HIGHLIGHT)
+COLOR_CRIT=$(getFormatCode $TXT_CRIT)
+COLOR_DECO=$(getFormatCode $TXT_DECO)
+COLOR_OK=$(getFormatCode $TXT_OK)
+COLOR_ERR=$(getFormatCode $TXT_ERR)
+COLOR_LOGO=$(getFormatCode $TXT_LOGO)
 
 
 
@@ -164,11 +176,11 @@ printBar()
 	CRIT_NUM_BARS=$(($SIZE * $CRIT_PERCENT / 100))
 	BAR_COLOR=$COLOR_OK
 	if [ $NUM_BARS -gt $CRIT_NUM_BARS ]; then
-		BAR_COLOR=$COLOR_ERR
+		BAR_COLOR=$COLOR_CRIT
 	fi
 	
 	## PRINT BAR
-	printf "${COLOR_DCO}[${BAR_COLOR}"
+	printf "${COLOR_DECO}[${BAR_COLOR}"
 	i=0
 	while [ $i -lt $NUM_BARS ]; do
 		printf "|"
@@ -178,7 +190,7 @@ printBar()
 		printf " "
 		i=$[$i+1]
 	done
-	printf "${COLOR_DCO}]${NC}"
+	printf "${COLOR_DECO}]${NC}"
 }
 
 
