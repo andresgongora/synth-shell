@@ -33,9 +33,6 @@ or know the author, and the file has no reference, kindly let me know.
 | maintenance/services  	| oc-perms.sh                    	| Secure file permissions for OwnCloud - After update  	|
 | maintenance/services  	| sharkoon-renew-certificates.sh 	| Renew certificates for one of my servers             	|
 |                       	|                                	|                                                      	|
-| others                	| libnotify-log.py               	| ?                                                    	|
-| others                	| my-pulsedroid                  	| ?                                                    	|
-|                       	|                                	|                                                      	|
 | terminal              	| alias.sh                      	| Aliases of common commands for better productivity   	|
 | terminal              	| better-history.sh                   	| Configure and wrap the `history` comand             	|
 | terminal              	| better-ls.sh                   	| Wrap the `ls` comand for extra utility              	|
