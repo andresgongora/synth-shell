@@ -44,6 +44,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 BETTER_LS_FILE="$DIR/better-ls.sh"
 if [ -f $BETTER_LS_FILE ]; then
+	chmod +x "$BETTER_LS_FILE"
         alias ls="$BETTER_LS_FILE"
 fi
 
