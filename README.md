@@ -62,7 +62,8 @@ nano ~/.config/scripts/terminal/status.config
 
 
 ### Manual instalation of individual scripts
-These are simple scripts which do not require an installation as such.
+If you want to skip the above text, and are only intereset in a very
+specific script, you can easily use it by its own.
 However, some scripts might source other scripts from the `common` folder,
 as they provided shared functioanlities to all scripts. If you are interested
 in a single script from my collection, check whether it depends on a common
