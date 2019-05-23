@@ -83,6 +83,13 @@ sudo pacman -S powerline-fonts
 sudo apt install fonts-powerline
 ```
 
+Also, for the best experience with `fancy-bash-promt.sh`, 
+it's highly to configure your terminal to use a font face like
+`hack-ttf`. If you don't have it yet, its usually in the oficial repos
+of most common distributions. It's a clean and very productive font
+for terminals and IDEs alike.
+
+
 
 ### Manual instalation of individual scripts
 These are simple scripts which do not require an installation as such.
