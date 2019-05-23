@@ -50,7 +50,11 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source "$DIR/../common/load_config.sh"
 source "$DIR/../common/color.sh"
-CONFIG_FILE="$DIR/config"
+
+CONFIG_FILE="$HOME/.config/scripts/terminal/status.config"
+if [ ! -f $CONFIG_FILE ]; then
+	CONFIG_FILE="$DIR/status.config"
+fi	
 unset DIR
 
 
@@ -95,7 +99,7 @@ TXT_OK=$(LoadParam "TXT_OK" "$CONFIG_FILE")
 TXT_ERR=$(LoadParam "TXT_ERR" "$CONFIG_FILE")
 TXT_LOGO=$(LoadParam "TXT_LOGO" "$CONFIG_FILE")
 
-
+unset CONFIG_FILE
 
 
 ##==============================================================================
