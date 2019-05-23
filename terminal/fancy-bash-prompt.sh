@@ -21,39 +21,20 @@
 
 
 ##
-##	DESCRIPTION:
+##	DESCRIPTION
+##
 ##	This script updates your "PS1" environment variable to display colors.
 ##	Addicitionally, it also shortens the name of your current part to maximum
 ##	25 characters, which is quite useful when working in deeply nested folders.
 ##
 ##
 ##
-##	INSTALLATION:
-##	Copy this script to your home folder and rename it to ".fancy-bash-promt.sh"
-##	Run this command from any terminal: 
-##		echo "source ~/.fancy-bash-promt.sh" >> ~/.bashrc
 ##
-##	Alternatively, copy the content of this file into your .bashrc file
-##
-##
-##
-##	CONFIGURATION:
-##
-##
-##
-##
-##
-##
-##
-##	FUNCTIONS:
+##	FUNCTIONS
 ##
 ##	* bash_prompt_command()
 ##	  This function takes your current working directory and stores a shortened
 ##	  version in the variable "NEW_PWD".
-##
-##	* format_font()
-##	  A small helper function to generate color formating codes from simple
-##	  number codes (defined below as local variables for convenience).
 ##
 ##	* bash_prompt()
 ##	  This function colorizes the bash promt. The exact color scheme can be
@@ -72,12 +53,6 @@
 ## 
 
 
-
-
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-source "$DIR/../common/load_config.sh"
-source "$DIR/../common/color.sh"
-unset DIR
 
 
 ##==============================================================================
@@ -125,28 +100,35 @@ bash_prompt_command() {
 ##==============================================================================
 bash_prompt() {
 
-	
-	############################################################################
-	## CONFIGURATION                                                          ##
-	## Choose your color combination here                                     ##
-	############################################################################
+	## INCLUDE EXTERNAL DEPENDENCIES
+	local DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+	source "$DIR/../common/load_config.sh"
+	source "$DIR/../common/color.sh"
 
-	local FONT_COLOR_USER=white
-	local BACKGROUND_USER=blue
-	local TEXTEFFECT_USER=bold
 
-	local FONT_COLOR_HOST=white
-	local BACKGROUND_HOST=light-blue
-	local TEXTEFFECT_HOST=bold
+	## LOAD CONFIGURATION
+	## Search for valid configuration file. If not found,
+	## resort to default location (same fodler as script).
+	local CONFIG_FILE="$HOME/.config/scripts/terminal/fancy-bash-prompt.config"
+	if [ ! -f $CONFIG_FILE ]; then
+		local CONFIG_FILE="$DIR/fancy-bash-prompt.config"
+	fi	
 
-	local FONT_COLOR_PWD=dark-gray
-	local BACKGROUND_PWD=white
-	local TEXTEFFECT_PWD=bold
+	local FONT_COLOR_USER=$(LoadParam "FONT_COLOR_USER" "$CONFIG_FILE")
+	local BACKGROUND_USER=$(LoadParam "BACKGROUND_USER" "$CONFIG_FILE")
+	local TEXTEFFECT_USER=$(LoadParam "TEXTEFFECT_USER" "$CONFIG_FILE")
 
-	local FONT_COLOR_INPUT=cyan  #74
-	local BACKGROUND_INPUT=none
-	local TEXTEFFECT_INPUT=bold
+	local FONT_COLOR_HOST=$(LoadParam "FONT_COLOR_HOST" "$CONFIG_FILE")
+	local BACKGROUND_HOST=$(LoadParam "BACKGROUND_HOST" "$CONFIG_FILE")
+	local TEXTEFFECT_HOST=$(LoadParam "TEXTEFFECT_HOST" "$CONFIG_FILE")
 
+	local FONT_COLOR_PWD=$(LoadParam "FONT_COLOR_PWD" "$CONFIG_FILE")
+	local BACKGROUND_PWD=$(LoadParam "BACKGROUND_PWD" "$CONFIG_FILE")
+	local TEXTEFFECT_PWD=$(LoadParam "TEXTEFFECT_PWD" "$CONFIG_FILE")
+
+	local FONT_COLOR_INPUT=$(LoadParam "FONT_COLOR_INPUT" "$CONFIG_FILE")
+	local BACKGROUND_INPUT=$(LoadParam "BACKGROUND_INPUT" "$CONFIG_FILE")
+	local TEXTEFFECT_INPUT=$(LoadParam "TEXTEFFECT_INPUT" "$CONFIG_FILE")
 
 	
 	## GENERATE COLOR FORMATING SEQUENCES
@@ -165,7 +147,7 @@ bash_prompt() {
 	## GENERATE USER/HOST/PWD TEXT
 	local PS1_USER="${PS1_USER_FORMAT} \u "
 	local PS1_HOST="${PS1_HOST_FORMAT} \h "
-	local PS1_PWD="${PS1_PWD_FORMAT}  \${NEW_PWD}  "
+	local PS1_PWD="${PS1_PWD_FORMAT} \${NEW_PWD} "
 	local PS1_INPUT="${PS1_INPUT_FORMAT} "
 
 
