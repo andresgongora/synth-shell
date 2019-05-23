@@ -18,6 +18,64 @@ or know the author, and the file has no reference, kindly let me know.
 
 
 <!--------------------------------------+-------------------------------------->
+#                                  Installation
+<!--------------------------------------+-------------------------------------->
+
+For now, the easiest way to install this scripts is to clone this repository
+and then tell your `.bashrc` file to source those scripts you want.
+
+```
+## Clone repository to ~/.config/scripts
+cd ~/.config
+git clone https://github.com/andresgongora/scripts.git
+
+## Source individual scripts. Choose the ones you want.
+echo 'source ~/.config/scripts/terminal/fancy-bash-prompt.sh' >> ~/.bashrc
+echo 'source ~/.config/scripts/terminal/alias.sh' >> ~/.bashrc
+echo 'source ~/.config/scripts/terminal/status.sh' >> ~/.bashrc
+```
+
+If you want to use `fancy-bash-promt.sh` you also need power-line fonts.
+Depending on your distro you can install it as:
+
+```
+## ArchLinux
+sudo pacman -S powerline-fonts
+
+## Ubuntu
+sudo apt install fonts-powerline
+```
+
+Lastly, you may configure your scripts by editing the individual `.config`
+files included in this repo. For example, to configure the colors in
+`fancy-bash-promt.sh` or `status.sh`, you can do as follows.
+
+```
+## Colors of fancy-bash-promt.sh
+nano ~/.config/scripts/terminal/fancy-bash-prompt.config
+
+## Colors and behaviourt of status.sh
+nano ~/.config/scripts/terminal/status.config
+```
+
+
+
+
+### Manual instalation of individual scripts
+These are simple scripts which do not require an installation as such.
+However, some scripts might source other scripts from the `common` folder,
+as they provided shared functioanlities to all scripts. If you are interested
+in a single script from my collection, check whether it depends on a common
+script, and copy the content of it into the script you want.
+Also, some script might depend on third party packages which might require
+your manual intervention. Check the content of each script for details.
+
+
+
+
+
+
+<!--------------------------------------+-------------------------------------->
 #                                    Overview
 <!--------------------------------------+-------------------------------------->
 
@@ -47,69 +105,6 @@ or know the author, and the file has no reference, kindly let me know.
 | utils                    	| my-audacious-delete.sh            	| Delete from HDD currently playing track              	|
 | utils                    	| steam.sh                          	| Helper script to fix steam of linux                  	|
 |                       	|                                	|                                                      	|
-
-
-
-
-
-<!--------------------------------------+-------------------------------------->
-#                                  Installation
-<!--------------------------------------+-------------------------------------->
-
-For now, the easiest way to install this scripts is to clone this repository
-and then tell your `.bashrc` file to source those scripts you want.
-
-```
-## Clone repository to ~/.config/scripts
-cd ~/.config
-git clone https://github.com/andresgongora/scripts.git
-
-## Source individual scripts. Choose the ones you want.
-echo 'source ~/.config/scripts/terminal/fancy-bash-prompt.sh' >> ~/.bashrc
-echo 'source ~/.config/scripts/terminal/alias.sh' >> ~/.bashrc
-echo 'source ~/.config/scripts/terminal/status.sh' >> ~/.bashrc
-```
-
-If you want to use `fancy-bash-promt.sh` you also need power-line fonts.
-Depending on your distro you can install it as:
-
-```
-## ArchLinux
-sudo pacman -S powerline-fonts
-```
-
-```
-## Ubuntu
-sudo apt install fonts-powerline
-```
-
-Also, for the best experience with `fancy-bash-promt.sh`, 
-it's highly to configure your terminal to use a font face like
-`hack-ttf`. If you don't have it yet, its usually in the official repos
-of most common distributions. It's a clean and very productive font
-for terminals and IDEs alike.
-
-
-
-### Manual instalation of individual scripts
-These are simple scripts which do not require an installation as such.
-However, some scripts might source other scripts from the `common` folder,
-as they provided shared functioanlities to all scripts. If you are interested
-in a single script from my collection, check whether it depends on a common
-script, and copy the content of it into the script you want.
-Also, some script might depend on third party packages which might require
-your manual intervention. Check the content of each script for details.
-
-Some general remarks:
-
-* Remember to allow the scripts to execute (i.e. chmod +x script_name).
-* The usefulness of the scripts lays, exclusively, in the way you use them.
-  There are really no rules, but consider the following:
-	* Some scripts are most useful when called with a keyboard shortcut 
-	  rather than from the terminal. 
-	* Others are meant to work with cron to do periodical work.
-	* Usually, the scripts inside "terminal" are meant to be copied into 
-	  your ~/.bashrc file, or alternatively, sourced from within.
 
 
 
