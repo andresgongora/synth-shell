@@ -1,7 +1,10 @@
 <!--------------------------------------+-------------------------------------->
 #                                  Introduction
 <!--------------------------------------+-------------------------------------->
-My personal collection of bash scripts. Some are actually useful ;)
+My personal collection of bash scripts. Their application varies wildly from
+script to script, including eyecandy for the terminal, productivity tools,
+and sys-administration helpers. You can find more details and similar tools on
+[Yet Another Linux'n Electronics Blog](https://yalneb.blogspot.com/).
 
 
 *DISCLAIMER*
@@ -61,9 +64,6 @@ and then tell your `.bashrc` file to source those scripts you want.
 cd ~/.config
 git clone https://github.com/andresgongora/scripts.git
 
-## Enable execution of scripts
-chmod +x -R ~/.config/scripts/
-
 ## Source individual scripts. Choose the ones you want.
 echo 'source ~/.config/scripts/terminal/fancy-bash-prompt.sh' >> ~/.bashrc
 echo 'source ~/.config/scripts/terminal/alias.sh' >> ~/.bashrc
@@ -85,7 +85,7 @@ sudo apt install fonts-powerline
 
 Also, for the best experience with `fancy-bash-promt.sh`, 
 it's highly to configure your terminal to use a font face like
-`hack-ttf`. If you don't have it yet, its usually in the oficial repos
+`hack-ttf`. If you don't have it yet, its usually in the official repos
 of most common distributions. It's a clean and very productive font
 for terminals and IDEs alike.
 
