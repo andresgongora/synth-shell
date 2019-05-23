@@ -271,11 +271,10 @@ getEffectCode()
 
 getFormattingSequence()
 {
-    START="\e["
-    MIDLE=$1
-    END="m"
-    
-    echo "$START$MIDLE$END"
+	START='\e[0;'
+	MIDLE=$1
+	END='m'
+	echo -n "$START$MIDLE$END"
 }
 
 
@@ -285,15 +284,13 @@ getFormattingSequence()
 
 
 
-RESET=$(getFormattingSequence $(getEffectCode none))
-
-
 
 applyCodeToText()
 {
+	local RESET=$(getFormattingSequence $(getEffectCode none))
 	TEXT=$1
 	CODE=$2
-	echo "$CODE$TEXT$RESET"
+	echo -n "$CODE$TEXT$RESET"
 }
 
 
@@ -306,14 +303,16 @@ applyCodeToText()
 
 getFormatCode()
 {
+	local RESET=$(getFormattingSequence $(getEffectCode none))
+
 	## NO ARGUMENT PROVIDED
 	if [ "$#" -eq 0 ]; then
-		echo "$RESET"
+		echo -n "$RESET"
 
 	## 1 ARGUMENT -> ASSUME TEXT COLOR
 	elif [ "$#" -eq 1 ]; then
 		TEXT_COLOR=$(getFormattingSequence $(getColorCode $1))
-		echo "$TEXT_COLOR"
+		echo -n "$TEXT_COLOR"
 
 	## ARGUMENTS PROVIDED
 	else
@@ -352,7 +351,7 @@ getFormatCode()
 		
 		## APPLY FORMAT TO TEXT
 		FORMAT_CODE=$(getFormattingSequence $FORMAT)
-		echo "$FORMAT_CODE"	
+		echo -n "${FORMAT_CODE}"	
 	fi
 
 }
@@ -362,22 +361,26 @@ getFormatCode()
 
 formatText()
 {
+	local RESET=$(getFormattingSequence $(getEffectCode none))
+
 	## NO ARGUMENT PROVIDED
 	if [ "$#" -eq 0 ]; then
-		echo "$RESET"
+		echo -n "${RESET}"
 
 	## ONLY A STRING PROVIDED -> Append reset sequence
 	elif [ "$#" -eq 1 ]; then
 		TEXT=$1
-		echo "$TEXT$RESET"
+		echo -n "${TEXT}${RESET}"
 
 	## ARGUMENTS PROVIDED
 	else
 		TEXT=$1
 		FORMAT_CODE=$(getFormatCode "${@:2}")
-		applyCodeToText "$TEXT" $FORMAT_CODE	
+		applyCodeToText "$TEXT" "$FORMAT_CODE"
 	fi
 }
+
+
 
 
 

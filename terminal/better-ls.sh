@@ -112,6 +112,7 @@ fi
 
 
 
+unset LS
 exit 0
 ### EOF ###
 

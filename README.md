@@ -49,14 +49,49 @@ or know the author, and the file has no reference, kindly let me know.
 
 
 
-
 <!--------------------------------------+-------------------------------------->
 #                                  Installation
 <!--------------------------------------+-------------------------------------->
 
+For now, the easiest way to install this scripts is to clone this repository
+and then tell your `.bashrc` file to source those scripts you want.
+
+```
+## Clone repository to ~/.config/scripts
+cd ~/.config
+git clone https://github.com/andresgongora/scripts.git
+
+## Enable execution of scripts
+chmod +x -R ~/.config/scripts/
+
+## Source individual scripts. Choose the ones you want.
+echo 'source ~/.config/scripts/terminal/fancy-bash-prompt.sh' >> ~/.bashrc
+echo 'source ~/.config/scripts/terminal/alias.sh' >> ~/.bashrc
+echo 'source ~/.config/scripts/terminal/status.sh' >> ~/.bashrc
+```
+
+If you want to use `fancy-bash-promt.sh` you also need power-line fonts.
+Depending on your distro you can install it as:
+
+```
+## ArchLinux
+sudo pacman -S powerline-fonts
+```
+
+```
+## Ubuntu
+sudo apt install fonts-powerline
+```
+
+
+### Manual instalation of individual scripts
 These are simple scripts which do not require an installation as such.
-However, some script might depend on third party packages which might require
-your manual intervention. CHeck the content of each script for details.
+However, some scripts might source other scripts from the `common` folder,
+as they provided shared functioanlities to all scripts. If you are interested
+in a single script from my collection, check whether it depends on a common
+script, and copy the content of it into the script you want.
+Also, some script might depend on third party packages which might require
+your manual intervention. Check the content of each script for details.
 
 Some general remarks:
 
@@ -85,6 +120,7 @@ You can find a detailed list of everyone involved in the development of
 these scripts in [AUTHORS.md](AUTHORS.md). Thanks to all of you!
 
 
+
 ### Help us improve
 
 * Add your own scripts: do you have some cool scripts you wold like to 
@@ -96,6 +132,7 @@ these scripts in [AUTHORS.md](AUTHORS.md). Thanks to all of you!
 * Become a developer: fork this repo and become an active developer!
 * Push your one-time changes: even if its a tiny change, 
   feel free to fill in a pull-request :)
+
 
 
 ### Git branches
