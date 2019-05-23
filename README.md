@@ -29,7 +29,7 @@ and then tell your `.bashrc` file to source those scripts you want.
 cd ~/.config
 git clone https://github.com/andresgongora/scripts.git
 
-## Source individual scripts. Choose the ones you want.
+## Source individual scripts. Choose the ones you want (or all).
 echo 'source ~/.config/scripts/terminal/fancy-bash-prompt.sh' >> ~/.bashrc
 echo 'source ~/.config/scripts/terminal/alias.sh' >> ~/.bashrc
 echo 'source ~/.config/scripts/terminal/status.sh' >> ~/.bashrc
@@ -62,7 +62,7 @@ nano ~/.config/scripts/terminal/status.config
 
 
 ### Manual instalation of individual scripts
-If you want to skip the above text, and are only intereset in a very
+If you want to skip the above steps, and are only intereset in a very
 specific script, you can easily use it by its own.
 However, some scripts might source other scripts from the `common` folder,
 as they provided shared functioanlities to all scripts. If you are interested
