@@ -390,5 +390,5 @@ printHeader
 #printLastLogins
 printSystemctl
 printTop
-exit 0
+#exit 0
 
