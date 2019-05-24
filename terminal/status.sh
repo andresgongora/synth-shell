@@ -126,6 +126,64 @@ CPU_IS_CRIT=0
 
 
 ##==============================================================================
+##	AUXILIARY FUNCTIONS
+##==============================================================================
+
+getOSInfo()
+{
+	local os=$(cat /etc/*-release | grep PRETTY_NAME)
+	local os="${os#*=}"
+	echo "$os" | sed 's/"//g' # remove " characters
+}
+
+
+getKernelInfo()
+{
+	uname -r
+}
+
+
+getCPUInfo()
+{
+	local cpu=$(cat /proc/cpuinfo | grep "model name" | uniq | cut -f1 -d "@")
+	echo "${cpu#*:}" | sed 's/  */ /g' | awk '$1=$1'
+}
+
+
+getShellInfo()
+{
+	readlink /proc/$$/exe
+}
+
+
+getSysDate()
+{
+	date +"%Y.%m.%d - %T"
+}
+
+
+getUserName()
+{
+	echo "$USER@$HOSTNAME"
+}
+
+
+getLocalIPv4()
+{
+	ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p'
+}
+
+
+getExternalIPv4()
+{
+	'wget' -t 1 -T 1 http://checkip.dyndns.org/ -O - -o /dev/null | cut -d: -f 2 | cut -d\< -f 1 | tr -d ' '
+}
+
+
+
+
+
+##==============================================================================
 ##	FUNCTIONS
 ##==============================================================================
 
@@ -218,47 +276,17 @@ printHeader()
 	local COLOR_LOGO_14="${COLOR_LOGO}${LOGO_14}${NC}"
 
 
-	## KERNEL INFO
-	local KERNEL=$(uname -r)
-	local KERNEL=$(echo -e "${COLOR_INFO}Kernel\t\t${COLOR_HL}$KERNEL${NC}")
+	## GET SYS SUMMARY 
+	local os_info="${COLOR_INFO}OS\t\t${COLOR_HL}$(getOSInfo)${NC}"
+	local kernel_info="${COLOR_INFO}Kernel\t\t${COLOR_HL}$(getKernelInfo)${NC}"
+	local cpu_info="${COLOR_INFO}CPU\t\t${COLOR_HL}$(getCPUInfo)${NC}"
+	local shell_info="${COLOR_INFO}Shell\t\t${COLOR_HL}$(getShellInfo)${NC}"
+	local sys_date="${COLOR_INFO}Date\t\t${COLOR_HL}$(getSysDate)${NC}"
+	local user_name="${COLOR_INFO}Login\t\t${COLOR_HL}$(getUserName)@$HOSTNAME${NC}"
+	local local_ipv4="${COLOR_INFO}Local IP\t${COLOR_HL}$(getLocalIPv4)${NC}"
+	local external_ipv4="${COLOR_INFO}External IP\t${COLOR_HL}$(getExternalIPv4)${NC}"
 
 
-	## SHELL
-	local SHELL=$(readlink /proc/$$/exe)
-	local SHELL=$(echo -e "${COLOR_INFO}Shell\t\t${COLOR_HL}$SHELL${NC}")
-
-
-	## CPU INFO
-	local CPU=$(cat /proc/cpuinfo | grep "model name" | uniq | cut -f1 -d "@")
-	local CPU="${CPU#*:}"
-	local CPU=$(echo "$CPU" | sed 's/  */ /g') # Trim spaces
-	local CPU=$(echo -e "${COLOR_INFO}CPU\t\t${COLOR_HL}${CPU:1}${NC}")
-
-
-	## OS DISTRO NAME
-	local OS=$(cat /etc/*-release | grep PRETTY_NAME)
-	local OS="${OS#*=}"
-	local OS=$(echo "$OS" | sed 's/"//g') # remove " characters
-	local OS=$(echo -e "${COLOR_INFO}OS\t\t${COLOR_HL}$OS${NC}")
-
-
-	## SYS DATE
-	local SYSDATE=$(date)
-	local SYSDATE=$(echo -e "${COLOR_INFO}Date\t\t${COLOR_HL}$SYSDATE${NC}")
-
-
-	## LOGIN
-	local LOGIN=$(echo -e "${COLOR_INFO}Login\t\t${COLOR_HL}$USER@$HOSTNAME${NC}")
-
-
-	## LOCAL IP
-	local LOCALIP=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
-	local LOCALIP=$(echo -e "${COLOR_INFO}Local IP\t${COLOR_HL}$LOCALIP${NC}")
-
-
-	## EXTERNAL IP
-	local EXTERNALIP=$(wget -t 1 -T 1 http://checkip.dyndns.org/ -O - -o /dev/null | cut -d: -f 2 | cut -d\< -f 1 | tr -d ' ')
-	local EXTERNALIP=$(echo -e "${COLOR_INFO}External IP\t${COLOR_HL}$EXTERNALIP${NC}")
 
 
 	## SYSTEM CTL FAILED TO LOAD
@@ -285,7 +313,7 @@ printHeader()
 
 
 	## MEMORY
-	local MEM_INFO=$(free -m | head -n 2 | tail -n 1)
+	local MEM_INFO=$('free' -m | head -n 2 | tail -n 1)
 	local MEM_CURRENT=$(echo "$MEM_INFO" | awk '{mem=($2-$7)} END {printf "%5.0f", mem}')
 	local MEM_MAX=$(echo "$MEM_INFO" | awk '{mem=($2)} END {printf "%1.0f", mem}')
 	local MEM_BAR=$(printBar $MEM_CURRENT $MEM_MAX $BAR_LENGTH $CRIT_MEM_PERCENT)
@@ -294,7 +322,7 @@ printHeader()
 
 
 	## SWAP
-	local SWAP_INFO=$(free -m | tail -n 1)
+	local SWAP_INFO=$('free' -m | tail -n 1)
 	local SWAP_CURRENT=$(echo "$SWAP_INFO" | awk '{SWAP=($3)} END {printf "%5.0f", SWAP}')
 	local SWAP_MAX=$(echo "$SWAP_INFO" | awk '{SWAP=($2)} END {printf "%1.0f", SWAP}')
 	local SWAP_BAR=$(printBar $SWAP_CURRENT $SWAP_MAX $BAR_LENGTH $CRIT_SWAP_PERCENT)
@@ -311,8 +339,8 @@ printHeader()
 
 
 	## HDD /home
-	local HOME_CURRENT=$(df -BG ~ | grep "/" | awk '{key=($3)} END {printf "%5.0f", key}')
-	local HOME_MAX=$(df -BG ~ | grep "/" | awk '{key=($2)} END {printf "%1.0f", key}')
+	local HOME_CURRENT=$('df' -BG ~ | grep "/" | awk '{key=($3)} END {printf "%5.0f", key}')
+	local HOME_MAX=$('df' -BG ~ | grep "/" | awk '{key=($2)} END {printf "%1.0f", key}')
 	local HOME_BAR=$(printBar $HOME_CURRENT $HOME_MAX $BAR_LENGTH $CRIT_HDD_PERCENT)
 	local HOME_MAX=$HOME_MAX$PAD
 	local HOME_USAGE=$(echo -e "${COLOR_INFO}Storage /home\t$HOME_BAR ${COLOR_HL}${HOME_CURRENT:0:${MAX_DIGITS}}${COLOR_INFO}/${COLOR_HL}${HOME_MAX:0:${MAX_DIGITS}} GB${NC}")
@@ -328,14 +356,14 @@ printHeader()
 
 	## PRINT HEADER WITH OVERALL STATUS REPORT
 	printf "\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_01\t$OS\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_02\t$KERNEL\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_03\t$CPU\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_04\t$SHELL\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_05\t$SYSDATE\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_06\t$LOGIN\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_07\t$LOCALIP\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_08\t$EXTERNALIP\n\r"
+	printf "$LOGO_PADDING$COLOR_LOGO_01\t$os_info\n\r"
+	printf "$LOGO_PADDING$COLOR_LOGO_02\t$kernel_info\n\r"
+	printf "$LOGO_PADDING$COLOR_LOGO_03\t$cpu_info\n\r"
+	printf "$LOGO_PADDING$COLOR_LOGO_04\t$shell_info\n\r"
+	printf "$LOGO_PADDING$COLOR_LOGO_05\t$sys_date\n\r"
+	printf "$LOGO_PADDING$COLOR_LOGO_06\t$user_name\n\r"
+	printf "$LOGO_PADDING$COLOR_LOGO_07\t$local_ipv4\n\r"
+	printf "$LOGO_PADDING$COLOR_LOGO_08\t$external_ipv4\n\r"
 	printf "$LOGO_PADDING$COLOR_LOGO_09\t$SYSCTL\n\r"
 	printf "$LOGO_PADDING$COLOR_LOGO_10\t$CPU_LOAD\n\r"
 	printf "$LOGO_PADDING$COLOR_LOGO_11\t$MEM_USAGE\n\r"
