@@ -2,7 +2,7 @@
 
 ##	+-----------------------------------+-----------------------------------+
 ##	|                                                                       |
-##	| Copyright (c) 2018, Andres Gongora <mail@andresgongora.com>.          |
+##	| Copyright (c) 2018-2019, Andres Gongora <mail@andresgongora.com>.     |
 ##	|                                                                       |
 ##	| This program is free software: you can redistribute it and/or modify  |
 ##	| it under the terms of the GNU General Public License as published by  |
@@ -24,7 +24,7 @@
 ##	DESCRIPTION
 ##
 ##	This script updates your "PS1" environment variable to display colors.
-##	Addicitionally, it also shortens the name of your current part to maximum
+##	Additionally, it also shortens the name of your current path to a maximum
 ##	25 characters, which is quite useful when working in deeply nested folders.
 ##
 ##
@@ -51,6 +51,15 @@
 ##	  It calls the adequate helper functions to colorize your promt and sets
 ##	  a hook to regenerate your working directory "NEW_PWD" when you change it.
 ## 
+##
+##
+##
+##	
+##	REFFERENCES
+##
+##	* http://tldp.org/HOWTO/Bash-Prompt-HOWTO/index.html
+##
+##
 
 
 

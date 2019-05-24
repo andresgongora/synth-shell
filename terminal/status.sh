@@ -257,7 +257,7 @@ printHeader()
 
 
 	## EXTERNAL IP
-	local EXTERNALIP=$(dig +short myip.opendns.com @resolver1.opendns.com)
+	local EXTERNALIP=$(wget -t 1 -T 1 http://checkip.dyndns.org/ -O - -o /dev/null | cut -d: -f 2 | cut -d\< -f 1 | tr -d ' ')
 	local EXTERNALIP=$(echo -e "${COLOR_INFO}External IP\t${COLOR_HL}$EXTERNALIP${NC}")
 
 
