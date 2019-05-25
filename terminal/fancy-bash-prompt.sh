@@ -139,7 +139,7 @@ bash_prompt() {
 
 
 	## LOAD USER CONFIGURATION
-	local config_file="$HOME/Software/scripts/terminal/fancy-bash-prompt.config"
+	local config_file="$HOME/.config/scripts/fancy-bash-prompt.config"
 	overrideConfig $config_file
 
 	

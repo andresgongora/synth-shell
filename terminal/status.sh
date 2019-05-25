@@ -51,7 +51,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source "$DIR/../common/load_config.sh"
 source "$DIR/../common/color.sh"
 
-CONFIG_FILE="$HOME/.config/scripts/terminal/status.config"
+CONFIG_FILE="$HOME/.config/scripts/status.config"
 if [ ! -f $CONFIG_FILE ]; then
 	CONFIG_FILE="$DIR/status.config"
 fi	

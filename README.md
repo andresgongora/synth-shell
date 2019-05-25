@@ -32,9 +32,9 @@ cd ~/.config
 git clone https://github.com/andresgongora/scripts.git
 
 ## Source individual scripts. Choose the ones you want (or all).
-echo 'source $HOME/.config/scripts/terminal/fancy-bash-prompt.sh' >> ~/.bashrc
-echo 'source $HOME/.config/scripts/terminal/alias.sh' >> ~/.bashrc
-echo 'source $HOME/.config/scripts/terminal/status.sh' >> ~/.bashrc
+echo 'source ~/.config/scripts/terminal/fancy-bash-prompt.sh' >> ~/.bashrc
+echo 'source ~/.config/scripts/terminal/alias.sh' >> ~/.bashrc
+echo 'source ~/.config/scripts/terminal/status.sh' >> ~/.bashrc
 ```
 
 If you want to use `fancy-bash-promt.sh` you also need power-line fonts.
@@ -49,10 +49,12 @@ sudo apt install fonts-powerline
 ```
 
 Lastly, you may configure your scripts by first copying the individual
-`.config.example` files into `.config` included in this repo. For example:
+`.config.example` included in this repo to your user's `.config/scripts/` folder.
+For example:
 
 ```
-cp ~/.config/scripts/terminal/status.config.example ~/.config/scripts/terminal/status.config
+cp ~/.config/scripts/terminal/status.config.example ~/.config/scripts/status.config
+cp ~/.config/scripts/terminal/fancy-bash-prompt.config.example ~/.config/scripts/fancy-bash-prompt.config
 ```
 
 Then you can modify them for your needs. For example, to configure
@@ -60,10 +62,10 @@ the colors in`fancy-bash-promt.sh` or `status.sh`, you can do as follows:
 
 ```
 ## Colors and behaviour of status.sh
-nano ~/.config/scripts/terminal/status.config
+nano ~/.config/scripts/status.config
 
 ## Colors of fancy-bash-promt.sh
-nano ~/.config/scripts/terminal/fancy-bash-prompt.config
+nano ~/.config/scripts/fancy-bash-prompt.config
 
 ```
 
