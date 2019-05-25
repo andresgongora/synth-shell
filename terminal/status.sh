@@ -58,23 +58,6 @@ fi
 unset DIR
 
 
-## LOGO
-LOGO_01="${COLOR_LOGO}$(LoadParam "LOGO_01" "$CONFIG_FILE")${NC}"
-LOGO_02=$(LoadParam "LOGO_02" "$CONFIG_FILE")
-LOGO_03=$(LoadParam "LOGO_03" "$CONFIG_FILE")
-LOGO_04=$(LoadParam "LOGO_04" "$CONFIG_FILE")
-LOGO_05=$(LoadParam "LOGO_05" "$CONFIG_FILE")
-LOGO_06=$(LoadParam "LOGO_06" "$CONFIG_FILE")
-LOGO_07=$(LoadParam "LOGO_07" "$CONFIG_FILE")
-LOGO_08=$(LoadParam "LOGO_08" "$CONFIG_FILE")
-LOGO_09=$(LoadParam "LOGO_09" "$CONFIG_FILE")
-LOGO_10=$(LoadParam "LOGO_10" "$CONFIG_FILE")
-LOGO_11=$(LoadParam "LOGO_11" "$CONFIG_FILE")
-LOGO_12=$(LoadParam "LOGO_12" "$CONFIG_FILE")
-LOGO_13=$(LoadParam "LOGO_13" "$CONFIG_FILE")
-LOGO_14=$(LoadParam "LOGO_14" "$CONFIG_FILE")
-LOGO_PADDING=$(LoadParam "LOGO_PADDING" "$CONFIG_FILE")
-
 
 
 ## STATUS BARS
@@ -84,36 +67,6 @@ CRIT_MEM_PERCENT=$(LoadParam "CRIT_MEM_PERCENT" "$CONFIG_FILE")
 CRIT_SWAP_PERCENT=$(LoadParam "CRIT_SWAP_PERCENT" "$CONFIG_FILE")
 CRIT_HDD_PERCENT=$(LoadParam "CRIT_HDD_PERCENT" "$CONFIG_FILE")
 MAX_DIGITS=$(LoadParam "MAX_DIGITS" "$CONFIG_FILE")
-
-
-## SCRIPT LOCATIONS
-COLOR_SCRIPT=$(LoadParam "COLOR_SCRIPT" "$CONFIG_FILE")
-
-
-## TEXT COLOR
-TXT_INFO=$(LoadParam "TXT_INFO" "$CONFIG_FILE")
-TXT_HIGHLIGHT=$(LoadParam "TXT_HIGHLIGHT" "$CONFIG_FILE")
-TXT_CRIT=$(LoadParam "TXT_CRIT" "$CONFIG_FILE")
-TXT_DECO=$(LoadParam "TXT_DECO" "$CONFIG_FILE")
-TXT_OK=$(LoadParam "TXT_OK" "$CONFIG_FILE")
-TXT_ERR=$(LoadParam "TXT_ERR" "$CONFIG_FILE")
-TXT_LOGO=$(LoadParam "TXT_LOGO" "$CONFIG_FILE")
-
-unset CONFIG_FILE
-
-
-##==============================================================================
-##	GENERATE TEXT COLOR SEQUENCES
-##==============================================================================
-COLOR_INFO=$(getFormatCode $TXT_INFO)
-COLOR_HL=$(getFormatCode $TXT_HIGHLIGHT)
-COLOR_CRIT=$(getFormatCode $TXT_CRIT)
-COLOR_DECO=$(getFormatCode $TXT_DECO)
-COLOR_OK=$(getFormatCode $TXT_OK)
-COLOR_ERR=$(getFormatCode $TXT_ERR)
-COLOR_LOGO=$(getFormatCode $TXT_LOGO)
-NC=$(getFormatCode -e reset)
-
 
 
 
@@ -213,13 +166,13 @@ printBar()
 	## COMPUTE VARIABLES
 	local NUM_BARS=$(($SIZE * $CURRENT / $MAX))
 	local CRIT_NUM_BARS=$(($SIZE * $CRIT_PERCENT / 100))
-	local BAR_COLOR=$COLOR_OK
+	local BAR_COLOR=$fc_ok
 	if [ $NUM_BARS -gt $CRIT_NUM_BARS ]; then
-		local BAR_COLOR=$COLOR_CRIT
+		local BAR_COLOR=$fc_crit
 	fi
 	
 	## PRINT BAR
-	printf "${COLOR_DECO}[${BAR_COLOR}"
+	printf "${fc_deco}[${BAR_COLOR}"
 	i=0
 	while [ $i -lt $NUM_BARS ]; do
 		printf "|"
@@ -229,7 +182,7 @@ printBar()
 		printf " "
 		i=$[$i+1]
 	done
-	printf "${COLOR_DECO}]${NC}"
+	printf "${fc_deco}]${fc_none}"
 }
 
 
@@ -239,7 +192,7 @@ printBar()
 ##------------------------------------------------------------------------------
 printLastLogins()
 {
-	printf "${COLOR_HL}\nLAST LOGINS:\n${COLOR_INFO}"
+	printf "${fc_highlight}\nLAST LOGINS:\n${fc_info}"
 	last -iwa | head -n 4 | grep -v "reboot"
 }
 
@@ -257,34 +210,43 @@ printHeader()
 	done
 
 
+	## COLOR AND TEXT FORMAL CODE
+	local fc_info=$(getFormatCode $format_info)
+	local fc_highlight=$(getFormatCode $format_highlight)
+	local fc_crit=$(getFormatCode $format_crit)
+	local fc_deco=$(getFormatCode $format_deco)
+	local fc_ok=$(getFormatCode $format_ok)
+	local fc_error=$(getFormatCode $format_error)
+	local fc_logo=$(getFormatCode $format_logo)
+	local fc_none=$(getFormatCode -e reset)
+
+
 	## LOGO
-	#COLOR_LOGO_01=$($COLOR $LOGO_01 -c red)
-	#echo -e $COLOR_LOGO_01
-	local COLOR_LOGO_01="${COLOR_LOGO}${LOGO_01}${NC}"
-	local COLOR_LOGO_02="${COLOR_LOGO}${LOGO_02}${NC}"
-	local COLOR_LOGO_03="${COLOR_LOGO}${LOGO_03}${NC}"
-	local COLOR_LOGO_04="${COLOR_LOGO}${LOGO_04}${NC}"
-	local COLOR_LOGO_05="${COLOR_LOGO}${LOGO_05}${NC}"
-	local COLOR_LOGO_06="${COLOR_LOGO}${LOGO_06}${NC}"
-	local COLOR_LOGO_07="${COLOR_LOGO}${LOGO_07}${NC}"
-	local COLOR_LOGO_08="${COLOR_LOGO}${LOGO_08}${NC}"
-	local COLOR_LOGO_09="${COLOR_LOGO}${LOGO_09}${NC}"
-	local COLOR_LOGO_10="${COLOR_LOGO}${LOGO_10}${NC}"
-	local COLOR_LOGO_11="${COLOR_LOGO}${LOGO_11}${NC}"
-	local COLOR_LOGO_12="${COLOR_LOGO}${LOGO_12}${NC}"
-	local COLOR_LOGO_13="${COLOR_LOGO}${LOGO_13}${NC}"
-	local COLOR_LOGO_14="${COLOR_LOGO}${LOGO_14}${NC}"
+	local formatted_logo_01="${fc_logo}${logo_01}${fc_none}"
+	local formatted_logo_02="${fc_logo}${logo_02}${fc_none}"
+	local formatted_logo_03="${fc_logo}${logo_03}${fc_none}"
+	local formatted_logo_04="${fc_logo}${logo_04}${fc_none}"
+	local formatted_logo_05="${fc_logo}${logo_05}${fc_none}"
+	local formatted_logo_06="${fc_logo}${logo_06}${fc_none}"
+	local formatted_logo_07="${fc_logo}${logo_07}${fc_none}"
+	local formatted_logo_08="${fc_logo}${logo_08}${fc_none}"
+	local formatted_logo_09="${fc_logo}${logo_09}${fc_none}"
+	local formatted_logo_10="${fc_logo}${logo_10}${fc_none}"
+	local formatted_logo_11="${fc_logo}${logo_11}${fc_none}"
+	local formatted_logo_12="${fc_logo}${logo_12}${fc_none}"
+	local formatted_logo_13="${fc_logo}${logo_13}${fc_none}"
+	local formatted_logo_14="${fc_logo}${logo_14}${fc_none}"
 
 
 	## GET SYS SUMMARY 
-	local os_info="${COLOR_INFO}OS\t\t${COLOR_HL}$(getOSInfo)${NC}"
-	local kernel_info="${COLOR_INFO}Kernel\t\t${COLOR_HL}$(getKernelInfo)${NC}"
-	local cpu_info="${COLOR_INFO}CPU\t\t${COLOR_HL}$(getCPUInfo)${NC}"
-	local shell_info="${COLOR_INFO}Shell\t\t${COLOR_HL}$(getShellInfo)${NC}"
-	local sys_date="${COLOR_INFO}Date\t\t${COLOR_HL}$(getSysDate)${NC}"
-	local user_name="${COLOR_INFO}Login\t\t${COLOR_HL}$(getUserName)@$HOSTNAME${NC}"
-	local local_ipv4="${COLOR_INFO}Local IP\t${COLOR_HL}$(getLocalIPv4)${NC}"
-	local external_ipv4="${COLOR_INFO}External IP\t${COLOR_HL}$(getExternalIPv4)${NC}"
+	local os_info="${fc_info}OS\t\t${fc_highlight}$(getOSInfo)${fc_none}"
+	local kernel_info="${fc_info}Kernel\t\t${fc_highlight}$(getKernelInfo)${fc_none}"
+	local cpu_info="${fc_info}CPU\t\t${fc_highlight}$(getCPUInfo)${fc_none}"
+	local shell_info="${fc_info}Shell\t\t${fc_highlight}$(getShellInfo)${fc_none}"
+	local sys_date="${fc_info}Date\t\t${fc_highlight}$(getSysDate)${fc_none}"
+	local user_name="${fc_info}Login\t\t${fc_highlight}$(getUserName)@$HOSTNAME${fc_none}"
+	local local_ipv4="${fc_info}Local IP\t${fc_highlight}$(getLocalIPv4)${fc_none}"
+	local external_ipv4="${fc_info}External IP\t${fc_highlight}$(getExternalIPv4)${fc_none}"
 
 
 
@@ -292,9 +254,9 @@ printHeader()
 	## SYSTEM CTL FAILED TO LOAD
 	local NUM_FAILED=$(systemctl --failed | head -c 1)
 	if [ "$NUM_FAILED" -eq "0" ]; then
-		local SYSCTL=$(echo -e "${COLOR_INFO}SystemCTL\t${COLOR_HL}All services OK${NC}")
+		local SYSCTL=$(echo -e "${fc_info}SystemCTL\t${fc_highlight}All services OK${fc_none}")
 	else
-		local SYSCTL=$(echo -e "${COLOR_INFO}SystemCTL\t${COLOR_ERR}$NUM_FAILED services failed!${NC}")
+		local SYSCTL=$(echo -e "${fc_info}SystemCTL\t${fc_error}$NUM_FAILED services failed!${fc_none}")
 	fi
 
 
@@ -304,7 +266,7 @@ printHeader()
 	local CPU_BAR=$(printBar $CPU_AVG $CPU_MAX $BAR_LENGTH $CRIT_CPU_PERCENT)
 	local CPU_PER=$(cat /proc/loadavg | awk '{printf "%3.0f\n",$1*100}')
 	local CPU_PER=$(($CPU_PER / $CPU_MAX))
-	local CPU_LOAD=$(echo -e "${COLOR_INFO}Sys load avg\t$CPU_BAR ${COLOR_HL}${CPU_PER:0:9} %%${NC}")
+	local CPU_LOAD=$(echo -e "${fc_info}Sys load avg\t$CPU_BAR ${fc_highlight}${CPU_PER:0:9} %%${fc_none}")
 	if [ $CPU_PER -gt $CRIT_CPU_PERCENT ]; then
 		CPU_IS_CRIT=1
 		echo "critical"
@@ -326,7 +288,7 @@ printHeader()
 	done
 	local MEM_BAR=$(printBar $MEM_CURRENT $MEM_MAX $BAR_LENGTH $CRIT_MEM_PERCENT)
 	local MEM_MAX=$MEM_MAX$PAD
-	local MEM_USAGE=$(echo -e "${COLOR_INFO}Memory\t\t$MEM_BAR ${COLOR_HL}${MEM_CURRENT:0:${MAX_DIGITS}}${COLOR_INFO}/${COLOR_HL}${MEM_MAX:0:${MAX_DIGITS}} MB${NC}")
+	local MEM_USAGE=$(echo -e "${fc_info}Memory\t\t$MEM_BAR ${fc_highlight}${MEM_CURRENT:0:${MAX_DIGITS}}${fc_info}/${fc_highlight}${MEM_MAX:0:${MAX_DIGITS}} MB${fc_none}")
 
 
 	## SWAP
@@ -343,7 +305,7 @@ printHeader()
 	done
 	local SWAP_BAR=$(printBar $SWAP_CURRENT $SWAP_MAX $BAR_LENGTH $CRIT_SWAP_PERCENT)
 	local SWAP_MAX=$SWAP_MAX$PAD
-	local SWAP_USAGE=$(echo -e "${COLOR_INFO}Swap\t\t$SWAP_BAR ${COLOR_HL}${SWAP_CURRENT:0:${MAX_DIGITS}}${COLOR_INFO}/${COLOR_HL}${SWAP_MAX:0:${MAX_DIGITS}} MB${NC}")
+	local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t$SWAP_BAR ${fc_highlight}${SWAP_CURRENT:0:${MAX_DIGITS}}${fc_info}/${fc_highlight}${SWAP_MAX:0:${MAX_DIGITS}} MB${fc_none}")
 
 
 	## HDD /
@@ -359,7 +321,7 @@ printHeader()
 	done
 	local ROOT_BAR=$(printBar $ROOT_CURRENT $ROOT_MAX $BAR_LENGTH $CRIT_HDD_PERCENT)
 	local ROOT_MAX=$ROOT_MAX$PAD
-	local ROOT_USAGE=$(echo -e "${COLOR_INFO}Storage /\t$ROOT_BAR ${COLOR_HL}${ROOT_CURRENT:0:${MAX_DIGITS}}${COLOR_INFO}/${COLOR_HL}${ROOT_MAX:0:${MAX_DIGITS}} GB${NC}")
+	local ROOT_USAGE=$(echo -e "${fc_info}Storage /\t$ROOT_BAR ${fc_highlight}${ROOT_CURRENT:0:${MAX_DIGITS}}${fc_info}/${fc_highlight}${ROOT_MAX:0:${MAX_DIGITS}} GB${fc_none}")
 
 
 	## HDD /home
@@ -375,33 +337,33 @@ printHeader()
 	done
 	local HOME_BAR=$(printBar $HOME_CURRENT $HOME_MAX $BAR_LENGTH $CRIT_HDD_PERCENT)
 	local HOME_MAX=$HOME_MAX$PAD
-	local HOME_USAGE=$(echo -e "${COLOR_INFO}Storage /home\t$HOME_BAR ${COLOR_HL}${HOME_CURRENT:0:${MAX_DIGITS}}${COLOR_INFO}/${COLOR_HL}${HOME_MAX:0:${MAX_DIGITS}} GB${NC}")
+	local HOME_USAGE=$(echo -e "${fc_info}Storage /home\t$HOME_BAR ${fc_highlight}${HOME_CURRENT:0:${MAX_DIGITS}}${fc_info}/${fc_highlight}${HOME_MAX:0:${MAX_DIGITS}} GB${fc_none}")
 
 
 	## CHECK TERMINAL SIZE
-	## If the temrinal is not wide enough, override LOGO_PADDING
+	## If the temrinal is not wide enough, override logo_padding
 	local WIDTH=$(tput cols)
 	if [ "$WIDTH" -lt 90 ]; then
-		local LOGO_PADDING=""
+		local logo_padding=""
 	fi
 
 
 	## PRINT HEADER WITH OVERALL STATUS REPORT
 	printf "\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_01\t$os_info\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_02\t$kernel_info\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_03\t$cpu_info\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_04\t$shell_info\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_05\t$sys_date\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_06\t$user_name\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_07\t$local_ipv4\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_08\t$external_ipv4\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_09\t$SYSCTL\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_10\t$CPU_LOAD\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_11\t$MEM_USAGE\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_12\t$SWAP_USAGE\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_13\t$ROOT_USAGE\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_14\t$HOME_USAGE\n\r\n\r"
+	printf "${logo_padding}${formatted_logo_01}\t${os_info}\n\r"
+	printf "${logo_padding}${formatted_logo_02}\t${kernel_info}\n\r"
+	printf "${logo_padding}${formatted_logo_03}\t${cpu_info}\n\r"
+	printf "${logo_padding}${formatted_logo_04}\t${shell_info}\n\r"
+	printf "${logo_padding}${formatted_logo_05}\t${sys_date}\n\r"
+	printf "${logo_padding}${formatted_logo_06}\t${user_name}\n\r"
+	printf "${logo_padding}${formatted_logo_07}\t${local_ipv4}\n\r"
+	printf "${logo_padding}${formatted_logo_08}\t${external_ipv4}\n\r"
+	printf "${logo_padding}${formatted_logo_09}\t${SYSCTL}\n\r"
+	printf "${logo_padding}${formatted_logo_10}\t${CPU_LOAD}\n\r"
+	printf "${logo_padding}${formatted_logo_11}\t${MEM_USAGE}\n\r"
+	printf "${logo_padding}${formatted_logo_12}\t${SWAP_USAGE}\n\r"
+	printf "${logo_padding}${formatted_logo_13}\t${ROOT_USAGE}\n\r"
+	printf "${logo_padding}${formatted_logo_14}\t${HOME_USAGE}\n\r\n\r"
 }
 
 
@@ -413,7 +375,7 @@ printSystemctl()
 {
 	local NUM_FAILED=$(systemctl --failed | head -c 1)
 	if [ "$NUM_FAILED" -ne "0" ]; then
-		printf "\n\r${COLOR_HL}SYSTEMCTL STATUS: ${COLOR_ERR}At least one service failed to load!!${NC}\n\r"
+		printf "\n\r${fc_highlight}SYSTEMCTL STATUS: ${fc_error}At least one service failed to load!!${fc_none}\n\r"
 		systemctl --failed
 	fi
 }
@@ -431,9 +393,9 @@ printTop()
 		HEAD=$(echo "$TOP" | head -n 7 | tail -n 1)
 		PROC=$(echo "$TOP" | tail -n 4 | grep -v "top")
 
-		printf "\n\r${COLOR_HL}SYSTEM LOAD:${COLOR_INFO}  ${LOAD:8:35}${COLOR_HL}\n\r"
+		printf "\n\r${fc_highlight}SYSTEM LOAD:${fc_info}  ${LOAD:8:35}${fc_highlight}\n\r"
 		echo "$HEAD"
-		printf "${COLOR_INFO}$PROC${NC}"
+		printf "${fc_info}$PROC${fc_none}"
 	fi
 }
 
@@ -442,13 +404,67 @@ printTop()
 
 
 ##==============================================================================
-##	MAIN
+##	STATUS
 ##==============================================================================
 
-clear
-printHeader
-#printLastLogins
-printSystemctl
-printTop
-#exit 0
+printStatus()
+{
+	## INCLUDE EXTERNAL DEPENDENCIES
+	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+	source "$dir/../common/load_config.sh"
+	source "$dir/../common/color.sh"
+
+
+
+	## DEFAULT CONFIGURATION
+	## WARNING! Do not edit directly, use configuration files instead
+	local logo_01="        -oydNMMMMNdyo-        "
+	local logo_02="     -yNMMMMMMMMMMMMMMNy-     "
+	local logo_03="   .hMMMMMMmhsooshmMMMMMMh.   "
+	local logo_04="  :NMMMMmo.        .omMMMMN:  "
+	local logo_05=" -NMMMMs    -+ss+-    sMMMMN- "
+	local logo_06=" hMMMMs   -mMMMMMMm-   sMMMMh "
+	local logo_07="'MMMMM.  'NMMMMMMMMN'  .MMMMM'"
+	local logo_08="'MMMMM.  'NMMMMMMMMN'   yMMMM'"
+	local logo_09=" hMMMMs   -mMMMMMMMMy.   -yMh "
+	local logo_10=" -NMMMMs    -+ss+yMMMMy.   -. "
+	local logo_11="  :NMMMMmo.       .yMMMMy.    "
+	local logo_12="   .hMMMMMMmhsoo-   .yMMMy    "
+	local logo_13="     -yNMMMMMMMMMy-   .o-     "
+	local logo_14="        -oydNMMMMNd/          "
+	local logo_padding=""
+
+	local format_info="-c white"
+	local format_highlight="-c blue  -e bold"
+	local format_crit="-c 208   -e bold"
+	local format_deco="-c white -e bold"
+	local format_ok="-c blue  -e bold"
+	local format_error="-c 208   -e bold -e blink"
+	local format_logo="-c blue -e bold"
+
+
+
+
+	## LOAD USER CONFIGURATION
+	local config_file="$HOME/.config/scripts/status.config"
+	overrideConfig $config_file
+
+
+
+	## PRINT STATUS ELEMENTS
+	clear
+	printHeader
+	#printLastLogins
+	printSystemctl
+	printTop
+}
+
+
+## CALL MAIN FUNCTION
+printStatus
+
+
+
+### EOF ###
+
 

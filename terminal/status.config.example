@@ -3,22 +3,22 @@
 ##==============================================================================
 
 
-LOGO_01			"        -oydNMMMMNdyo-        "
-LOGO_02			"     -yNMMMMMMMMMMMMMMNy-     "
-LOGO_03			"   .hMMMMMMmhsooshmMMMMMMh.   "
-LOGO_04			"  :NMMMMmo.        .omMMMMN:  "
-LOGO_05			" -NMMMMs    -+ss+-    sMMMMN- "
-LOGO_06			" hMMMMs   -mMMMMMMm-   sMMMMh "
-LOGO_07			"'MMMMM.  'NMMMMMMMMN'  .MMMMM'"
-LOGO_08			"'MMMMM.  'NMMMMMMMMN'   yMMMM'"
-LOGO_09			" hMMMMs   -mMMMMMMMMy.   -yMh "
-LOGO_10			" -NMMMMs    -+ss+yMMMMy.   -. "
-LOGO_11			"  :NMMMMmo.       .yMMMMy.    "
-LOGO_12			"   .hMMMMMMmhsoo-   .yMMMy    "
-LOGO_13			"     -yNMMMMMMMMMy-   .o-     "
-LOGO_14			"        -oydNMMMMNd/          "
+logo_01			"        -oydNMMMMNdyo-        "
+logo_02			"     -yNMMMMMMMMMMMMMMNy-     "
+logo_03			"   .hMMMMMMmhsooshmMMMMMMh.   "
+logo_04			"  :NMMMMmo.        .omMMMMN:  "
+logo_05			" -NMMMMs    -+ss+-    sMMMMN- "
+logo_06			" hMMMMs   -mMMMMMMm-   sMMMMh "
+logo_07			"'MMMMM.  'NMMMMMMMMN'  .MMMMM'"
+logo_08			"'MMMMM.  'NMMMMMMMMN'   yMMMM'"
+logo_09			" hMMMMs   -mMMMMMMMMy.   -yMh "
+logo_10			" -NMMMMs    -+ss+yMMMMy.   -. "
+logo_11			"  :NMMMMmo.       .yMMMMy.    "
+logo_12			"   .hMMMMMMmhsoo-   .yMMMy    "
+logo_13			"     -yNMMMMMMMMMy-   .o-     "
+logo_14			"        -oydNMMMMNd/          "
 
-LOGO_PADDING		""
+logo_padding		""
 
 
 
@@ -38,10 +38,11 @@ MAX_DIGITS		5
 ##==============================================================================
 ##	COLORS
 ##==============================================================================
-TXT_INFO		"-c white"
-TXT_HIGHLIGHT		"-c blue  -e bold"
-TXT_CRIT		"-c 208   -e bold"
-TXT_DECO		"-c white -e bold"
-TXT_OK			"-c blue  -e bold"
-TXT_ERR			"-c 208   -e bold -e blink"
-TXT_LOGO		"-c blue  -e bold"
+format_info		"-c white"
+format_highlight	"-c blue  -e bold"
+format_crit		"-c 208   -e bold"
+format_deco		"-c white -e bold"
+format_ok		"-c blue  -e bold"
+format_error		"-c 208   -e bold -e blink"
+format_logo		"-c blue  -e bold"
+
