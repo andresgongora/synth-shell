@@ -176,7 +176,27 @@ getLocalIPv4()
 
 getExternalIPv4()
 {
-	'wget' -t 1 -T 1 http://checkip.dyndns.org/ -O - -o /dev/null | cut -d: -f 2 | cut -d\< -f 1 | tr -d ' '
+	##  Look which programs are available
+	[ $(which dig > /dev/null; echo $?) -eq 0 ] && local DIG_AVAILABLE=true || local DIG_AVAILABLE=false
+	[ $(which curl > /dev/null; echo $?) -eq 0 ] && local CURL_AVAILABLE=true || local CURL_AVAILABLE=false
+	[ $(which wget > /dev/null; echo $?) -eq 0 ] && local WGET_AVAILABLE=true || local WGET_AVAILABLE=false
+	[ $(which nslookup > /dev/null; echo $?) -eq 0 ] && local NSLOOKUP_AVAILABLE=true || local NSLOOKUP_AVAILABLE=false
+
+	##  Try first found program and try next one if result is empty
+	if [ $DIG_AVAILABLE == "true" ]; then
+		local RESULT=$(dig TXT -4 +short o-o.myaddr.l.google.com @ns1.google.com | awk -F\" '{print $2}')
+	fi
+	if [ -n $RESULT ] && [ $CURL_AVAILABLE == "true" ]; then
+		local RESULT=$(curl -s https://api.ipify.org)
+	fi
+	if [ -n $RESULT ] && [ $WGET_AVAILABLE == "true" ]; then
+		local RESULT=$(wget -q -O - https://api.ipify.org)
+	fi
+	if [ -n $RESULT ] && [ $NSLOOKUP_AVAILABLE == "true" ]; then
+		local RESULT=$(nslookup -q=txt o-o.myaddr.l.google.com 216.239.32.10 | awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
+	fi
+
+	printf $RESULT
 }
 
 
@@ -284,7 +304,7 @@ printHeader()
 	local sys_date="${COLOR_INFO}Date\t\t${COLOR_HL}$(getSysDate)${NC}"
 	local user_name="${COLOR_INFO}Login\t\t${COLOR_HL}$(getUserName)@$HOSTNAME${NC}"
 	local local_ipv4="${COLOR_INFO}Local IP\t${COLOR_HL}$(getLocalIPv4)${NC}"
-	local external_ipv4="${COLOR_INFO}External IP\t${COLOR_HL}$(getExternalIPv4)${NC}"
+	local external_ipv4="${COLOR_INFO}External IPv4\t${COLOR_HL}$(getExternalIPv4)${NC}"
 
 
 
