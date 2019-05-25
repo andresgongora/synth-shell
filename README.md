@@ -44,20 +44,28 @@ Depending on your distro you can install it as:
 ## ArchLinux
 sudo pacman -S powerline-fonts
 
-## Ubuntu
+## Debian, Ubuntu
 sudo apt install fonts-powerline
 ```
 
-Lastly, you may configure your scripts by editing the individual `.config`
-files included in this repo. For example, to configure the colors in
-`fancy-bash-promt.sh` or `status.sh`, you can do as follows.
+Lastly, you may configure your scripts by first copying the individual
+`.config.example` files into `.config` included in this repo. For example:
 
 ```
+# Colors and behaviourt of status.sh
+cp ~/.config/scripts/terminal/status.config.example ~/.config/scripts/terminal/status.config
+```
+
+Then you can modify them for your needs. For example, to configure
+the colors in`fancy-bash-promt.sh` or `status.sh`, you can do as follows:
+
+```
+## Colors and behaviour of status.sh
+nano ~/.config/scripts/terminal/status.config
+
 ## Colors of fancy-bash-promt.sh
 nano ~/.config/scripts/terminal/fancy-bash-prompt.config
 
-## Colors and behaviourt of status.sh
-nano ~/.config/scripts/terminal/status.config
 ```
 
 
