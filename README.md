@@ -26,18 +26,18 @@ If you recognize a snippet and the file has no reference
 For now, the easiest way to install this scripts is to clone this repository
 and then tell your `.bashrc` file to source those scripts you want.
 When you install the scripts as a user, you have to store them somewhere
-on your system. For this, we suggest the folder `~/.scripts`, but feel
+on your system. For this, we suggest the folder `~/scripts`, but feel
 free to use any other location.
 
 ```
-## Clone repository to ~/.scipts
-mkdir ~/.scripts &&cd ~/.config
+## Clone repository to your computer
 git clone https://github.com/andresgongora/scripts.git
+cd scripts
 
 ## Source individual scripts. Choose the ones you want (or all).
-echo 'source ~/.scripts/terminal/fancy-bash-prompt.sh' >> ~/.bashrc
-echo 'source ~/.scripts/terminal/alias.sh' >> ~/.bashrc
-echo 'source ~/.scripts/terminal/status.sh' >> ~/.bashrc
+echo "source $(pwd)/terminal/fancy-bash-prompt.sh" >> ~/.bashrc
+echo "source $(pwd)/terminal/alias.sh" >> ~/.bashrc
+echo "source $(pwd)/terminal/status.sh" >> ~/.bashrc
 ```
 
 If you want to use `fancy-bash-promt.sh` you also need power-line fonts.
@@ -52,12 +52,18 @@ sudo apt install fonts-powerline
 ```
 
 Lastly, you may configure your scripts by first copying the individual
-`*.config.example` included in this repo to your user's 
-`~/.config/scripts/` folder. For example:
+`*.config.example`-files included in this repo to your user's 
+`~/.config/scripts/` folder. First create the folder:
 
 ```
-cp ~/.scripts/config_templates/status.config.example ~/.config/scripts/status.config
-cp ~/.scripts/config_templates/fancy-bash-prompt.config.example ~/.config/scripts/fancy-bash-prompt.config
+mkdir ~/.config/scripts
+```
+
+Then copy configurations you need into place, while you still are on the downloaded scripts-folder:
+
+```
+cp config_templates/status.config.example ~/.config/scripts/status.config
+cp config_templates/fancy-bash-prompt.config.example ~/.config/scripts/fancy-bash-prompt.config
 ```
 
 Then you can modify them for your needs. For example, to configure
