@@ -49,12 +49,12 @@ sudo apt install fonts-powerline
 ```
 
 Lastly, you may configure your scripts by first copying the individual
-`.config.example` included in this repo to your user's `.config/scripts/` folder.
-For example:
+`*.config.example` included in this repo to your user's 
+`~/.config/scripts/` folder. For example:
 
 ```
-cp ~/.config/scripts/terminal/status.config.example ~/.config/scripts/status.config
-cp ~/.config/scripts/terminal/fancy-bash-prompt.config.example ~/.config/scripts/fancy-bash-prompt.config
+cp ~/.config/scripts/config_templates/status.config.example ~/.config/scripts/status.config
+cp ~/.config/scripts/config_templates/fancy-bash-prompt.config.example ~/.config/scripts/fancy-bash-prompt.config
 ```
 
 Then you can modify them for your needs. For example, to configure
