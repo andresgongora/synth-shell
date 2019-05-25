@@ -28,12 +28,6 @@
 ##
 ##
 ##
-##	CONFIGURATION:
-##	Scroll down to the CUSTOMIZATION section to modify the logo and colors.
-##
-##
-##
-##
 ##	INSTALLATION:
 ##	Simply copy and paste this file into your ~/.bashrc file, or source
 ##	it externally (recommended).
@@ -97,14 +91,6 @@ getExternalIPv4()
 }
 
 
-
-
-
-##==============================================================================
-##	FUNCTIONS
-##==============================================================================
-
-
 ##------------------------------------------------------------------------------
 ##
 ##	printBar(CURRENT, MAX, SIZE, CRIT_PERCENT)
@@ -121,28 +107,32 @@ getExternalIPv4()
 ##
 printBar()
 {
-	local CURRENT=$1
-	local MAX=$2
-	local SIZE=$3
-	local CRIT_PERCENT=$4
+	local current=$1
+	local max=$2
+	local size=$3
+	local crit_percent=$4
 
 
 	## COMPUTE VARIABLES
-	local NUM_BARS=$(($SIZE * $CURRENT / $MAX))
-	local CRIT_NUM_BARS=$(($SIZE * $CRIT_PERCENT / 100))
-	local BAR_COLOR=$fc_ok
-	if [ $NUM_BARS -gt $CRIT_NUM_BARS ]; then
-		local BAR_COLOR=$fc_crit
+	local num_bars=$(($size * $current / $max))
+	if [ $num_bars -gt $size ]; then
+		num_bars=$size
+	fi
+	local crit_num_bars=$(($size * $crit_percent / 100))
+	local bar_color=$fc_ok
+	if [ $num_bars -gt $crit_num_bars ]; then
+		local bar_color=$fc_crit
 	fi
 	
+
 	## PRINT BAR
-	printf "${fc_deco}[${BAR_COLOR}"
+	printf "${fc_deco}[${bar_color}"
 	i=0
-	while [ $i -lt $NUM_BARS ]; do
+	while [ $i -lt $num_bars ]; do
 		printf "|"
 		i=$[$i+1]
 	done
-	while [ $i -lt $SIZE ]; do
+	while [ $i -lt $size ]; do
 		printf " "
 		i=$[$i+1]
 	done
@@ -153,17 +143,11 @@ printBar()
 
 
 
-##------------------------------------------------------------------------------
-printLastLogins()
-{
-	printf "${fc_highlight}\nLAST LOGINS:\n${fc_info}"
-	last -iwa | head -n 4 | grep -v "reboot"
-}
+##==============================================================================
+##	STATUS COMPOSITION
+##==============================================================================
 
 
-
-
-##------------------------------------------------------------------------------
 printHeader()
 {
 	## GENERATE PROPER AMOUNT OF PAD
@@ -203,7 +187,7 @@ printHeader()
 
 
 
-	#### UGLY FROM HERE ON ######################################
+	#### UGLY FROM HERE ON #################################################
 
 
 	## SYSTEM CTL FAILED TO LOAD
@@ -324,7 +308,22 @@ printHeader()
 
 
 
-##------------------------------------------------------------------------------
+printLastLogins()
+{
+	## DO NOTHING FOR NOW -> This is all commented out intentionally. Printing logins should only be done under different conditions
+	# 1. User configurable set to always on
+	# 2. If the IP/terminal is very diffefrent from usual
+	# 3. Other anomalies...
+	if false; then	
+		printf "${fc_highlight}\nLAST LOGINS:\n${fc_info}"
+		last -iwa | head -n 4 | grep -v "reboot"
+	fi
+}
+
+
+
+
+
 printSystemctl()
 {
 	local NUM_FAILED=$(systemctl --failed | head -c 1)
@@ -338,7 +337,6 @@ printSystemctl()
 
 
 
-##------------------------------------------------------------------------------
 printTop()
 {
 	if $cpu_is_crit; then
@@ -431,7 +429,7 @@ printStatus()
 	## PRINT STATUS ELEMENTS
 	clear
 	printHeader
-	#printLastLogins
+	printLastLogins
 	printSystemctl
 	printTop
 }
