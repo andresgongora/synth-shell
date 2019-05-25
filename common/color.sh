@@ -234,7 +234,7 @@ getEffectCode()
 	none)
 		echo $NONE
 		;;
-	defualt)
+	default)
 		echo $NONE
 		;;
 	bold)
