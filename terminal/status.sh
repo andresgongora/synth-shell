@@ -81,7 +81,19 @@ getUserName()
 
 getLocalIPv4()
 {
-	ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p'
+	##  Look which programs are available
+	[ $(which ip > /dev/null; echo $?) -eq 0 ] && local IP_AVAILABLE=true || local IP_AVAILABLE=false
+	[ $(which ifconfig > /dev/null; echo $?) -eq 0 ] && local IFCONFIG_AVAILABLE=true || local IFCONFIG_AVAILABLE=false
+
+	##  Try first found program and try next one if result is empty
+	if [ $IP_AVAILABLE == "true" ]; then
+		local RESULT=$(ip -family inet addr show | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
+	fi
+	if [ -n $RESULT ] && [ $IFCONFIG_AVAILABLE == "true" ]; then
+		local RESULT=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
+	fi
+
+	printf $RESULT
 }
 
 
