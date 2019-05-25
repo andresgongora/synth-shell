@@ -25,47 +25,36 @@
 ##	Very simple script to load configuration parameters into other scripts.
 ##	It can be used to retrieve all sorts of variables from a configuration
 ##	file, such that a script and its configuration parameters may be kept
-##	in completely separated file
+##	in completely separated file.
 ##
+##	Nonetheless, to (i) enforce the user to write resilient scripts,
+##	and to (ii) avoid unintentional leakage of variable into the users'
+##	environment, this script only loads the configuration for variables
+##	that exists and are not empty in its execution scope. This works both
+##	for local and global variables
 ##
 ##
 ##
 ##	EXAMPLE:
 ##	Assume the file "/home/user/config" exists and contains:
-##		user_number 7	#This is a configuration value##
+##
+##		## CONFIGURATION
+##		user_number 7
+##		user_string "Hello"
+##
 ##	Then, its possible to write the following script:
-##		MY_VAR=$(LoadParam user_number "/home/user/config")
-##		echo "$MY_VAR"##
-##	which will print a 7 to terminal.
-## 
 ##
+##		## DECLARE VARIABLES AND SET DEFAULT VALUES
+##		local my_var=1
+##		MY_STR="Message"
 ##
-##
-##	FUNCTION USAGE
-##	The core of this script is the function "LoadParam".
-##	The moment this file is sourced into a script, said function should
-##	become available. As for its parameters, it allows for three possible
-##	modes of operation:
-##
-##	* LoadParam KEY:
-##		This way of calling the function assumes that the invoking file
-##		"./config" exists in the same folder as the script that
-##		is loading the configuration. It only requires one parameter.
-##
-##		KEY:		The name of the variable inside of the conf file
-##
-##	* LoadParam KEY FILE:
-##		KEY:		The name of the variable inside of the conf file
-##		FILE:		The path to the conf file
-##
-##	* LoadParam KEY FALLBACK FILE:
-##		This function call is more resilient, as it uses the value in
-##		fallback if for whatever reason the KEY can not be located
-##		inside the conf file, or if the conf file is missing.
-##
-##		KEY:		The name of the variable inside of the conf file
-##		FILE:		The path to the conf file
-##		FALLBACK:	Fallback value if KEY or FILE not found
+##		## LOAD CONFIG
+##		source load_config.sh
+##		loadConfigFile "/home/user/config"
+##		
+##		## USE VARIABLES
+##		echo $my_var	# Will print 7 or fallback to 1
+## 		echo $MY_STR	# Will print "Hello" or fallback to "Message"
 ##
 ##
 ##
@@ -85,13 +74,6 @@
 ##	  starting with #) which will be trimmed before loading the data.
 ##	
 ##
-##
-##
-##	ERROR HANDLING
-##	This script-function returns the following exit codes:
-##	* Exit code 0        Success
-##	* Exit code 1        Could not load configuration
-##
 
 
 
@@ -99,121 +81,63 @@
 ##  FUNCTION
 ##==============================================================================
 
-## Halt if exit code not 0
-#set -e
 
-LoadParam() {
 
-	## Check arguments
-	if [ "$#" -eq 0 ]; then
-		echo -e "No arguments provided."
-		exit 1
+##------------------------------------------------------------------------------
+##
+##	loadConfigFile
+##
+##	It will iterate through the configuration file searching for lines
+##	containing key-parameter pairs. If there is a variable in the scripts
+##	scope with the same name as the key, it will write to it the value
+##	of the configuration parameter. 
+##
+##	Arguments:
+##	1. Path to configuration file
+##
+loadConfigFile() {
 
-	elif [ "$#" -eq 1 ]; then
-		## Only 1 value provided: Assume its the key and the config file
-		## has the default name "./config"
-		KEY=$1
-		FILE="./config"
+	## CHECK IF CONFIGURATION FILE EXISTS
+	local config_file=$1
+	if [ -f $config_file ]; then
+		
+		## ITERATE THROUGH LINES IN CONFIGURATION FILE
+		while IFS="" read -r p || [ -n "$p" ]
+		do
+			## REMOVE COMMENTS FROM LINE
+			local trimmed_line=$(printf "$p" | sed '/^$/d;/^\#/d;/\#.*$/d;/\n/d;')
 
-	elif [ "$#" -eq 2 ]; then
-		## Two values provided: Assume its the key and the config file
-		KEY=$1
-		FILE=$2
+			## CONVERT LINE INTO SCRIPT PARAMETERS
+			set -- $trimmed_line
+			
 
-	elif [ "$#" -eq 3 ]; then
-		## Three values provided: Assume its the key, a fallback value
-		## if the key is not found, and the config file
-		KEY=$1
-		FALLBACK=$2
-		FILE=$3
+			## LOAD CONFIG IF AT LEAST 2 PARAMETERS
+			## Config-key-name and desired config value
+			if [ "$#" -gt 1 ]; then
 
-	else
-		echo -e "Too many arguments provided"
-        	exit 1
+				## ASSING HUMAN READABLE NAMES
+				local config_key_name=$1
+				eval config_key_current_value=\$$config_key_name
+				local config_param=$(echo "$trimmed_line" |\
+				                     sed "s/$config_key_name\s*//" |\
+				                     sed "s/^\"//;s/\"$//")
+		
+				## REASSING CONFIG PARAMETER TO KEY
+				## ONLY IF ALREADY DECLARED AND NOT EMPTY
+				## This is meant to avoid loading config parameters
+				## from the config file that are not even used by the caller
+				if [ ! -z "$config_key_current_value" ]; then
+
+					## LOAD CONFIG PARAMETER
+					export "${config_key_name}"="$config_param"
+				fi				
+			fi
+		done < $config_file
 	fi
-
-
-
-	## Check if file exists
-	if [ ! -f "$FILE" ]; then
-		## File does not exist
-		if [ -z "$FALLBACK" ]; then
-			## Also, no fallback value
-			echo "Configuration file $FILE does not exist."
-			exit 1
-		else
-			## Return fallback value instead, but warn user
-			echo "Configuration file $FILE does not exist. Resorting for $KEY to fallback value: $FALLBACK"
-			echo -n "$FALLBACK"
-		fi
-	fi
-
-
-
-	## Read configuration
-	## Get lines containing the KEY at the beginning
-	## Remove empty lines; comments (lines); trailing comments
-	CONFIG_LINE=$(cat $FILE | grep -E "^$KEY\s" | sed '/^$/d;/^\#/d;/\#.*$/d;/\n/d;')
-
-
-    
-	## Check number of lines
-	NUM_VAR=$(echo -n "$CONFIG_LINE" | grep -c -E "^$KEY\s")
-	if [ "$NUM_VAR" -eq 0 ]; then
-		## Key not found in configuration:
-		if [ -z "$FALLBACK" ]; then
-			## No fallback defined. Tell user
-			echo "$KEY parameter not found in $FILE"
-			exit 1
-
-		else
-			## Otherwise, just warn the user and use fallback
-			echo "$KEY parameter not found in $FILE. Resorting to fallback value: $FALLBACK"
-			echo -n "$FALLBACK"
-		fi
-
-	elif [ "$NUM_VAR" -eq 1 ]; then
-		## 1 Key-Value pair found: Strip value and return it
-		## Remove " characters from the beguinning and end (only)
-    		CONFIG_VALUE=$(echo "$CONFIG_LINE" | sed "s/$KEY\s*//" | sed "s/^\"//;s/\"$//")
-    		echo -n "$CONFIG_VALUE"
-
-	else
-		echo "$KEY was found more than once in $FILE."
-		exit 1
-	fi   
-
 }
 
 
 
 
-##==============================================================================
-##  FOR DEBUGGING ONLY
-##==============================================================================
 
-
-#NAME=$(LoadParam NAME2)
-#echo "$NAME"
-
-
-#NAME=$(LoadParam NAME3 "./config")
-#echo "$NAME"
-
-
-#NAME=$(LoadParam NAME8 "8" "./config")
-#echo "$NAME"
-
-
-#NAME=$(LoadParam NAME8 "./config")
-#echo "$NAME"
-
-
-#NAME=$(LoadParam VAL1 "./config")
-#echo "$NAME"
-
-
-#NAME=$(LoadParam STR "8" "./config")
-#echo "$NAME"
-
-
+### EOF ###

@@ -28,100 +28,11 @@
 ##
 ##
 ##
-##	CONFIGURATION:
-##	Scroll down to the CUSTOMIZATION section to modify the logo and colors.
-##
-##
-##
-##
 ##	INSTALLATION:
 ##	Simply copy and paste this file into your ~/.bashrc file, or source
 ##	it externally (recommended).
 ##
 
-
-
-
-##==============================================================================
-##	CONFIGURATION
-##==============================================================================
-
-## IMPORT EXTERNAL SCRIPTS
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-source "$DIR/../common/load_config.sh"
-source "$DIR/../common/color.sh"
-
-CONFIG_FILE="$HOME/.config/scripts/terminal/status.config"
-if [ ! -f $CONFIG_FILE ]; then
-	CONFIG_FILE="$DIR/status.config"
-fi	
-unset DIR
-
-
-## LOGO
-LOGO_01="${COLOR_LOGO}$(LoadParam "LOGO_01" "$CONFIG_FILE")${NC}"
-LOGO_02=$(LoadParam "LOGO_02" "$CONFIG_FILE")
-LOGO_03=$(LoadParam "LOGO_03" "$CONFIG_FILE")
-LOGO_04=$(LoadParam "LOGO_04" "$CONFIG_FILE")
-LOGO_05=$(LoadParam "LOGO_05" "$CONFIG_FILE")
-LOGO_06=$(LoadParam "LOGO_06" "$CONFIG_FILE")
-LOGO_07=$(LoadParam "LOGO_07" "$CONFIG_FILE")
-LOGO_08=$(LoadParam "LOGO_08" "$CONFIG_FILE")
-LOGO_09=$(LoadParam "LOGO_09" "$CONFIG_FILE")
-LOGO_10=$(LoadParam "LOGO_10" "$CONFIG_FILE")
-LOGO_11=$(LoadParam "LOGO_11" "$CONFIG_FILE")
-LOGO_12=$(LoadParam "LOGO_12" "$CONFIG_FILE")
-LOGO_13=$(LoadParam "LOGO_13" "$CONFIG_FILE")
-LOGO_14=$(LoadParam "LOGO_14" "$CONFIG_FILE")
-LOGO_PADDING=$(LoadParam "LOGO_PADDING" "$CONFIG_FILE")
-
-
-
-## STATUS BARS
-BAR_LENGTH=$(LoadParam "BAR_LENGTH" "$CONFIG_FILE")
-CRIT_CPU_PERCENT=$(LoadParam "CRIT_CPU_PERCENT" "$CONFIG_FILE")
-CRIT_MEM_PERCENT=$(LoadParam "CRIT_MEM_PERCENT" "$CONFIG_FILE")
-CRIT_SWAP_PERCENT=$(LoadParam "CRIT_SWAP_PERCENT" "$CONFIG_FILE")
-CRIT_HDD_PERCENT=$(LoadParam "CRIT_HDD_PERCENT" "$CONFIG_FILE")
-MAX_DIGITS=$(LoadParam "MAX_DIGITS" "$CONFIG_FILE")
-
-
-## SCRIPT LOCATIONS
-COLOR_SCRIPT=$(LoadParam "COLOR_SCRIPT" "$CONFIG_FILE")
-
-
-## TEXT COLOR
-TXT_INFO=$(LoadParam "TXT_INFO" "$CONFIG_FILE")
-TXT_HIGHLIGHT=$(LoadParam "TXT_HIGHLIGHT" "$CONFIG_FILE")
-TXT_CRIT=$(LoadParam "TXT_CRIT" "$CONFIG_FILE")
-TXT_DECO=$(LoadParam "TXT_DECO" "$CONFIG_FILE")
-TXT_OK=$(LoadParam "TXT_OK" "$CONFIG_FILE")
-TXT_ERR=$(LoadParam "TXT_ERR" "$CONFIG_FILE")
-TXT_LOGO=$(LoadParam "TXT_LOGO" "$CONFIG_FILE")
-
-unset CONFIG_FILE
-
-
-##==============================================================================
-##	GENERATE TEXT COLOR SEQUENCES
-##==============================================================================
-COLOR_INFO=$(getFormatCode $TXT_INFO)
-COLOR_HL=$(getFormatCode $TXT_HIGHLIGHT)
-COLOR_CRIT=$(getFormatCode $TXT_CRIT)
-COLOR_DECO=$(getFormatCode $TXT_DECO)
-COLOR_OK=$(getFormatCode $TXT_OK)
-COLOR_ERR=$(getFormatCode $TXT_ERR)
-COLOR_LOGO=$(getFormatCode $TXT_LOGO)
-NC=$(getFormatCode -e reset)
-
-
-
-
-##==============================================================================
-##	OTHER
-##==============================================================================
-
-CPU_IS_CRIT=0
 
 
 
@@ -171,53 +82,45 @@ getUserName()
 getLocalIPv4()
 {
 	##  Look which programs are available
-	[ $(which ip > /dev/null; echo $?) -eq 0 ] && local IP_AVAILABLE=true || local IP_AVAILABLE=false
-	[ $(which ifconfig > /dev/null; echo $?) -eq 0 ] && local IFCONFIG_AVAILABLE=true || local IFCONFIG_AVAILABLE=false
+	[ $(which ip > /dev/null; echo $?) -eq 0 ] && local ip_available=true || local ip_available=false
+	[ $(which ifconfig > /dev/null; echo $?) -eq 0 ] && local ifconfig_available=true || local ifconfig_available=false
 
 	##  Try first found program and try next one if result is empty
-	if [ $IP_AVAILABLE == "true" ]; then
-		local RESULT=$(ip -family inet addr show | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
+	if $ip_available; then
+		local result=$(ip -family inet addr show | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
 	fi
-	if [ -n $RESULT ] && [ $IFCONFIG_AVAILABLE == "true" ]; then
-		local RESULT=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
+	if [ -n $result ] && [ $ifconfig_available == "true" ]; then
+		local result=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
 	fi
 
-	printf $RESULT
+	printf $result
 }
 
 
 getExternalIPv4()
 {
 	##  Look which programs are available
-	[ $(which dig > /dev/null; echo $?) -eq 0 ] && local DIG_AVAILABLE=true || local DIG_AVAILABLE=false
-	[ $(which curl > /dev/null; echo $?) -eq 0 ] && local CURL_AVAILABLE=true || local CURL_AVAILABLE=false
-	[ $(which wget > /dev/null; echo $?) -eq 0 ] && local WGET_AVAILABLE=true || local WGET_AVAILABLE=false
-	[ $(which nslookup > /dev/null; echo $?) -eq 0 ] && local NSLOOKUP_AVAILABLE=true || local NSLOOKUP_AVAILABLE=false
+	[ $(which dig > /dev/null; echo $?) -eq 0 ] && local dig_available=true || local dig_available=false
+	[ $(which curl > /dev/null; echo $?) -eq 0 ] && local curl_available=true || local curl_available=false
+	[ $(which wget > /dev/null; echo $?) -eq 0 ] && local wget_available=true || local wget_available=false
+	[ $(which nslookup > /dev/null; echo $?) -eq 0 ] && local nslookup_available=true || local nslookup_available=false
 
 	##  Try first found program and try next one if result is empty
-	if [ $DIG_AVAILABLE == "true" ]; then
-		local RESULT=$(dig TXT -4 +short o-o.myaddr.l.google.com @ns1.google.com | awk -F\" '{print $2}')
+	if [ $dig_available == "true" ]; then
+		local result=$(dig TXT -4 +short o-o.myaddr.l.google.com @ns1.google.com | awk -F\" '{print $2}')
 	fi
-	if [ -n $RESULT ] && [ $CURL_AVAILABLE == "true" ]; then
-		local RESULT=$(curl -s https://api.ipify.org)
+	if [ -n $result ] && [ $curl_available == "true" ]; then
+		local result=$(curl -s https://api.ipify.org)
 	fi
-	if [ -n $RESULT ] && [ $WGET_AVAILABLE == "true" ]; then
-		local RESULT=$(wget -q -O - https://api.ipify.org)
+	if [ -n $result ] && [ $wget_available == "true" ]; then
+		local result=$(wget -q -O - https://api.ipify.org)
 	fi
-	if [ -n $RESULT ] && [ $NSLOOKUP_AVAILABLE == "true" ]; then
-		local RESULT=$(nslookup -q=txt o-o.myaddr.l.google.com 216.239.32.10 | awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
+	if [ -n $result ] && [ $nslookup_available == "true" ]; then
+		local result=$(nslookup -q=txt o-o.myaddr.l.google.com 216.239.32.10 | awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
 	fi
 
-	printf $RESULT
+	printf $result
 }
-
-
-
-
-
-##==============================================================================
-##	FUNCTIONS
-##==============================================================================
 
 
 ##------------------------------------------------------------------------------
@@ -236,216 +139,228 @@ getExternalIPv4()
 ##
 printBar()
 {
-	local CURRENT=$1
-	local MAX=$2
-	local SIZE=$3
-	local CRIT_PERCENT=$4
+	local current=$1
+	local max=$2
+	local size=$3
+	local crit_percent=$4
 
 
 	## COMPUTE VARIABLES
-	local NUM_BARS=$(($SIZE * $CURRENT / $MAX))
-	local CRIT_NUM_BARS=$(($SIZE * $CRIT_PERCENT / 100))
-	local BAR_COLOR=$COLOR_OK
-	if [ $NUM_BARS -gt $CRIT_NUM_BARS ]; then
-		local BAR_COLOR=$COLOR_CRIT
+	local num_bars=$(($size * $current / $max))
+	if [ $num_bars -gt $size ]; then
+		num_bars=$size
+	fi
+	local crit_num_bars=$(($size * $crit_percent / 100))
+	local bar_color=$fc_ok
+	if [ $num_bars -gt $crit_num_bars ]; then
+		local bar_color=$fc_crit
 	fi
 	
+
 	## PRINT BAR
-	printf "${COLOR_DECO}[${BAR_COLOR}"
+	printf "${fc_deco}[${bar_color}"
 	i=0
-	while [ $i -lt $NUM_BARS ]; do
+	while [ $i -lt $num_bars ]; do
 		printf "|"
 		i=$[$i+1]
 	done
-	while [ $i -lt $SIZE ]; do
+	while [ $i -lt $size ]; do
 		printf " "
 		i=$[$i+1]
 	done
-	printf "${COLOR_DECO}]${NC}"
+	printf "${fc_deco}]${fc_none}"
 }
 
 
 
 
 
-##------------------------------------------------------------------------------
-printLastLogins()
-{
-	printf "${COLOR_HL}\nLAST LOGINS:\n${COLOR_INFO}"
-	last -iwa | head -n 4 | grep -v "reboot"
-}
+##==============================================================================
+##	STATUS COMPOSITION
+##==============================================================================
 
 
-
-
-##------------------------------------------------------------------------------
 printHeader()
 {
 	## GENERATE PROPER AMOUNT OF PAD
 	i=0
-	while [ $i -lt $MAX_DIGITS ]; do
+	while [ $i -lt $max_digits ]; do
 		PAD="${PAD} "
 		i=$[$i+1]
 	done
 
 
 	## LOGO
-	#COLOR_LOGO_01=$($COLOR $LOGO_01 -c red)
-	#echo -e $COLOR_LOGO_01
-	local COLOR_LOGO_01="${COLOR_LOGO}${LOGO_01}${NC}"
-	local COLOR_LOGO_02="${COLOR_LOGO}${LOGO_02}${NC}"
-	local COLOR_LOGO_03="${COLOR_LOGO}${LOGO_03}${NC}"
-	local COLOR_LOGO_04="${COLOR_LOGO}${LOGO_04}${NC}"
-	local COLOR_LOGO_05="${COLOR_LOGO}${LOGO_05}${NC}"
-	local COLOR_LOGO_06="${COLOR_LOGO}${LOGO_06}${NC}"
-	local COLOR_LOGO_07="${COLOR_LOGO}${LOGO_07}${NC}"
-	local COLOR_LOGO_08="${COLOR_LOGO}${LOGO_08}${NC}"
-	local COLOR_LOGO_09="${COLOR_LOGO}${LOGO_09}${NC}"
-	local COLOR_LOGO_10="${COLOR_LOGO}${LOGO_10}${NC}"
-	local COLOR_LOGO_11="${COLOR_LOGO}${LOGO_11}${NC}"
-	local COLOR_LOGO_12="${COLOR_LOGO}${LOGO_12}${NC}"
-	local COLOR_LOGO_13="${COLOR_LOGO}${LOGO_13}${NC}"
-	local COLOR_LOGO_14="${COLOR_LOGO}${LOGO_14}${NC}"
+	local formatted_logo_01="${fc_logo}${logo_01}${fc_none}"
+	local formatted_logo_02="${fc_logo}${logo_02}${fc_none}"
+	local formatted_logo_03="${fc_logo}${logo_03}${fc_none}"
+	local formatted_logo_04="${fc_logo}${logo_04}${fc_none}"
+	local formatted_logo_05="${fc_logo}${logo_05}${fc_none}"
+	local formatted_logo_06="${fc_logo}${logo_06}${fc_none}"
+	local formatted_logo_07="${fc_logo}${logo_07}${fc_none}"
+	local formatted_logo_08="${fc_logo}${logo_08}${fc_none}"
+	local formatted_logo_09="${fc_logo}${logo_09}${fc_none}"
+	local formatted_logo_10="${fc_logo}${logo_10}${fc_none}"
+	local formatted_logo_11="${fc_logo}${logo_11}${fc_none}"
+	local formatted_logo_12="${fc_logo}${logo_12}${fc_none}"
+	local formatted_logo_13="${fc_logo}${logo_13}${fc_none}"
+	local formatted_logo_14="${fc_logo}${logo_14}${fc_none}"
 
 
 	## GET SYS SUMMARY 
-	local os_info="${COLOR_INFO}OS\t\t${COLOR_HL}$(getOSInfo)${NC}"
-	local kernel_info="${COLOR_INFO}Kernel\t\t${COLOR_HL}$(getKernelInfo)${NC}"
-	local cpu_info="${COLOR_INFO}CPU\t\t${COLOR_HL}$(getCPUInfo)${NC}"
-	local shell_info="${COLOR_INFO}Shell\t\t${COLOR_HL}$(getShellInfo)${NC}"
-	local sys_date="${COLOR_INFO}Date\t\t${COLOR_HL}$(getSysDate)${NC}"
-	local user_name="${COLOR_INFO}Login\t\t${COLOR_HL}$(getUserName)@$HOSTNAME${NC}"
-	local local_ipv4="${COLOR_INFO}Local IPv4\t${COLOR_HL}$(getLocalIPv4)${NC}"
-	local external_ipv4="${COLOR_INFO}External IPv4\t${COLOR_HL}$(getExternalIPv4)${NC}"
+	local os_info="${fc_info}OS\t\t${fc_highlight}$(getOSInfo)${fc_none}"
+	local kernel_info="${fc_info}Kernel\t\t${fc_highlight}$(getKernelInfo)${fc_none}"
+	local cpu_info="${fc_info}CPU\t\t${fc_highlight}$(getCPUInfo)${fc_none}"
+	local shell_info="${fc_info}Shell\t\t${fc_highlight}$(getShellInfo)${fc_none}"
+	local sys_date="${fc_info}Date\t\t${fc_highlight}$(getSysDate)${fc_none}"
+	local user_name="${fc_info}Login\t\t${fc_highlight}$(getUserName)@$HOSTNAME${fc_none}"
+	local local_ipv4="${fc_info}Local IP\t${fc_highlight}$(getLocalIPv4)${fc_none}"
+	local external_ipv4="${fc_info}External IP\t${fc_highlight}$(getExternalIPv4)${fc_none}"
 
 
+
+	#### UGLY FROM HERE ON #################################################
 
 
 	## SYSTEM CTL FAILED TO LOAD
 	local NUM_FAILED=$(systemctl --failed | head -c 1)
 	if [ "$NUM_FAILED" -eq "0" ]; then
-		local SYSCTL=$(echo -e "${COLOR_INFO}SystemCTL\t${COLOR_HL}All services OK${NC}")
+		local SYSCTL=$(echo -e "${fc_info}SystemCTL\t${fc_highlight}All services OK${fc_none}")
 	else
-		local SYSCTL=$(echo -e "${COLOR_INFO}SystemCTL\t${COLOR_ERR}$NUM_FAILED services failed!${NC}")
+		local SYSCTL=$(echo -e "${fc_info}SystemCTL\t${fc_error}$NUM_FAILED services failed!${fc_none}")
 	fi
 
 
 	## CPU LOAD
 	local CPU_AVG=$(cat /proc/loadavg | awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}')
 	local CPU_MAX=$(cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l)
-	local CPU_BAR=$(printBar $CPU_AVG $CPU_MAX $BAR_LENGTH $CRIT_CPU_PERCENT)
+	local CPU_BAR=$(printBar $CPU_AVG $CPU_MAX $bar_length $crit_cpu_percent)
 	local CPU_PER=$(cat /proc/loadavg | awk '{printf "%3.0f\n",$1*100}')
 	local CPU_PER=$(($CPU_PER / $CPU_MAX))
-	local CPU_LOAD=$(echo -e "${COLOR_INFO}Sys load avg\t$CPU_BAR ${COLOR_HL}${CPU_PER:0:9} %%${NC}")
-	if [ $CPU_PER -gt $CRIT_CPU_PERCENT ]; then
-		CPU_IS_CRIT=1
-		echo "critical"
+	local CPU_LOAD=$(echo -e "${fc_info}Sys load avg\t$CPU_BAR ${fc_highlight}${CPU_PER:0:9} %%${fc_none}")
+	if [ $CPU_PER -gt $crit_cpu_percent ]; then
+		cpu_is_crit=true
 	fi
 
 
 
 	## MEMORY
-	local MEM_INFO=$(free -m | head -n 2 | tail -n 1)
+	local MEM_INFO=$('free' -m | head -n 2 | tail -n 1)
 	local MEM_CURRENT=$(echo "$MEM_INFO" | awk '{mem=($2-$7)} END {printf mem}')
-	while [ ${#MEM_CURRENT} -lt $MAX_DIGITS ]
+	while [ ${#MEM_CURRENT} -lt $max_digits ]
 	do
   		local MEM_CURRENT=" $MEM_CURRENT"
 	done
 	local MEM_MAX=$(echo "$MEM_INFO" | awk '{mem=($2)} END {printf mem}')
-	while [ ${#MEM_MAX} -lt $MAX_DIGITS ]
+	while [ ${#MEM_MAX} -lt $max_digits ]
 	do
   		local MEM_MAX="$MEM_MAX "
 	done
-	local MEM_BAR=$(printBar $MEM_CURRENT $MEM_MAX $BAR_LENGTH $CRIT_MEM_PERCENT)
+	local MEM_BAR=$(printBar $MEM_CURRENT $MEM_MAX $bar_length $crit_mem_percent)
 	local MEM_MAX=$MEM_MAX$PAD
-	local MEM_USAGE=$(echo -e "${COLOR_INFO}Memory\t\t$MEM_BAR ${COLOR_HL}${MEM_CURRENT:0:${MAX_DIGITS}}${COLOR_INFO}/${COLOR_HL}${MEM_MAX:0:${MAX_DIGITS}} MB${NC}")
+	local MEM_USAGE=$(echo -e "${fc_info}Memory\t\t$MEM_BAR ${fc_highlight}${MEM_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${MEM_MAX:0:${max_digits}} MB${fc_none}")
 
 
 	## SWAP
-	local SWAP_INFO=$(free -m | tail -n 1)
+	local SWAP_INFO=$('free' -m | tail -n 1)
 	local SWAP_CURRENT=$(echo "$SWAP_INFO" | awk '{SWAP=($3)} END {printf SWAP}')
-	while [ ${#SWAP_CURRENT} -lt $MAX_DIGITS ]
+	while [ ${#SWAP_CURRENT} -lt $max_digits ]
 	do
   		local SWAP_CURRENT=" $SWAP_CURRENT"
 	done
 	local SWAP_MAX=$(echo "$SWAP_INFO" | awk '{SWAP=($2)} END {printf SWAP}')
-	while [ ${#SWAP_CURRENT} -lt $MAX_DIGITS ]
+	while [ ${#SWAP_CURRENT} -lt $max_digits ]
 	do
   		local SWAP_CURRENT=" $SWAP_CURRENT"
 	done
-	local SWAP_BAR=$(printBar $SWAP_CURRENT $SWAP_MAX $BAR_LENGTH $CRIT_SWAP_PERCENT)
+	local SWAP_BAR=$(printBar $SWAP_CURRENT $SWAP_MAX $bar_length $crit_swap_percent)
 	local SWAP_MAX=$SWAP_MAX$PAD
-	local SWAP_USAGE=$(echo -e "${COLOR_INFO}Swap\t\t$SWAP_BAR ${COLOR_HL}${SWAP_CURRENT:0:${MAX_DIGITS}}${COLOR_INFO}/${COLOR_HL}${SWAP_MAX:0:${MAX_DIGITS}} MB${NC}")
+	local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t$SWAP_BAR ${fc_highlight}${SWAP_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${SWAP_MAX:0:${max_digits}} MB${fc_none}")
 
 
 	## HDD /
 	local ROOT_CURRENT=$(df -B1G / | grep "/" | awk '{key=($3)} END {printf key}')
-	while [ ${#ROOT_CURRENT} -lt $MAX_DIGITS ]
+	while [ ${#ROOT_CURRENT} -lt $max_digits ]
 	do
   		local ROOT_CURRENT=" $ROOT_CURRENT"
 	done
 	local ROOT_MAX=$(df -B1G "/" | grep "/" | awk '{key=($2)} END {printf key}')
-	while [ ${#ROOT_CURRENT} -lt $MAX_DIGITS ]
+	while [ ${#ROOT_CURRENT} -lt $max_digits ]
 	do
   		local ROOT_CURRENT=" $ROOT_CURRENT"
 	done
-	local ROOT_BAR=$(printBar $ROOT_CURRENT $ROOT_MAX $BAR_LENGTH $CRIT_HDD_PERCENT)
+	local ROOT_BAR=$(printBar $ROOT_CURRENT $ROOT_MAX $bar_length $crit_hdd_percent)
 	local ROOT_MAX=$ROOT_MAX$PAD
-	local ROOT_USAGE=$(echo -e "${COLOR_INFO}Storage /\t$ROOT_BAR ${COLOR_HL}${ROOT_CURRENT:0:${MAX_DIGITS}}${COLOR_INFO}/${COLOR_HL}${ROOT_MAX:0:${MAX_DIGITS}} GB${NC}")
+	local ROOT_USAGE=$(echo -e "${fc_info}Storage /\t$ROOT_BAR ${fc_highlight}${ROOT_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${ROOT_MAX:0:${max_digits}} GB${fc_none}")
 
 
 	## HDD /home
 	local HOME_CURRENT=$(df -B1G ~ | grep "/" | awk '{key=($3)} END {printf key}')
-	while [ ${#HOME_CURRENT} -lt $MAX_DIGITS ]
+	while [ ${#HOME_CURRENT} -lt $max_digits ]
 	do
   		local HOME_CURRENT=" $HOME_CURRENT"
 	done
 	local HOME_MAX=$(df -B1G ~ | grep "/" | awk '{key=($2)} END {printf key}')
-	while [ ${#HOME_CURRENT} -lt $MAX_DIGITS ]
+	while [ ${#HOME_CURRENT} -lt $max_digits ]
 	do
   		local HOME_CURRENT=" $HOME_CURRENT"
 	done
-	local HOME_BAR=$(printBar $HOME_CURRENT $HOME_MAX $BAR_LENGTH $CRIT_HDD_PERCENT)
+	local HOME_BAR=$(printBar $HOME_CURRENT $HOME_MAX $bar_length $crit_hdd_percent)
 	local HOME_MAX=$HOME_MAX$PAD
-	local HOME_USAGE=$(echo -e "${COLOR_INFO}Storage /home\t$HOME_BAR ${COLOR_HL}${HOME_CURRENT:0:${MAX_DIGITS}}${COLOR_INFO}/${COLOR_HL}${HOME_MAX:0:${MAX_DIGITS}} GB${NC}")
+	local HOME_USAGE=$(echo -e "${fc_info}Storage /home\t$HOME_BAR ${fc_highlight}${HOME_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${HOME_MAX:0:${max_digits}} GB${fc_none}")
 
 
 	## CHECK TERMINAL SIZE
-	## If the temrinal is not wide enough, override LOGO_PADDING
+	## If the temrinal is not wide enough, override logo_padding
 	local WIDTH=$(tput cols)
 	if [ "$WIDTH" -lt 90 ]; then
-		local LOGO_PADDING=""
+		local logo_padding=""
 	fi
 
 
 	## PRINT HEADER WITH OVERALL STATUS REPORT
 	printf "\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_01\t$os_info\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_02\t$kernel_info\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_03\t$cpu_info\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_04\t$shell_info\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_05\t$sys_date\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_06\t$user_name\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_07\t$local_ipv4\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_08\t$external_ipv4\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_09\t$SYSCTL\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_10\t$CPU_LOAD\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_11\t$MEM_USAGE\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_12\t$SWAP_USAGE\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_13\t$ROOT_USAGE\n\r"
-	printf "$LOGO_PADDING$COLOR_LOGO_14\t$HOME_USAGE\n\r\n\r"
+	printf "${logo_padding}${formatted_logo_01}\t${os_info}\n\r"
+	printf "${logo_padding}${formatted_logo_02}\t${kernel_info}\n\r"
+	printf "${logo_padding}${formatted_logo_03}\t${cpu_info}\n\r"
+	printf "${logo_padding}${formatted_logo_04}\t${shell_info}\n\r"
+	printf "${logo_padding}${formatted_logo_05}\t${sys_date}\n\r"
+	printf "${logo_padding}${formatted_logo_06}\t${user_name}\n\r"
+	printf "${logo_padding}${formatted_logo_07}\t${local_ipv4}\n\r"
+	printf "${logo_padding}${formatted_logo_08}\t${external_ipv4}\n\r"
+	printf "${logo_padding}${formatted_logo_09}\t${SYSCTL}\n\r"
+	printf "${logo_padding}${formatted_logo_10}\t${CPU_LOAD}\n\r"
+	printf "${logo_padding}${formatted_logo_11}\t${MEM_USAGE}\n\r"
+	printf "${logo_padding}${formatted_logo_12}\t${SWAP_USAGE}\n\r"
+	printf "${logo_padding}${formatted_logo_13}\t${ROOT_USAGE}\n\r"
+	printf "${logo_padding}${formatted_logo_14}\t${HOME_USAGE}\n\r\n\r"
 }
 
 
 
 
 
-##------------------------------------------------------------------------------
+printLastLogins()
+{
+	## DO NOTHING FOR NOW -> This is all commented out intentionally. Printing logins should only be done under different conditions
+	# 1. User configurable set to always on
+	# 2. If the IP/terminal is very diffefrent from usual
+	# 3. Other anomalies...
+	if false; then	
+		printf "${fc_highlight}\nLAST LOGINS:\n${fc_info}"
+		last -iwa | head -n 4 | grep -v "reboot"
+	fi
+}
+
+
+
+
+
 printSystemctl()
 {
 	local NUM_FAILED=$(systemctl --failed | head -c 1)
 	if [ "$NUM_FAILED" -ne "0" ]; then
-		printf "\n\r${COLOR_HL}SYSTEMCTL STATUS: ${COLOR_ERR}At least one service failed to load!!${NC}\n\r"
+		printf "\n\r${fc_highlight}SYSTEMCTL STATUS: ${fc_error}At least one service failed to load!!${fc_none}\n\r"
 		systemctl --failed
 	fi
 }
@@ -454,18 +369,17 @@ printSystemctl()
 
 
 
-##------------------------------------------------------------------------------
 printTop()
 {
-	if [ $CPU_IS_CRIT -eq 1 ]; then
-		TOP=$(top -b -d 5 -w 80| head -n 11)
-		LOAD=$(echo "$TOP" | head -n 3 | tail -n 1)
-		HEAD=$(echo "$TOP" | head -n 7 | tail -n 1)
-		PROC=$(echo "$TOP" | tail -n 4 | grep -v "top")
+	if $cpu_is_crit; then
+		local top=$('nice' 'top' -b -w 80 -d 0.1 -1 | head -n 11)
+		local load=$(echo "${top}" | head -n 3 | tail -n 1)
+		local head=$(echo "${top}" | head -n 7 | tail -n 1)
+		local proc=$(echo "${top}" | tail -n 4 | grep -v "top")
 
-		printf "\n\r${COLOR_HL}SYSTEM LOAD:${COLOR_INFO}  ${LOAD:8:35}${COLOR_HL}\n\r"
-		echo "$HEAD"
-		printf "${COLOR_INFO}$PROC${NC}"
+		printf "\n\r${fc_highlight}SYSTEM LOAD:${fc_info}  ${load:8:35}${fc_highlight}\n\r"
+		echo "$head"
+		printf "${fc_info}${proc}${fc_none}"
 	fi
 }
 
@@ -474,13 +388,89 @@ printTop()
 
 
 ##==============================================================================
-##	MAIN
+##	STATUS
 ##==============================================================================
 
-clear
-printHeader
-#printLastLogins
-printSystemctl
-printTop
-#exit 0
+printStatus()
+{
+	## INCLUDE EXTERNAL DEPENDENCIES
+	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+	source "$dir/../common/load_config.sh"
+	source "$dir/../common/color.sh"
 
+
+
+	## SCRIPT WIDE VARIABLES
+	cpu_is_crit=false
+
+
+
+	## DEFAULT CONFIGURATION
+	## WARNING! Do not edit directly, use configuration files instead
+	local logo_01="        -oydNMMMMNdyo-        "
+	local logo_02="     -yNMMMMMMMMMMMMMMNy-     "
+	local logo_03="   .hMMMMMMmhsooshmMMMMMMh.   "
+	local logo_04="  :NMMMMmo.        .omMMMMN:  "
+	local logo_05=" -NMMMMs    -+ss+-    sMMMMN- "
+	local logo_06=" hMMMMs   -mMMMMMMm-   sMMMMh "
+	local logo_07="'MMMMM.  'NMMMMMMMMN'  .MMMMM'"
+	local logo_08="'MMMMM.  'NMMMMMMMMN'   yMMMM'"
+	local logo_09=" hMMMMs   -mMMMMMMMMy.   -yMh "
+	local logo_10=" -NMMMMs    -+ss+yMMMMy.   -. "
+	local logo_11="  :NMMMMmo.       .yMMMMy.    "
+	local logo_12="   .hMMMMMMmhsoo-   .yMMMy    "
+	local logo_13="     -yNMMMMMMMMMy-   .o-     "
+	local logo_14="        -oydNMMMMNd/          "
+	local logo_padding=""
+
+	local format_info="-c white"
+	local format_highlight="-c blue  -e bold"
+	local format_crit="-c 208   -e bold"
+	local format_deco="-c white -e bold"
+	local format_ok="-c blue  -e bold"
+	local format_error="-c 208   -e bold -e blink"
+	local format_logo="-c blue -e bold"
+
+	local bar_length=15
+	local crit_cpu_percent=50
+	local crit_mem_percent=75
+	local crit_swap_percent=25
+	local crit_hdd_percent=80
+	local max_digits=5
+
+
+
+	## LOAD USER CONFIGURATION
+	local config_file="$HOME/.config/scripts/status.config"
+	loadConfigFile $config_file
+
+
+
+	## COLOR AND TEXT FORMAL CODE
+	local fc_info=$(getFormatCode $format_info)
+	local fc_highlight=$(getFormatCode $format_highlight)
+	local fc_crit=$(getFormatCode $format_crit)
+	local fc_deco=$(getFormatCode $format_deco)
+	local fc_ok=$(getFormatCode $format_ok)
+	local fc_error=$(getFormatCode $format_error)
+	local fc_logo=$(getFormatCode $format_logo)
+	local fc_none=$(getFormatCode -e reset)
+
+
+
+	## PRINT STATUS ELEMENTS
+	clear
+	printHeader
+	printLastLogins
+	printSystemctl
+	printTop
+}
+
+
+## CALL MAIN FUNCTION
+printStatus
+
+
+
+
+### EOF ###

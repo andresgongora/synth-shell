@@ -24,7 +24,7 @@ The following list is roughly sorted in reverse cronological order.
 
 	
 *	olmari <sami@olmari.fi>  
-	Variable padding for _status.sh_
+	Major improvements to `status.sh`
 
 
 

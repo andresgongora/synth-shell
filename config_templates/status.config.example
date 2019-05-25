@@ -1,0 +1,48 @@
+##==============================================================================
+##	LOGO
+##==============================================================================
+
+logo_01			"        -oydNMMMMNdyo-        "
+logo_02			"     -yNMMMMMMMMMMMMMMNy-     "
+logo_03			"   .hMMMMMMmhsooshmMMMMMMh.   "
+logo_04			"  :NMMMMmo.        .omMMMMN:  "
+logo_05			" -NMMMMs    -+ss+-    sMMMMN- "
+logo_06			" hMMMMs   -mMMMMMMm-   sMMMMh "
+logo_07			"'MMMMM.  'NMMMMMMMMN'  .MMMMM'"
+logo_08			"'MMMMM.  'NMMMMMMMMN'   yMMMM'"
+logo_09			" hMMMMs   -mMMMMMMMMy.   -yMh "
+logo_10			" -NMMMMs    -+ss+yMMMMy.   -. "
+logo_11			"  :NMMMMmo.       .yMMMMy.    "
+logo_12			"   .hMMMMMMmhsoo-   .yMMMy    "
+logo_13			"     -yNMMMMMMMMMy-   .o-     "
+logo_14			"        -oydNMMMMNd/          "
+
+logo_padding		""
+
+
+
+
+##==============================================================================
+##	STATUS BARS
+##==============================================================================
+bar_length		15
+crit_cpu_percent	50
+crit_mem_percent	75
+crit_swap_percent	25
+crit_hdd_percent	80
+max_digits		5
+
+
+
+
+##==============================================================================
+##	COLORS
+##==============================================================================
+format_info		"-c white"
+format_highlight	"-c blue  -e bold"
+format_crit		"-c 208   -e bold"
+format_deco		"-c white -e bold"
+format_ok		"-c blue  -e bold"
+format_error		"-c 208   -e bold -e blink"
+format_logo		"-c blue  -e bold"
+
