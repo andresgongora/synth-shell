@@ -412,7 +412,7 @@ printStatus()
 
 	## LOAD USER CONFIGURATION
 	local config_file="$HOME/.config/scripts/status.config"
-	overrideConfig $config_file
+	loadConfigFile $config_file
 
 
 
