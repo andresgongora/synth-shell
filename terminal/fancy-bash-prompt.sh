@@ -110,35 +110,35 @@ bash_prompt_command() {
 bash_prompt() {
 
 	## INCLUDE EXTERNAL DEPENDENCIES
-	local DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-	source "$DIR/../common/load_config.sh"
-	source "$DIR/../common/color.sh"
+	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+	source "$dir/../common/load_config.sh"
+	source "$dir/../common/color.sh"
 
 
-	##----------------------------------------------------------------------
+
 	## DEFAULT CONFIGURATION
-	## Do not edit directly, use configuration files instead
+	## WARNING! Do not edit directly, use configuration files instead
+	local font_color_user="white"
+	local background_user="blue"
+	local texteffect_user="bold"
+
+	local font_color_host="white"
+	local background_host="light-blue"
+	local texteffect_host="bold"
+
+	local font_color_pwd="dark-gray"
+	local background_pwd="white"
+	local texteffect_pwd="bold"
+
+	local font_color_input="cyan"
+	local background_input="none"
+	local texteffect_input="bold"
+
+	local separator_char=$'\uE0B0'
 	
-	local FONT_COLOR_USER="white"
-	local BACKGROUND_USER="blue"
-	local TEXTEFFECT_USER="bold"
-
-	local FONT_COLOR_HOST="white"
-	local BACKGROUND_HOST="light-blue"
-	local TEXTEFFECT_HOST="bold"
-
-	local FONT_COLOR_PWD="dark-gray"
-	local BACKGROUND_PWD="white"
-	local TEXTEFFECT_PWD="bold"
-
-	local FONT_COLOR_INPUT="cyan"
-	local BACKGROUND_INPUT="none"
-	local TEXTEFFECT_INPUT="bold"
-	
-	##----------------------------------------------------------------------
 
 
-	## LOAD CONFIGURATION
+	## LOAD USER CONFIGURATION
 	local config_file="$HOME/Software/scripts/terminal/fancy-bash-prompt.config"
 	overrideConfig $config_file
 
@@ -147,43 +147,49 @@ bash_prompt() {
 	## GENERATE COLOR FORMATING SEQUENCES
 	## The sequences will confuse the bash promt. To tell the terminal that they are non-printint
 	## characters, we must surround them by \[ and \]
-	local NO_COLOR="\[$(getFormatCode -e reset)\]"
-	local PS1_USER_FORMAT="\[$(getFormatCode -c $FONT_COLOR_USER -b $BACKGROUND_USER -e $TEXTEFFECT_USER)\]"
-	local PS1_HOST_FORMAT="\[$(getFormatCode -c $FONT_COLOR_HOST -b $BACKGROUND_HOST -e $TEXTEFFECT_HOST)\]"
-	local PS1_PWD_FORMAT="\[$(getFormatCode -c $FONT_COLOR_PWD -b $BACKGROUND_PWD -e $TEXTEFFECT_PWD)\]"
-	local PS1_INPUT_FORMAT="\[$(getFormatCode -c $FONT_COLOR_INPUT -b $BACKGROUND_INPUT -e $TEXTEFFECT_INPUT)\]"
-	local SEPARATOR_1_FORMAT="\[$(getFormatCode -c $BACKGROUND_USER -b $BACKGROUND_HOST)\]"
-	local SEPARATOR_2_FORMAT="\[$(getFormatCode -c $BACKGROUND_HOST -b $BACKGROUND_PWD)\]"
-	local SEPARATOR_3_FORMAT="\[$(getFormatCode -c $BACKGROUND_PWD)\]"
+	local no_color="\[$(getFormatCode -e reset)\]"
+	local ps1_user_format="\[$(getFormatCode    -c $font_color_user  -b $background_user  -e $texteffect_user)\]"
+	local ps1_host_format="\[$(getFormatCode    -c $font_color_host  -b $background_host  -e $texteffect_host)\]"
+	local ps1_pwd_format="\[$(getFormatCode     -c $font_color_pwd   -b $background_pwd   -e $texteffect_pwd)\]"
+	local ps1_input_format="\[$(getFormatCode   -c $font_color_input -b $background_input -e $texteffect_input)\]"
+	local separator_1_format="\[$(getFormatCode -c $background_user  -b $background_host)\]"
+	local separator_2_format="\[$(getFormatCode -c $background_host  -b $background_pwd)\]"
+	local separator_3_format="\[$(getFormatCode -c $background_pwd)\]"
 
 	
+
 	## GENERATE USER/HOST/PWD TEXT
-	local PS1_USER="${PS1_USER_FORMAT} \u "
-	local PS1_HOST="${PS1_HOST_FORMAT} \h "
-	local PS1_PWD="${PS1_PWD_FORMAT} \${NEW_PWD} "
-	local PS1_INPUT="${PS1_INPUT_FORMAT} "
+	local ps1_user="${ps1_user_format} \u "
+	local ps1_host="${ps1_host_format} \h "
+	local ps1_pwd="${ps1_pwd_format} \${NEW_PWD} "
+	local ps1_input="${ps1_input_format} "
 
 
-	## GENERATE SEPARATORS WITH FANCY TRIANGLE
-	local TRIANGLE=$'\uE0B0'
-	local SEPARATOR_1="${SEPARATOR_1_FORMAT}${TRIANGLE}"
-	local SEPARATOR_2="${SEPARATOR_2_FORMAT}${TRIANGLE}"
-	local SEPARATOR_3="${SEPARATOR_3_FORMAT}${TRIANGLE}$NO_COLOR"
+
+	## GENERATE SEPARATORS
+	local separator_1="${separator_1_format}${separator_char}"
+	local separator_2="${separator_2_format}${separator_char}"
+	local separator_3="${separator_3_format}${separator_char}$no_color"
+
+
+
+	## WINDOW TITLE
+	## Prevent messed up terminal-window titles
+	## Must be set in PS1
+	case $TERM in
+	xterm*|rxvt*)
+		local titlebar='\[\033]0;\u:${NEW_PWD}\007\]'
+		;;
+	*)
+		local titlebar=""
+		;;
+	esac
+
 
 
 	## BASH PROMT - Generate promt and remove format from the rest
-	PS1="$TITLEBAR\n${PS1_USER}${SEPARATOR_1}${PS1_HOST}${SEPARATOR_2}${PS1_PWD}${SEPARATOR_3}${PS1_INPUT}"
+	PS1="$titlebar\n${ps1_user}${separator_1}${ps1_host}${separator_2}${ps1_pwd}${separator_3}${ps1_input}"
 
-
-	## WINDOW TITLE - Prevent messed up terminal-window titles
-	case $TERM in
-	xterm*|rxvt*)
-		local TITLEBAR='\[\033]0;\u:${NEW_PWD}\007\]'
-		;;
-	*)
-		local TITLEBAR=""
-		;;
-	esac
 	
 
 	## For terminal line coloring, leaving the rest standard
