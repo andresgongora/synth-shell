@@ -174,17 +174,6 @@ printHeader()
 	done
 
 
-	## COLOR AND TEXT FORMAL CODE
-	local fc_info=$(getFormatCode $format_info)
-	local fc_highlight=$(getFormatCode $format_highlight)
-	local fc_crit=$(getFormatCode $format_crit)
-	local fc_deco=$(getFormatCode $format_deco)
-	local fc_ok=$(getFormatCode $format_ok)
-	local fc_error=$(getFormatCode $format_error)
-	local fc_logo=$(getFormatCode $format_logo)
-	local fc_none=$(getFormatCode -e reset)
-
-
 	## LOGO
 	local formatted_logo_01="${fc_logo}${logo_01}${fc_none}"
 	local formatted_logo_02="${fc_logo}${logo_02}${fc_none}"
@@ -353,14 +342,14 @@ printSystemctl()
 printTop()
 {
 	if $cpu_is_crit; then
-		TOP=$(top -b -d 5 -w 80| head -n 11)
-		LOAD=$(echo "$TOP" | head -n 3 | tail -n 1)
-		HEAD=$(echo "$TOP" | head -n 7 | tail -n 1)
-		PROC=$(echo "$TOP" | tail -n 4 | grep -v "top")
+		local top=$('nice' 'top' -b -w 80 -d 0.1 -1 | head -n 11)
+		local load=$(echo "${top}" | head -n 3 | tail -n 1)
+		local head=$(echo "${top}" | head -n 7 | tail -n 1)
+		local proc=$(echo "${top}" | tail -n 4 | grep -v "top")
 
-		printf "\n\r${fc_highlight}SYSTEM LOAD:${fc_info}  ${LOAD:8:35}${fc_highlight}\n\r"
-		echo "$HEAD"
-		printf "${fc_info}$PROC${fc_none}"
+		printf "\n\r${fc_highlight}SYSTEM LOAD:${fc_info}  ${load:8:35}${fc_highlight}\n\r"
+		echo "$head"
+		printf "${fc_info}${proc}${fc_none}"
 	fi
 }
 
@@ -378,6 +367,7 @@ printStatus()
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 	source "$dir/../common/load_config.sh"
 	source "$dir/../common/color.sh"
+
 
 
 	## SCRIPT WIDE VARIABLES
@@ -426,6 +416,18 @@ printStatus()
 
 
 
+	## COLOR AND TEXT FORMAL CODE
+	local fc_info=$(getFormatCode $format_info)
+	local fc_highlight=$(getFormatCode $format_highlight)
+	local fc_crit=$(getFormatCode $format_crit)
+	local fc_deco=$(getFormatCode $format_deco)
+	local fc_ok=$(getFormatCode $format_ok)
+	local fc_error=$(getFormatCode $format_error)
+	local fc_logo=$(getFormatCode $format_logo)
+	local fc_none=$(getFormatCode -e reset)
+
+
+
 	## PRINT STATUS ELEMENTS
 	clear
 	printHeader
@@ -442,5 +444,3 @@ printStatus
 
 
 ### EOF ###
-
-
