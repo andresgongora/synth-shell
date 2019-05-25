@@ -147,7 +147,8 @@ these scripts in [AUTHORS.md](AUTHORS.md). Thanks to all of you!
   We'll try to fix it ASAP.
 * Become a developer: fork this repo and become an active developer!
   Take a look at the [issuess](https://github.com/andresgongora/scripts/issues)
-  for suggestions of where to start.
+  for suggestions of where to start. Also, take a look at our 
+  [coding style](coding_style.md).
 * Push your one-time changes: even if its a tiny change, 
   feel free to fill in a pull-request!
 
