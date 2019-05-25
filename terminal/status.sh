@@ -82,44 +82,44 @@ getUserName()
 getLocalIPv4()
 {
 	##  Look which programs are available
-	[ $(which ip > /dev/null; echo $?) -eq 0 ] && local IP_AVAILABLE=true || local IP_AVAILABLE=false
-	[ $(which ifconfig > /dev/null; echo $?) -eq 0 ] && local IFCONFIG_AVAILABLE=true || local IFCONFIG_AVAILABLE=false
+	[ $(which ip > /dev/null; echo $?) -eq 0 ] && local ip_available=true || local ip_available=false
+	[ $(which ifconfig > /dev/null; echo $?) -eq 0 ] && local ifconfig_available=true || local ifconfig_available=false
 
 	##  Try first found program and try next one if result is empty
-	if [ $IP_AVAILABLE == "true" ]; then
-		local RESULT=$(ip -family inet addr show | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
+	if $ip_available; then
+		local result=$(ip -family inet addr show | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
 	fi
-	if [ -n $RESULT ] && [ $IFCONFIG_AVAILABLE == "true" ]; then
-		local RESULT=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
+	if [ -n $result ] && [ $ifconfig_available == "true" ]; then
+		local result=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
 	fi
 
-	printf $RESULT
+	printf $result
 }
 
 
 getExternalIPv4()
 {
 	##  Look which programs are available
-	[ $(which dig > /dev/null; echo $?) -eq 0 ] && local DIG_AVAILABLE=true || local DIG_AVAILABLE=false
-	[ $(which curl > /dev/null; echo $?) -eq 0 ] && local CURL_AVAILABLE=true || local CURL_AVAILABLE=false
-	[ $(which wget > /dev/null; echo $?) -eq 0 ] && local WGET_AVAILABLE=true || local WGET_AVAILABLE=false
-	[ $(which nslookup > /dev/null; echo $?) -eq 0 ] && local NSLOOKUP_AVAILABLE=true || local NSLOOKUP_AVAILABLE=false
+	[ $(which dig > /dev/null; echo $?) -eq 0 ] && local dig_available=true || local dig_available=false
+	[ $(which curl > /dev/null; echo $?) -eq 0 ] && local curl_available=true || local curl_available=false
+	[ $(which wget > /dev/null; echo $?) -eq 0 ] && local wget_available=true || local wget_available=false
+	[ $(which nslookup > /dev/null; echo $?) -eq 0 ] && local nslookup_available=true || local nslookup_available=false
 
 	##  Try first found program and try next one if result is empty
-	if [ $DIG_AVAILABLE == "true" ]; then
-		local RESULT=$(dig TXT -4 +short o-o.myaddr.l.google.com @ns1.google.com | awk -F\" '{print $2}')
+	if [ $dig_available == "true" ]; then
+		local result=$(dig TXT -4 +short o-o.myaddr.l.google.com @ns1.google.com | awk -F\" '{print $2}')
 	fi
-	if [ -n $RESULT ] && [ $CURL_AVAILABLE == "true" ]; then
-		local RESULT=$(curl -s https://api.ipify.org)
+	if [ -n $result ] && [ $curl_available == "true" ]; then
+		local result=$(curl -s https://api.ipify.org)
 	fi
-	if [ -n $RESULT ] && [ $WGET_AVAILABLE == "true" ]; then
-		local RESULT=$(wget -q -O - https://api.ipify.org)
+	if [ -n $result ] && [ $wget_available == "true" ]; then
+		local result=$(wget -q -O - https://api.ipify.org)
 	fi
-	if [ -n $RESULT ] && [ $NSLOOKUP_AVAILABLE == "true" ]; then
-		local RESULT=$(nslookup -q=txt o-o.myaddr.l.google.com 216.239.32.10 | awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
+	if [ -n $result ] && [ $nslookup_available == "true" ]; then
+		local result=$(nslookup -q=txt o-o.myaddr.l.google.com 216.239.32.10 | awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
 	fi
 
-	printf $RESULT
+	printf $result
 }
 
 
