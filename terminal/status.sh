@@ -170,7 +170,19 @@ getUserName()
 
 getLocalIPv4()
 {
-	ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p'
+	##  Look which programs are available
+	[ $(which ip > /dev/null; echo $?) -eq 0 ] && local IP_AVAILABLE=true || local IP_AVAILABLE=false
+	[ $(which ifconfig > /dev/null; echo $?) -eq 0 ] && local IFCONFIG_AVAILABLE=true || local IFCONFIG_AVAILABLE=false
+
+	##  Try first found program and try next one if result is empty
+	if [ $IP_AVAILABLE == "true" ]; then
+		local RESULT=$(ip -family inet addr show | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
+	fi
+	if [ -n $RESULT ] && [ $IFCONFIG_AVAILABLE == "true" ]; then
+		local RESULT=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
+	fi
+
+	printf $RESULT
 }
 
 
@@ -303,7 +315,7 @@ printHeader()
 	local shell_info="${COLOR_INFO}Shell\t\t${COLOR_HL}$(getShellInfo)${NC}"
 	local sys_date="${COLOR_INFO}Date\t\t${COLOR_HL}$(getSysDate)${NC}"
 	local user_name="${COLOR_INFO}Login\t\t${COLOR_HL}$(getUserName)@$HOSTNAME${NC}"
-	local local_ipv4="${COLOR_INFO}Local IP\t${COLOR_HL}$(getLocalIPv4)${NC}"
+	local local_ipv4="${COLOR_INFO}Local IPv4\t${COLOR_HL}$(getLocalIPv4)${NC}"
 	local external_ipv4="${COLOR_INFO}External IPv4\t${COLOR_HL}$(getExternalIPv4)${NC}"
 
 
