@@ -313,34 +313,66 @@ printHeader()
 
 
 	## MEMORY
-	local MEM_INFO=$('free' -m | head -n 2 | tail -n 1)
-	local MEM_CURRENT=$(echo "$MEM_INFO" | awk '{mem=($2-$7)} END {printf "%5.0f", mem}')
-	local MEM_MAX=$(echo "$MEM_INFO" | awk '{mem=($2)} END {printf "%1.0f", mem}')
+	local MEM_INFO=$(free -m | head -n 2 | tail -n 1)
+	local MEM_CURRENT=$(echo "$MEM_INFO" | awk '{mem=($2-$7)} END {printf mem}')
+	while [ ${#MEM_CURRENT} -lt $MAX_DIGITS ]
+	do
+  		local MEM_CURRENT=" $MEM_CURRENT"
+	done
+	local MEM_MAX=$(echo "$MEM_INFO" | awk '{mem=($2)} END {printf mem}')
+	while [ ${#MEM_MAX} -lt $MAX_DIGITS ]
+	do
+  		local MEM_MAX="$MEM_MAX "
+	done
 	local MEM_BAR=$(printBar $MEM_CURRENT $MEM_MAX $BAR_LENGTH $CRIT_MEM_PERCENT)
 	local MEM_MAX=$MEM_MAX$PAD
 	local MEM_USAGE=$(echo -e "${COLOR_INFO}Memory\t\t$MEM_BAR ${COLOR_HL}${MEM_CURRENT:0:${MAX_DIGITS}}${COLOR_INFO}/${COLOR_HL}${MEM_MAX:0:${MAX_DIGITS}} MB${NC}")
 
 
 	## SWAP
-	local SWAP_INFO=$('free' -m | tail -n 1)
-	local SWAP_CURRENT=$(echo "$SWAP_INFO" | awk '{SWAP=($3)} END {printf "%5.0f", SWAP}')
-	local SWAP_MAX=$(echo "$SWAP_INFO" | awk '{SWAP=($2)} END {printf "%1.0f", SWAP}')
+	local SWAP_INFO=$(free -m | tail -n 1)
+	local SWAP_CURRENT=$(echo "$SWAP_INFO" | awk '{SWAP=($3)} END {printf SWAP}')
+	while [ ${#SWAP_CURRENT} -lt $MAX_DIGITS ]
+	do
+  		local SWAP_CURRENT=" $SWAP_CURRENT"
+	done
+	local SWAP_MAX=$(echo "$SWAP_INFO" | awk '{SWAP=($2)} END {printf SWAP}')
+	while [ ${#SWAP_CURRENT} -lt $MAX_DIGITS ]
+	do
+  		local SWAP_CURRENT=" $SWAP_CURRENT"
+	done
 	local SWAP_BAR=$(printBar $SWAP_CURRENT $SWAP_MAX $BAR_LENGTH $CRIT_SWAP_PERCENT)
 	local SWAP_MAX=$SWAP_MAX$PAD
 	local SWAP_USAGE=$(echo -e "${COLOR_INFO}Swap\t\t$SWAP_BAR ${COLOR_HL}${SWAP_CURRENT:0:${MAX_DIGITS}}${COLOR_INFO}/${COLOR_HL}${SWAP_MAX:0:${MAX_DIGITS}} MB${NC}")
 
 
 	## HDD /
-	local ROOT_CURRENT=$(df -BG / | grep "/" | awk '{key=($3)} END {printf "%5.0f", key}')
-	local ROOT_MAX=$(df -BG "/" | grep "/" | awk '{key=($2)} END {printf "%1.0f", key}')
+	local ROOT_CURRENT=$(df -B1G / | grep "/" | awk '{key=($3)} END {printf key}')
+	while [ ${#ROOT_CURRENT} -lt $MAX_DIGITS ]
+	do
+  		local ROOT_CURRENT=" $ROOT_CURRENT"
+	done
+	local ROOT_MAX=$(df -B1G "/" | grep "/" | awk '{key=($2)} END {printf key}')
+	while [ ${#ROOT_CURRENT} -lt $MAX_DIGITS ]
+	do
+  		local ROOT_CURRENT=" $ROOT_CURRENT"
+	done
 	local ROOT_BAR=$(printBar $ROOT_CURRENT $ROOT_MAX $BAR_LENGTH $CRIT_HDD_PERCENT)
 	local ROOT_MAX=$ROOT_MAX$PAD
 	local ROOT_USAGE=$(echo -e "${COLOR_INFO}Storage /\t$ROOT_BAR ${COLOR_HL}${ROOT_CURRENT:0:${MAX_DIGITS}}${COLOR_INFO}/${COLOR_HL}${ROOT_MAX:0:${MAX_DIGITS}} GB${NC}")
 
 
 	## HDD /home
-	local HOME_CURRENT=$('df' -BG ~ | grep "/" | awk '{key=($3)} END {printf "%5.0f", key}')
-	local HOME_MAX=$('df' -BG ~ | grep "/" | awk '{key=($2)} END {printf "%1.0f", key}')
+	local HOME_CURRENT=$(df -B1G ~ | grep "/" | awk '{key=($3)} END {printf key}')
+	while [ ${#HOME_CURRENT} -lt $MAX_DIGITS ]
+	do
+  		local HOME_CURRENT=" $HOME_CURRENT"
+	done
+	local HOME_MAX=$(df -B1G ~ | grep "/" | awk '{key=($2)} END {printf key}')
+	while [ ${#HOME_CURRENT} -lt $MAX_DIGITS ]
+	do
+  		local HOME_CURRENT=" $HOME_CURRENT"
+	done
 	local HOME_BAR=$(printBar $HOME_CURRENT $HOME_MAX $BAR_LENGTH $CRIT_HDD_PERCENT)
 	local HOME_MAX=$HOME_MAX$PAD
 	local HOME_USAGE=$(echo -e "${COLOR_INFO}Storage /home\t$HOME_BAR ${COLOR_HL}${HOME_CURRENT:0:${MAX_DIGITS}}${COLOR_INFO}/${COLOR_HL}${HOME_MAX:0:${MAX_DIGITS}} GB${NC}")
