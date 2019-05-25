@@ -115,31 +115,35 @@ bash_prompt() {
 	source "$DIR/../common/color.sh"
 
 
+	##----------------------------------------------------------------------
+	## DEFAULT CONFIGURATION
+	## Do not edit directly, use configuration files instead
+	
+	local FONT_COLOR_USER="white"
+	local BACKGROUND_USER="blue"
+	local TEXTEFFECT_USER="bold"
+
+	local FONT_COLOR_HOST="white"
+	local BACKGROUND_HOST="light-blue"
+	local TEXTEFFECT_HOST="bold"
+
+	local FONT_COLOR_PWD="dark-gray"
+	local BACKGROUND_PWD="white"
+	local TEXTEFFECT_PWD="bold"
+
+	local FONT_COLOR_INPUT="cyan"
+	local BACKGROUND_INPUT="none"
+	local TEXTEFFECT_INPUT="bold"
+	
+	##----------------------------------------------------------------------
+
+
 	## LOAD CONFIGURATION
-	## Search for valid configuration file. If not found,
-	## resort to default location (same fodler as script).
-	local CONFIG_FILE="$HOME/.config/scripts/terminal/fancy-bash-prompt.config"
-	if [ ! -f $CONFIG_FILE ]; then
-		local CONFIG_FILE="$DIR/fancy-bash-prompt.config"
-	fi	
-
-	local FONT_COLOR_USER=$(LoadParam "FONT_COLOR_USER" "$CONFIG_FILE")
-	local BACKGROUND_USER=$(LoadParam "BACKGROUND_USER" "$CONFIG_FILE")
-	local TEXTEFFECT_USER=$(LoadParam "TEXTEFFECT_USER" "$CONFIG_FILE")
-
-	local FONT_COLOR_HOST=$(LoadParam "FONT_COLOR_HOST" "$CONFIG_FILE")
-	local BACKGROUND_HOST=$(LoadParam "BACKGROUND_HOST" "$CONFIG_FILE")
-	local TEXTEFFECT_HOST=$(LoadParam "TEXTEFFECT_HOST" "$CONFIG_FILE")
-
-	local FONT_COLOR_PWD=$(LoadParam "FONT_COLOR_PWD" "$CONFIG_FILE")
-	local BACKGROUND_PWD=$(LoadParam "BACKGROUND_PWD" "$CONFIG_FILE")
-	local TEXTEFFECT_PWD=$(LoadParam "TEXTEFFECT_PWD" "$CONFIG_FILE")
-
-	local FONT_COLOR_INPUT=$(LoadParam "FONT_COLOR_INPUT" "$CONFIG_FILE")
-	local BACKGROUND_INPUT=$(LoadParam "BACKGROUND_INPUT" "$CONFIG_FILE")
-	local TEXTEFFECT_INPUT=$(LoadParam "TEXTEFFECT_INPUT" "$CONFIG_FILE")
+	local config_file="$HOME/Software/scripts/terminal/fancy-bash-prompt.config"
+	overrideConfig $config_file
 
 	
+
 	## GENERATE COLOR FORMATING SEQUENCES
 	## The sequences will confuse the bash promt. To tell the terminal that they are non-printint
 	## characters, we must surround them by \[ and \]

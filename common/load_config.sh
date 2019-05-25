@@ -187,6 +187,57 @@ LoadParam() {
 
 
 
+##------------------------------------------------------------------------------
+##
+##	overrideConfig
+##
+##	It will iterate through the configuration file searching for lines
+##	containing key-parameter pairs. If there is a variable in the scripts
+##	scope with the same name as the key, it will write to it the value
+##	of the configuration parameter. 
+##
+##	Arguments:
+##	1. Path to configuration file
+##
+overrideConfig() {
+
+	## CHECK IF CONFIGURATION FILE EXISTS
+	local config_file=$1
+	if [ -f $config_file ]; then
+		
+		## ITERATE THROUGH LINES IN CONFIGURATION FILE
+		while IFS="" read -r p || [ -n "$p" ]
+		do
+			## REMOVE COMMENTS FROM LINE
+			local trimmed_line=$(echo $p | sed '/^$/d;/^\#/d;/\#.*$/d;/\n/d;')
+
+			## CONVERT LINE INTO SCRIPT PARAMETERS
+			set -- $trimmed_line
+
+			## LOAD CONFIG IF AT LEAST 2 PARAMETERS
+			## Config-key-name and desired config value
+			if [ "$#" -gt 1 ]; then
+
+				## ASSING HUMAN READABLE NAMES
+				local config_key_name=$1
+				local config_param=${@:2}
+				eval config_key_current_value=\$$config_key_name
+		
+				## REASSING CONFIG PARAMETER TO KEY
+				## ONLY IF ALREADY DECLARED AND NOT EMPTY
+				## This is meant to avoid loading config parameters
+				## from the config file that are not even used by the caller
+				if [ ! -z "$config_key_current_value" ]; then
+
+					## LOAD CONFIG PARAMETER
+					export "${config_key_name}"="$config_param"
+				fi				
+			fi
+		done < $config_file
+	fi
+}
+
+
 
 ##==============================================================================
 ##  FOR DEBUGGING ONLY

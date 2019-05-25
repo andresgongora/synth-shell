@@ -313,7 +313,7 @@ printHeader()
 
 
 	## MEMORY
-	local MEM_INFO=$(free -m | head -n 2 | tail -n 1)
+	local MEM_INFO=$('free' -m | head -n 2 | tail -n 1)
 	local MEM_CURRENT=$(echo "$MEM_INFO" | awk '{mem=($2-$7)} END {printf mem}')
 	while [ ${#MEM_CURRENT} -lt $MAX_DIGITS ]
 	do
@@ -330,7 +330,7 @@ printHeader()
 
 
 	## SWAP
-	local SWAP_INFO=$(free -m | tail -n 1)
+	local SWAP_INFO=$('free' -m | tail -n 1)
 	local SWAP_CURRENT=$(echo "$SWAP_INFO" | awk '{SWAP=($3)} END {printf SWAP}')
 	while [ ${#SWAP_CURRENT} -lt $MAX_DIGITS ]
 	do
