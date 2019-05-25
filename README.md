@@ -52,7 +52,6 @@ Lastly, you may configure your scripts by first copying the individual
 `.config.example` files into `.config` included in this repo. For example:
 
 ```
-# Colors and behaviourt of status.sh
 cp ~/.config/scripts/terminal/status.config.example ~/.config/scripts/terminal/status.config
 ```
 
