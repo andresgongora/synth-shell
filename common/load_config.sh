@@ -209,10 +209,11 @@ overrideConfig() {
 		while IFS="" read -r p || [ -n "$p" ]
 		do
 			## REMOVE COMMENTS FROM LINE
-			local trimmed_line=$(echo $p | sed '/^$/d;/^\#/d;/\#.*$/d;/\n/d;')
+			local trimmed_line=$(printf "$p" | sed '/^$/d;/^\#/d;/\#.*$/d;/\n/d;')
 
 			## CONVERT LINE INTO SCRIPT PARAMETERS
 			set -- $trimmed_line
+			
 
 			## LOAD CONFIG IF AT LEAST 2 PARAMETERS
 			## Config-key-name and desired config value
@@ -220,8 +221,10 @@ overrideConfig() {
 
 				## ASSING HUMAN READABLE NAMES
 				local config_key_name=$1
-				local config_param=${@:2}
 				eval config_key_current_value=\$$config_key_name
+				local config_param=$(echo "$trimmed_line" |\
+				                     sed "s/$config_key_name\s*//" |\
+				                     sed "s/^\"//;s/\"$//")
 		
 				## REASSING CONFIG PARAMETER TO KEY
 				## ONLY IF ALREADY DECLARED AND NOT EMPTY

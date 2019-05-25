@@ -43,14 +43,6 @@
 
 
 ##==============================================================================
-##	OTHER
-##==============================================================================
-
-CPU_IS_CRIT=0
-
-
-
-##==============================================================================
 ##	AUXILIARY FUNCTIONS
 ##==============================================================================
 
@@ -222,6 +214,8 @@ printHeader()
 
 
 
+	#### UGLY FROM HERE ON ######################################
+
 
 	## SYSTEM CTL FAILED TO LOAD
 	local NUM_FAILED=$(systemctl --failed | head -c 1)
@@ -240,8 +234,7 @@ printHeader()
 	local CPU_PER=$(($CPU_PER / $CPU_MAX))
 	local CPU_LOAD=$(echo -e "${fc_info}Sys load avg\t$CPU_BAR ${fc_highlight}${CPU_PER:0:9} %%${fc_none}")
 	if [ $CPU_PER -gt $crit_cpu_percent ]; then
-		CPU_IS_CRIT=1
-		echo "critical"
+		cpu_is_crit=true
 	fi
 
 
@@ -359,7 +352,7 @@ printSystemctl()
 ##------------------------------------------------------------------------------
 printTop()
 {
-	if [ $CPU_IS_CRIT -eq 1 ]; then
+	if $cpu_is_crit; then
 		TOP=$(top -b -d 5 -w 80| head -n 11)
 		LOAD=$(echo "$TOP" | head -n 3 | tail -n 1)
 		HEAD=$(echo "$TOP" | head -n 7 | tail -n 1)
@@ -385,6 +378,10 @@ printStatus()
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 	source "$dir/../common/load_config.sh"
 	source "$dir/../common/color.sh"
+
+
+	## SCRIPT WIDE VARIABLES
+	cpu_is_crit=false
 
 
 
@@ -440,6 +437,7 @@ printStatus()
 
 ## CALL MAIN FUNCTION
 printStatus
+
 
 
 
