@@ -43,34 +43,6 @@
 
 
 ##==============================================================================
-##	CONFIGURATION
-##==============================================================================
-
-## IMPORT EXTERNAL SCRIPTS
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-source "$DIR/../common/load_config.sh"
-source "$DIR/../common/color.sh"
-
-CONFIG_FILE="$HOME/.config/scripts/status.config"
-if [ ! -f $CONFIG_FILE ]; then
-	CONFIG_FILE="$DIR/status.config"
-fi	
-unset DIR
-
-
-
-
-## STATUS BARS
-BAR_LENGTH=$(LoadParam "BAR_LENGTH" "$CONFIG_FILE")
-CRIT_CPU_PERCENT=$(LoadParam "CRIT_CPU_PERCENT" "$CONFIG_FILE")
-CRIT_MEM_PERCENT=$(LoadParam "CRIT_MEM_PERCENT" "$CONFIG_FILE")
-CRIT_SWAP_PERCENT=$(LoadParam "CRIT_SWAP_PERCENT" "$CONFIG_FILE")
-CRIT_HDD_PERCENT=$(LoadParam "CRIT_HDD_PERCENT" "$CONFIG_FILE")
-MAX_DIGITS=$(LoadParam "MAX_DIGITS" "$CONFIG_FILE")
-
-
-
-##==============================================================================
 ##	OTHER
 ##==============================================================================
 
@@ -204,7 +176,7 @@ printHeader()
 {
 	## GENERATE PROPER AMOUNT OF PAD
 	i=0
-	while [ $i -lt $MAX_DIGITS ]; do
+	while [ $i -lt $max_digits ]; do
 		PAD="${PAD} "
 		i=$[$i+1]
 	done
@@ -263,11 +235,11 @@ printHeader()
 	## CPU LOAD
 	local CPU_AVG=$(cat /proc/loadavg | awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}')
 	local CPU_MAX=$(cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l)
-	local CPU_BAR=$(printBar $CPU_AVG $CPU_MAX $BAR_LENGTH $CRIT_CPU_PERCENT)
+	local CPU_BAR=$(printBar $CPU_AVG $CPU_MAX $bar_length $crit_cpu_percent)
 	local CPU_PER=$(cat /proc/loadavg | awk '{printf "%3.0f\n",$1*100}')
 	local CPU_PER=$(($CPU_PER / $CPU_MAX))
 	local CPU_LOAD=$(echo -e "${fc_info}Sys load avg\t$CPU_BAR ${fc_highlight}${CPU_PER:0:9} %%${fc_none}")
-	if [ $CPU_PER -gt $CRIT_CPU_PERCENT ]; then
+	if [ $CPU_PER -gt $crit_cpu_percent ]; then
 		CPU_IS_CRIT=1
 		echo "critical"
 	fi
@@ -277,67 +249,67 @@ printHeader()
 	## MEMORY
 	local MEM_INFO=$('free' -m | head -n 2 | tail -n 1)
 	local MEM_CURRENT=$(echo "$MEM_INFO" | awk '{mem=($2-$7)} END {printf mem}')
-	while [ ${#MEM_CURRENT} -lt $MAX_DIGITS ]
+	while [ ${#MEM_CURRENT} -lt $max_digits ]
 	do
   		local MEM_CURRENT=" $MEM_CURRENT"
 	done
 	local MEM_MAX=$(echo "$MEM_INFO" | awk '{mem=($2)} END {printf mem}')
-	while [ ${#MEM_MAX} -lt $MAX_DIGITS ]
+	while [ ${#MEM_MAX} -lt $max_digits ]
 	do
   		local MEM_MAX="$MEM_MAX "
 	done
-	local MEM_BAR=$(printBar $MEM_CURRENT $MEM_MAX $BAR_LENGTH $CRIT_MEM_PERCENT)
+	local MEM_BAR=$(printBar $MEM_CURRENT $MEM_MAX $bar_length $crit_mem_percent)
 	local MEM_MAX=$MEM_MAX$PAD
-	local MEM_USAGE=$(echo -e "${fc_info}Memory\t\t$MEM_BAR ${fc_highlight}${MEM_CURRENT:0:${MAX_DIGITS}}${fc_info}/${fc_highlight}${MEM_MAX:0:${MAX_DIGITS}} MB${fc_none}")
+	local MEM_USAGE=$(echo -e "${fc_info}Memory\t\t$MEM_BAR ${fc_highlight}${MEM_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${MEM_MAX:0:${max_digits}} MB${fc_none}")
 
 
 	## SWAP
 	local SWAP_INFO=$('free' -m | tail -n 1)
 	local SWAP_CURRENT=$(echo "$SWAP_INFO" | awk '{SWAP=($3)} END {printf SWAP}')
-	while [ ${#SWAP_CURRENT} -lt $MAX_DIGITS ]
+	while [ ${#SWAP_CURRENT} -lt $max_digits ]
 	do
   		local SWAP_CURRENT=" $SWAP_CURRENT"
 	done
 	local SWAP_MAX=$(echo "$SWAP_INFO" | awk '{SWAP=($2)} END {printf SWAP}')
-	while [ ${#SWAP_CURRENT} -lt $MAX_DIGITS ]
+	while [ ${#SWAP_CURRENT} -lt $max_digits ]
 	do
   		local SWAP_CURRENT=" $SWAP_CURRENT"
 	done
-	local SWAP_BAR=$(printBar $SWAP_CURRENT $SWAP_MAX $BAR_LENGTH $CRIT_SWAP_PERCENT)
+	local SWAP_BAR=$(printBar $SWAP_CURRENT $SWAP_MAX $bar_length $crit_swap_percent)
 	local SWAP_MAX=$SWAP_MAX$PAD
-	local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t$SWAP_BAR ${fc_highlight}${SWAP_CURRENT:0:${MAX_DIGITS}}${fc_info}/${fc_highlight}${SWAP_MAX:0:${MAX_DIGITS}} MB${fc_none}")
+	local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t$SWAP_BAR ${fc_highlight}${SWAP_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${SWAP_MAX:0:${max_digits}} MB${fc_none}")
 
 
 	## HDD /
 	local ROOT_CURRENT=$(df -B1G / | grep "/" | awk '{key=($3)} END {printf key}')
-	while [ ${#ROOT_CURRENT} -lt $MAX_DIGITS ]
+	while [ ${#ROOT_CURRENT} -lt $max_digits ]
 	do
   		local ROOT_CURRENT=" $ROOT_CURRENT"
 	done
 	local ROOT_MAX=$(df -B1G "/" | grep "/" | awk '{key=($2)} END {printf key}')
-	while [ ${#ROOT_CURRENT} -lt $MAX_DIGITS ]
+	while [ ${#ROOT_CURRENT} -lt $max_digits ]
 	do
   		local ROOT_CURRENT=" $ROOT_CURRENT"
 	done
-	local ROOT_BAR=$(printBar $ROOT_CURRENT $ROOT_MAX $BAR_LENGTH $CRIT_HDD_PERCENT)
+	local ROOT_BAR=$(printBar $ROOT_CURRENT $ROOT_MAX $bar_length $crit_hdd_percent)
 	local ROOT_MAX=$ROOT_MAX$PAD
-	local ROOT_USAGE=$(echo -e "${fc_info}Storage /\t$ROOT_BAR ${fc_highlight}${ROOT_CURRENT:0:${MAX_DIGITS}}${fc_info}/${fc_highlight}${ROOT_MAX:0:${MAX_DIGITS}} GB${fc_none}")
+	local ROOT_USAGE=$(echo -e "${fc_info}Storage /\t$ROOT_BAR ${fc_highlight}${ROOT_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${ROOT_MAX:0:${max_digits}} GB${fc_none}")
 
 
 	## HDD /home
 	local HOME_CURRENT=$(df -B1G ~ | grep "/" | awk '{key=($3)} END {printf key}')
-	while [ ${#HOME_CURRENT} -lt $MAX_DIGITS ]
+	while [ ${#HOME_CURRENT} -lt $max_digits ]
 	do
   		local HOME_CURRENT=" $HOME_CURRENT"
 	done
 	local HOME_MAX=$(df -B1G ~ | grep "/" | awk '{key=($2)} END {printf key}')
-	while [ ${#HOME_CURRENT} -lt $MAX_DIGITS ]
+	while [ ${#HOME_CURRENT} -lt $max_digits ]
 	do
   		local HOME_CURRENT=" $HOME_CURRENT"
 	done
-	local HOME_BAR=$(printBar $HOME_CURRENT $HOME_MAX $BAR_LENGTH $CRIT_HDD_PERCENT)
+	local HOME_BAR=$(printBar $HOME_CURRENT $HOME_MAX $bar_length $crit_hdd_percent)
 	local HOME_MAX=$HOME_MAX$PAD
-	local HOME_USAGE=$(echo -e "${fc_info}Storage /home\t$HOME_BAR ${fc_highlight}${HOME_CURRENT:0:${MAX_DIGITS}}${fc_info}/${fc_highlight}${HOME_MAX:0:${MAX_DIGITS}} GB${fc_none}")
+	local HOME_USAGE=$(echo -e "${fc_info}Storage /home\t$HOME_BAR ${fc_highlight}${HOME_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${HOME_MAX:0:${max_digits}} GB${fc_none}")
 
 
 	## CHECK TERMINAL SIZE
@@ -442,6 +414,12 @@ printStatus()
 	local format_error="-c 208   -e bold -e blink"
 	local format_logo="-c blue -e bold"
 
+	local bar_length=15
+	local crit_cpu_percent=50
+	local crit_mem_percent=75
+	local crit_swap_percent=25
+	local crit_hdd_percent=80
+	local max_digits=5
 
 
 

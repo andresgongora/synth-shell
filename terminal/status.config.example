@@ -25,12 +25,12 @@ logo_padding		""
 ##==============================================================================
 ##	STATUS BARS
 ##==============================================================================
-BAR_LENGTH		15
-CRIT_CPU_PERCENT	50
-CRIT_MEM_PERCENT	75
-CRIT_SWAP_PERCENT	25
-CRIT_HDD_PERCENT	80
-MAX_DIGITS		5
+bar_length		15
+crit_cpu_percent	50
+crit_mem_percent	75
+crit_swap_percent	25
+crit_hdd_percent	80
+max_digits		5
 
 
 
