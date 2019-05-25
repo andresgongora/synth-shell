@@ -6,3 +6,4 @@ STR Hola como estas
 
 VAL3    3 # trailing
 NAME3       PEPA 
+NAME_4		"asdasd\tasdasd"
