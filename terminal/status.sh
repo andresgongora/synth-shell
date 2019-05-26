@@ -320,6 +320,7 @@ printHeader()
 
 
 	## PRINT HEADER WITH OVERALL STATUS REPORT
+	printf '\033[?7l'
 	printf "\n\r"
 	printf "${logo_padding}${formatted_logo_01}\t${os_info}\n\r"
 	printf "${logo_padding}${formatted_logo_02}\t${kernel_info}\n\r"
@@ -335,6 +336,7 @@ printHeader()
 	printf "${logo_padding}${formatted_logo_12}\t${SWAP_USAGE}\n\r"
 	printf "${logo_padding}${formatted_logo_13}\t${ROOT_USAGE}\n\r"
 	printf "${logo_padding}${formatted_logo_14}\t${HOME_USAGE}\n\r\n\r"
+	printf '\033[?7h'
 }
 
 
