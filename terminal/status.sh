@@ -85,12 +85,14 @@ getLocalIPv4()
 	[ $(which ip > /dev/null; echo $?) -eq 0 ] && local ip_available=true || local ip_available=false
 	[ $(which ifconfig > /dev/null; echo $?) -eq 0 ] && local ifconfig_available=true || local ifconfig_available=false
 
+
 	##  Try first found program and try next one if result is empty
 	if $ip_available; then
 		local result=$(ip -family inet addr show | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
-	fi
-	if [ -n $result ] && [ $ifconfig_available == "true" ]; then
+	elif $ifconfig_available; then
 		local result=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
+	else
+		local result="Unknown"	
 	fi
 
 	printf $result
@@ -106,17 +108,16 @@ getExternalIPv4()
 	[ $(which nslookup > /dev/null; echo $?) -eq 0 ] && local nslookup_available=true || local nslookup_available=false
 
 	##  Try first found program and try next one if result is empty
-	if [ $dig_available == "true" ]; then
+	if $dig_available; then
 		local result=$(dig TXT -4 +short o-o.myaddr.l.google.com @ns1.google.com | awk -F\" '{print $2}')
-	fi
-	if [ -n $result ] && [ $curl_available == "true" ]; then
+	elif $curl_available; then
 		local result=$(curl -s https://api.ipify.org)
-	fi
-	if [ -n $result ] && [ $wget_available == "true" ]; then
+	elif $wget_available; then
 		local result=$(wget -q -O - https://api.ipify.org)
-	fi
-	if [ -n $result ] && [ $nslookup_available == "true" ]; then
+	elif $nslookup_available; then
 		local result=$(nslookup -q=txt o-o.myaddr.l.google.com 216.239.32.10 | awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
+	else
+		local result="Unknown"		
 	fi
 
 	printf $result
