@@ -78,6 +78,7 @@ getUserName()
 	echo "$USER@$HOSTNAME"
 }
 
+
 ##------------------------------------------------------------------------------
 ##
 ##	getLocalIPv4()
@@ -103,6 +104,7 @@ getLocalIPv4()
 	[ $result ] && printf $result || printf "N/A"
 }
 
+
 ##------------------------------------------------------------------------------
 ##
 ##	getExternalIPv4()
@@ -125,6 +127,63 @@ getExternalIPv4()
 		local result=$($(which curl) -s https://api.ipify.org)
 	elif which wget > /dev/null; then
 		local result=$($(which wget) -q -O - https://api.ipify.org)
+	else
+		local result="Error"
+	fi
+
+	## Returns "N/A" if actual query result is empty, and returns "Error" if no programs found
+	[ $result ] && printf $result || printf "N/A"
+}
+
+
+##------------------------------------------------------------------------------
+##
+##	getLocalIPv6()
+##
+##  Looks up and returns local IPv6-address.
+##
+##  Tries first program found.
+##
+##  !!! NOTE: Still needs to figure out how to look for IP address that has default gateway
+##  !!! attached to related interface, otherwise this returns list of IPv6's if there are many
+##
+getLocalIPv6()
+{
+	if which ip > /dev/null; then
+		local result=$($(which ip) -family inet6 addr show | grep "inet6" | awk -F' ' '{print $2}' | awk '{print $1}' | sed '/^::1/d' | sed 's/\/[0-9]*$//' | awk 'ORS=","')
+	elif which ifconfig > /dev/null; then
+		local result=$($(which ifconfig) | grep "inet6" | awk -F' ' '{print $2}' | awk '{print $1}' | sed '/^::1/d' | awk 'ORS=","')
+	else
+		local result="Error"	
+	fi
+
+	## Returns "N/A" if actual query result is empty, and returns "Error" if no programs found
+	[ $result ] && printf $result || printf "N/A"
+}
+
+
+##------------------------------------------------------------------------------
+##
+##	getExternalIPv6()
+##
+##  Makes an query to internet-server and returns public IPv6-address
+##
+##  Tries first program found,
+##  program search ordering is based on timed tests, fastest to slowest.
+##
+##  DNS-based queries are always faster, around real time 0.1 seconds.
+##  URL-queries are relatively slow, around real time 1 seconds.
+##
+getExternalIPv6()
+{
+	if which dig > /dev/null; then
+		local result=$($(which dig) TXT -6 +short o-o.myaddr.l.google.com @ns1.google.com | awk -F\" '{print $2}')
+	elif which nslookup > /dev/null; then
+		local result=$($(which nslookup) -q=txt o-o.myaddr.l.google.com 2001:4860:4802:32::a | awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
+	elif which curl > /dev/null; then
+		local result=$($(which curl) -s https://api6.ipify.org)
+	elif which wget > /dev/null; then
+		local result=$($(which wget) -q -O - https://api6.ipify.org)
 	else
 		local result="Error"
 	fi
