@@ -78,49 +78,59 @@ getUserName()
 	echo "$USER@$HOSTNAME"
 }
 
-
+##------------------------------------------------------------------------------
+##
+##	getLocalIPv4()
+##
+##  Looks up and returns local IPv4-address.
+##
+##  Tries first program found.
+##
+##  !!! NOTE: Still needs to figure out how to look for IP address that has default gateway
+##  !!! attached to related interface, otherwise this returns list of IPv4's if there are many
+##
 getLocalIPv4()
 {
-	##  Look which programs are available
-	[ $(which ip > /dev/null; echo $?) -eq 0 ] && local ip_available=true || local ip_available=false
-	[ $(which ifconfig > /dev/null; echo $?) -eq 0 ] && local ifconfig_available=true || local ifconfig_available=false
-
-
-	##  Try first found program and try next one if result is empty
-	if $ip_available; then
-		local result=$(ip -family inet addr show | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
-	elif $ifconfig_available; then
-		local result=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
+	if which ip > /dev/null; then
+		local result=$($(which ip) -family inet addr show | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
+	elif which ifconfig > /dev/null; then
+		local result=$($(which ifconfig) | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
 	else
-		local result="Unknown"	
+		local result="Error"	
 	fi
 
-	printf $result
+	## Returns "N/A" if actual query result is empty, and returns "Error" if no programs found
+	[ $result ] && printf $result || printf "N/A"
 }
 
-
+##------------------------------------------------------------------------------
+##
+##	getExternalIPv4()
+##
+##  Makes an query to internet-server and returns public IPv4-address
+##
+##  Tries first program found,
+##  program search ordering is based on timed tests, fastest to slowest.
+##
+##  DNS-based queries are always faster, around real time 0.1 seconds.
+##  URL-queries are relatively slow, around real time 1 seconds.
+##
 getExternalIPv4()
 {
-	##  Look which programs are available
-	[ $(which dig > /dev/null; echo $?) -eq 0 ] && local dig_available=true || local dig_available=false
-	[ $(which curl > /dev/null; echo $?) -eq 0 ] && local curl_available=true || local curl_available=false
-	[ $(which wget > /dev/null; echo $?) -eq 0 ] && local wget_available=true || local wget_available=false
-	[ $(which nslookup > /dev/null; echo $?) -eq 0 ] && local nslookup_available=true || local nslookup_available=false
-
-	##  Try first found program and try next one if result is empty
-	if $dig_available; then
-		local result=$(dig TXT -4 +short o-o.myaddr.l.google.com @ns1.google.com | awk -F\" '{print $2}')
-	elif $curl_available; then
-		local result=$(curl -s https://api.ipify.org)
-	elif $wget_available; then
-		local result=$(wget -q -O - https://api.ipify.org)
-	elif $nslookup_available; then
-		local result=$(nslookup -q=txt o-o.myaddr.l.google.com 216.239.32.10 | awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
+	if which dig > /dev/null; then
+		local result=$($(which dig) TXT -4 +short o-o.myaddr.l.google.com @ns1.google.com | awk -F\" '{print $2}')
+	elif which nslookup > /dev/null; then
+		local result=$($(which nslookup) -q=txt o-o.myaddr.l.google.com 216.239.32.10 | awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
+	elif which curl > /dev/null; then
+		local result=$($(which curl) -s https://api.ipify.org)
+	elif which wget > /dev/null; then
+		local result=$($(which wget) -q -O - https://api.ipify.org)
 	else
-		local result="Unknown"		
+		local result="Error"
 	fi
 
-	printf $result
+	## Returns "N/A" if actual query result is empty, and returns "Error" if no programs found
+	[ $result ] && printf $result || printf "N/A"
 }
 
 
@@ -215,8 +225,8 @@ printHeader()
 	local shell_info="${fc_info}Shell\t\t${fc_highlight}$(getShellInfo)${fc_none}"
 	local sys_date="${fc_info}Date\t\t${fc_highlight}$(getSysDate)${fc_none}"
 	local user_name="${fc_info}Login\t\t${fc_highlight}$(getUserName)@$HOSTNAME${fc_none}"
-	local local_ipv4="${fc_info}Local IP\t${fc_highlight}$(getLocalIPv4)${fc_none}"
-	local external_ipv4="${fc_info}External IP\t${fc_highlight}$(getExternalIPv4)${fc_none}"
+	local local_ipv4="${fc_info}Local IPv4\t${fc_highlight}$(getLocalIPv4)${fc_none}"
+	local external_ipv4="${fc_info}External IPv4\t${fc_highlight}$(getExternalIPv4)${fc_none}"
 
 
 
