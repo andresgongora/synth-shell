@@ -93,9 +93,9 @@ getUserName()
 getLocalIPv4()
 {
 	if which ip > /dev/null; then
-		local result=$($(which ip) -family inet addr show | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
+		local result=$($(which ip) -family inet addr show | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | tr '\n' ',' | sed 's/,$//')
 	elif which ifconfig > /dev/null; then
-		local result=$($(which ifconfig) | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
+		local result=$($(which ifconfig) | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | tr '\n' ',' | sed 's/,$//')
 	else
 		local result="Error"	
 	fi
@@ -150,9 +150,9 @@ getExternalIPv4()
 getLocalIPv6()
 {
 	if which ip > /dev/null; then
-		local result=$($(which ip) -family inet6 addr show | grep "inet6" | awk -F' ' '{print $2}' | awk '{print $1}' | sed '/^::1/d' | sed 's/\/[0-9]*$//' | awk 'ORS=","')
+		local result=$($(which ip) -family inet6 addr show | grep "inet6" | awk -F' ' '{print $2}' | awk '{print $1}' | sed '/^::1/d;s/\/[0-9]*$//' | tr '\n' ',' | sed 's/,$//')
 	elif which ifconfig > /dev/null; then
-		local result=$($(which ifconfig) | grep "inet6" | awk -F' ' '{print $2}' | awk '{print $1}' | sed '/^::1/d' | awk 'ORS=","')
+		local result=$($(which ifconfig) | grep "inet6" | awk -F' ' '{print $2}' | awk '{print $1}' | sed '/^::1/d' | tr '\n' ',' | sed 's/,$//')
 	else
 		local result="Error"	
 	fi
