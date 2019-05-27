@@ -31,7 +31,7 @@ and layback while everything happens automatically. To see if it worked,
 open a new terminal after the installation is complete.
 
 ```
-wget https://raw.githubusercontent.com/andresgongora/scripts/master/install/install.sh &&\
+wget https://raw.githubusercontent.com/andresgongora/scripts/develop/install/install.sh &&\
 chmod +x install.sh &&\
 ./install.sh &&\
 rm ./install.sh
