@@ -15,7 +15,7 @@ If you recognize a snippet and the file has no reference
 (specially in the older ones), kindly let me know.
 
 
-
+![Example with status.sh and fancy-bash-prompt.sh](doc/screenshot.png)
 
 
 
