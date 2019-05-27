@@ -135,7 +135,7 @@ bash_prompt() {
 	local texteffect_input="bold"
 
 	local separator_char=$'\uE0B0'
-	
+	local enable_vertical_padding=true
 
 
 	## LOAD USER CONFIGURATION
@@ -173,6 +173,15 @@ bash_prompt() {
 
 
 
+	## Add extra new line on top of prompt
+	if $enable_vertical_padding; then
+		local vertical_padding="\n"
+	else
+		local vertical_padding=""
+	fi
+
+
+
 	## WINDOW TITLE
 	## Prevent messed up terminal-window titles
 	## Must be set in PS1
@@ -188,7 +197,7 @@ bash_prompt() {
 
 
 	## BASH PROMT - Generate promt and remove format from the rest
-	PS1="$titlebar\n${ps1_user}${separator_1}${ps1_host}${separator_2}${ps1_pwd}${separator_3}${ps1_input}"
+	PS1="$titlebar${vertical_padding}${ps1_user}${separator_1}${ps1_host}${separator_2}${ps1_pwd}${separator_3}${ps1_input}"
 
 	
 

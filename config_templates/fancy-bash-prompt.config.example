@@ -22,3 +22,5 @@ font_color_input		cyan
 background_input		none
 texteffect_input		bold
 
+enable_vertical_padding		true
+
