@@ -54,7 +54,11 @@ max_digits		5	# Control num digits next to bar
 ## COLORS
 ## 
 ## Control the color and format scheme of the status report.
+## -c color: color name or 256bit color code
+## -b background ground color: color name or 256bit color code
+## -e effect: bold, blink, dim, underline...
 ##==============================================================================
+
 format_info		"-c white"
 format_highlight	"-c blue  -e bold"
 format_crit		"-c 208   -e bold"
