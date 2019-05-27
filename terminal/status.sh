@@ -380,13 +380,6 @@ printHeader()
 	local HOME_USAGE=$(echo -e "${fc_info}Storage /home\t$HOME_BAR ${fc_highlight}${HOME_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${HOME_MAX:0:${max_digits}} GB${fc_none}")
 
 
-	## CHECK TERMINAL SIZE
-	## If the temrinal is not wide enough, override logo_padding
-	local WIDTH=$(tput cols)
-	if [ "$WIDTH" -lt 90 ]; then
-		local logo_padding=""
-	fi
-
 
 	## PRINT HEADER WITH OVERALL STATUS REPORT
 	printf '\033[?7l'	# Disable line wrap -> Crop instead
