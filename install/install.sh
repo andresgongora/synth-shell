@@ -46,12 +46,12 @@ installAll()
 	if [ -d ./scripts ]; then
 		sudo rm -r ./scripts
 	fi
-	sudo 'git' clone --recursive https://github.com/andresgongora/scripts.git
+	sudo 'git' clone --recursive --branch features/installer https://github.com/andresgongora/scripts.git
 	chmod -R 
 
 
 	## INSTALL ANCHOR
-	sudo su root -c 'echo "source /usr/local/bin/scripts/install/anchor.sh" >> /etc/bash.bashrc'
+	sudo su root -c 'printf "## Added by https://github.com/andresgongora/scripts.git\n if [ -f /usr/local/bin/scripts/install/anchor.sh ]; then\n\tsource /usr/local/bin/scripts/install/anchor.sh\nfi" >> /etc/bash.bashrc'
 }
 
 installAll
