@@ -50,7 +50,7 @@ installAll()
 
 
 	## INSTALL ANCHOR
-	sudo su root -c 'printf "## Added by https://github.com/andresgongora/scripts.git\n\rif [ -f /usr/local/bin/scripts/install/anchor.sh ]; then\n\r\tsource /usr/local/bin/scripts/install/anchor.sh\nfi\n\n" >> /etc/bash.bashrc'
+	sudo su root -c 'printf "if [ -f /usr/local/bin/scripts/install/anchor.sh ]; then\n\tsource /usr/local/bin/scripts/install/anchor.sh\nfi\n\n" >> /etc/bash.bashrc'
 }
 
 installAll
