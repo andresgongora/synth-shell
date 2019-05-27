@@ -283,7 +283,7 @@ printHeader()
 	local cpu_info="${fc_info}CPU\t\t${fc_highlight}$(getCPUInfo)${fc_none}"
 	local shell_info="${fc_info}Shell\t\t${fc_highlight}$(getShellInfo)${fc_none}"
 	local sys_date="${fc_info}Date\t\t${fc_highlight}$(getSysDate)${fc_none}"
-	local user_name="${fc_info}Login\t\t${fc_highlight}$(getUserName)@$HOSTNAME${fc_none}"
+	local user_name="${fc_info}Login\t\t${fc_highlight}$(getUserName)${fc_none}"
 	local local_ipv4="${fc_info}Local IPv4\t${fc_highlight}$(getLocalIPv4)${fc_none}"
 	local external_ipv4="${fc_info}External IPv4\t${fc_highlight}$(getExternalIPv4)${fc_none}"
 
