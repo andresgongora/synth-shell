@@ -46,7 +46,7 @@ installAll()
 	if [ -d ./scripts ]; then
 		sudo rm -r ./scripts
 	fi
-	sudo 'git' clone --recursive --branch features/installer https://github.com/andresgongora/scripts.git
+	sudo 'git' clone --recursive --branch features/installer -n --depth 1 https://github.com/andresgongora/scripts.git
 	chmod -R 
 
 
