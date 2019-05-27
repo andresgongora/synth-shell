@@ -25,18 +25,31 @@ If you recognize a snippet and the file has no reference
 #                                  Installation
 <!--------------------------------------+-------------------------------------->
 
+**Requires sudo, skip this block of code for safer manual installation** 
 The quiquest way to get started is to simply run the installation script.
 Simply copy and paste the complete following block into your terminal
 and layback while everything happens automatically. To see if it worked,
 open a new terminal after the installation is complete.
-
 ```
 wget https://raw.githubusercontent.com/andresgongora/scripts/develop/install/install.sh &&\
 chmod +x install.sh &&\
 ./install.sh &&\
 rm ./install.sh
-
 ```
+
+Alternatively, you may install the script manually for you current user
+(no elevated privileges required). Simply clone this repository and then tell your .bashrc file to source those scripts you want. When you install the scripts as a user, you have to store them somewhere on your system. For this, we suggest the folder ~/scripts, but feel free to use any other location.
+```
+## Clone repository to your computer
+git clone https://github.com/andresgongora/scripts.git
+cd scripts
+
+## Source individual scripts. Choose the ones you want (or all).
+echo "source $(pwd)/terminal/fancy-bash-prompt.sh" >> ~/.bashrc
+echo "source $(pwd)/terminal/alias.sh" >> ~/.bashrc
+echo "source $(pwd)/terminal/status.sh" >> ~/.bashrc
+```
+
 
 If you want to use `fancy-bash-promt.sh` you also need power-line fonts.
 Depending on your distro you can install it as:
