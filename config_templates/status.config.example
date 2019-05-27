@@ -1,0 +1,69 @@
+##==============================================================================
+## LOGO
+##
+## Configure the logo to you liking. You can either use the default or
+## set your own ASCII art down below. Note that the logo may be comprised of
+## a maximum of 14 lines. If it's smaller instead, just put spaces in the lines
+## you do not wish to be displayed.
+##==============================================================================
+
+
+
+logo_01			"        -oydNMMMMNdyo-        "
+logo_02			"     -yNMMMMMMMMMMMMMMNy-     "
+logo_03			"   .hMMMMMMmhsooshmMMMMMMh.   "
+logo_04			"  :NMMMMmo.        .omMMMMN:  "
+logo_05			" -NMMMMs    -+ss+-    sMMMMN- "
+logo_06			" hMMMMs   -mMMMMMMm-   sMMMMh "
+logo_07			"'MMMMM.  'NMMMMMMMMN'  .MMMMM'"
+logo_08			"'MMMMM.  'NMMMMMMMMN'   yMMMM'"
+logo_09			" hMMMMs   -mMMMMMMMMy.   -yMh "
+logo_10			" -NMMMMs    -+ss+yMMMMy.   -. "
+logo_11			"  :NMMMMmo.       .yMMMMy.    "
+logo_12			"   .hMMMMMMmhsoo-   .yMMMy    "
+logo_13			"     -yNMMMMMMMMMy-   .o-     "
+logo_14			"        -oydNMMMMNd/          "
+
+logo_padding		""
+
+
+
+
+##==============================================================================
+## STATUS BARS
+##
+## This optios control the behaviourt of the visual status bars that are plotted
+## for CPU, Memory, Swap and HDD usage. You can set the percentage that
+## determine when the current usage is deemed critical. If said percentage
+## is surprased, the color of the bars will change and extra information
+## might be plotted in addition (e.g. if the CPU usage is to high, the most
+## demanding processes are printed to terminal).
+##==============================================================================
+
+bar_length		15	# Number of characters that comprise a bar
+crit_cpu_percent	50
+crit_mem_percent	75
+crit_swap_percent	25
+crit_hdd_percent	80
+max_digits		5	# Control num digits next to bar
+
+
+
+
+##==============================================================================
+## COLORS
+## 
+## Control the color and format scheme of the status report.
+## -c color: color name or 256bit color code
+## -b background ground color: color name or 256bit color code
+## -e effect: bold, blink, dim, underline...
+##==============================================================================
+
+format_info		"-c white"
+format_highlight	"-c blue  -e bold"
+format_crit		"-c 208   -e bold"
+format_deco		"-c white -e bold"
+format_ok		"-c blue  -e bold"
+format_error		"-c 208   -e bold -e blink"
+format_logo		"-c blue  -e bold"
+

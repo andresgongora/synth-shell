@@ -1,0 +1,28 @@
+##==============================================================================
+## COLORS
+##
+## Control the color and format scheme of the bash prompt.
+##==============================================================================
+
+## First color
+font_color_user			white
+background_user			blue
+texteffect_user			bold
+
+## Second color
+font_color_host			white
+background_host			light-blue
+texteffect_host			bold
+
+## Third color
+font_color_pwd			dark-gray
+background_pwd			white
+texteffect_pwd			bold
+
+## Input text font
+font_color_input		cyan
+background_input		none
+texteffect_input		bold
+
+enable_vertical_padding		true	# Add extra new line over prompt
+

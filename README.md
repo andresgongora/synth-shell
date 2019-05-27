@@ -11,9 +11,11 @@ and sys-administration helpers. You can find more details and similar tools on
 Note that some script snippets might be from third parties.
 I collected them over many years from forums, wikis, and chats.
 The original authors, if known, are referenced within the individual scripts.
-If you recognize cone in a script (especially the older ones) as your own
-or know the author, and the file has no reference, kindly let me know.
+If you recognize a snippet and the file has no reference
+(specially in the older ones), kindly let me know.
 
+
+![Example with status.sh and fancy-bash-prompt.sh](doc/screenshot.png)
 
 
 
@@ -23,16 +25,19 @@ or know the author, and the file has no reference, kindly let me know.
 
 For now, the easiest way to install this scripts is to clone this repository
 and then tell your `.bashrc` file to source those scripts you want.
+When you install the scripts as a user, you have to store them somewhere
+on your system. For this, we suggest the folder `~/scripts`, but feel
+free to use any other location.
 
 ```
-## Clone repository to ~/.config/scripts
-cd ~/.config
+## Clone repository to your computer
 git clone https://github.com/andresgongora/scripts.git
+cd scripts
 
 ## Source individual scripts. Choose the ones you want (or all).
-echo 'source ~/.config/scripts/terminal/fancy-bash-prompt.sh' >> ~/.bashrc
-echo 'source ~/.config/scripts/terminal/alias.sh' >> ~/.bashrc
-echo 'source ~/.config/scripts/terminal/status.sh' >> ~/.bashrc
+echo "source $(pwd)/terminal/fancy-bash-prompt.sh" >> ~/.bashrc
+echo "source $(pwd)/terminal/alias.sh" >> ~/.bashrc
+echo "source $(pwd)/terminal/status.sh" >> ~/.bashrc
 ```
 
 If you want to use `fancy-bash-promt.sh` you also need power-line fonts.
@@ -42,20 +47,35 @@ Depending on your distro you can install it as:
 ## ArchLinux
 sudo pacman -S powerline-fonts
 
-## Ubuntu
+## Debian, Ubuntu
 sudo apt install fonts-powerline
 ```
 
-Lastly, you may configure your scripts by editing the individual `.config`
-files included in this repo. For example, to configure the colors in
-`fancy-bash-promt.sh` or `status.sh`, you can do as follows.
+Lastly, you may configure your scripts by first copying the individual
+`*.config.example`-files included in this repo to your user's 
+`~/.config/scripts/` folder. First create the folder:
 
 ```
-## Colors of fancy-bash-promt.sh
-nano ~/.config/scripts/terminal/fancy-bash-prompt.config
+mkdir ~/.config/scripts
+```
 
-## Colors and behaviourt of status.sh
-nano ~/.config/scripts/terminal/status.config
+Then copy configurations you need into place, while you still are on the downloaded scripts-folder:
+
+```
+cp config_templates/status.config.example ~/.config/scripts/status.config
+cp config_templates/fancy-bash-prompt.config.example ~/.config/scripts/fancy-bash-prompt.config
+```
+
+Then you can modify them for your needs. For example, to configure
+the colors in`fancy-bash-promt.sh` or `status.sh`, you can do as follows:
+
+```
+## Colors and behaviour of status.sh
+nano ~/.config/scripts/status.config
+
+## Colors of fancy-bash-promt.sh
+nano ~/.config/scripts/fancy-bash-prompt.config
+
 ```
 
 
@@ -110,6 +130,8 @@ your manual intervention. Check the content of each script for details.
 
 
 
+
+
 <!--------------------------------------+-------------------------------------->
 #                                   Contribute
 <!--------------------------------------+-------------------------------------->
@@ -117,7 +139,7 @@ your manual intervention. Check the content of each script for details.
 This project is only possible thanks to the effort of and passion of many, 
 including mentors, developers, and of course, our beloved coffe vending machine.
 If you like this collection of scripts and want to contribute in any way,
-you are most welcome.
+you are most welcome to do so.
 
 You can find a detailed list of everyone involved in the development of
 these scripts in [AUTHORS.md](AUTHORS.md). Thanks to all of you!
@@ -133,8 +155,11 @@ these scripts in [AUTHORS.md](AUTHORS.md). Thanks to all of you!
   if you notice that something is not right, tell us. 
   We'll try to fix it ASAP.
 * Become a developer: fork this repo and become an active developer!
+  Take a look at the [issuess](https://github.com/andresgongora/scripts/issues)
+  for suggestions of where to start. Also, take a look at our 
+  [coding style](coding_style.md).
 * Push your one-time changes: even if its a tiny change, 
-  feel free to fill in a pull-request :)
+  feel free to fill in a pull-request!
 
 
 
@@ -143,14 +168,16 @@ these scripts in [AUTHORS.md](AUTHORS.md). Thanks to all of you!
 There are two branches in this repository:
 
 * **master**: this is the main branch, and thus contains fully functional 
-  scripts. When you want to use the scripts as a _user_, 
+  scripts. When you want to use the scripts as an _user_, 
   this is the branch you want to clone or download.
 * **develop**: this branch contains all the new features and most recent 
   contributions. It is always _stable_, in the sense that you can use it
-  without major inconveniences. However, because we are still working on it,
-  its very prone to undetected bugs and it might be subject to major
+  without major inconveniences. 
+  However, its very prone to undetected bugs and it might be subject to major
   unanounced changes. If you want to contribute, this is the branch 
   you should pull-request to.
+
+
 
 
 
@@ -164,7 +191,6 @@ Copyright (c) 2014-2019, Andres Gongora - www.andresgongora.com
 * This software is released under a GPLv3 license.
   Read [license-GPLv3.txt](LICENSE),
   or if not present, <http://www.gnu.org/licenses/>.
-
 * If you need a closed-source version of this software
   for commercial purposes, please contact the authors.
 
