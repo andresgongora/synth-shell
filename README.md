@@ -35,6 +35,7 @@ sudo bash scripts/install/install.sh
 rm -r scripts
 ```
 
+
 Alternatively, you may install the script manually for you current user
 (no elevated privileges required). Simply clone this repository and then tell your .bashrc file to source those scripts you want. When you install the scripts as a user, you have to store them somewhere on your system. For this, we suggest the folder ~/scripts, but feel free to use any other location.
 ```
@@ -51,7 +52,6 @@ echo "source $(pwd)/terminal/status.sh" >> ~/.bashrc
 
 If you want to use `fancy-bash-promt.sh` you also need power-line fonts.
 Depending on your distro you can install it as:
-
 ```
 ## ArchLinux
 sudo pacman -S powerline-fonts
@@ -60,24 +60,24 @@ sudo pacman -S powerline-fonts
 sudo apt install fonts-powerline
 ```
 
+
 Lastly, you may configure your scripts by first copying the individual
 `*.config.example`-files included in this repo to your user's 
 `~/.config/scripts/` folder. First create the folder:
-
 ```
 mkdir ~/.config/scripts
 ```
 
-Then copy configurations you need into place, while you still are on the downloaded scripts-folder:
 
+Then copy configurations you need into place, while you still are on the downloaded scripts-folder:
 ```
 cp /usr/local/bin/scripts/config_templates/status.config.example ~/.config/scripts/status.config
 cp /usr/local/bin/scripts/config_templates/fancy-bash-prompt.config.example ~/.config/scripts/fancy-bash-prompt.config
 ```
 
+
 Then you can modify them for your needs. For example, to configure
 the colors in`fancy-bash-promt.sh` or `status.sh`, you can do as follows:
-
 ```
 ## Colors and behaviour of status.sh
 nano ~/.config/scripts/status.config
