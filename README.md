@@ -26,15 +26,13 @@ If you recognize a snippet and the file has no reference
 <!--------------------------------------+-------------------------------------->
 
 **Requires sudo, skip this block of code for safer manual installation** 
-The quiquest way to get started is to simply run the installation script.
-Simply copy and paste the complete following block into your terminal
-and layback while everything happens automatically. To see if it worked,
-open a new terminal after the installation is complete.
+The quickuest way to get started is to simply run the installation script.
+Simply download the git repository and run the install script as follows.
 ```
-wget https://raw.githubusercontent.com/andresgongora/scripts/develop/install/install.sh &&\
-chmod +x install.sh &&\
-./install.sh &&\
-rm ./install.sh
+git clone --recursive https://github.com/andresgongora/scripts.git
+chmod +x scripts/install/install.sh
+sudo bash scripts/install/install.sh
+rm -r scripts
 ```
 
 Alternatively, you may install the script manually for you current user
