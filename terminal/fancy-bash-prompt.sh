@@ -110,9 +110,19 @@ bash_prompt_command() {
 bash_prompt() {
 
 	## INCLUDE EXTERNAL DEPENDENCIES
+	## Only if the functions are not available
+	## If not, search in `common` folder
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-	source "$dir/../common/load_config.sh"
-	source "$dir/../common/color.sh"
+	
+	if [ "$(type -t loadConfigFile)" != 'function' ];
+	then
+		source "$dir/../common/load_config.sh"
+	fi
+	
+	if [ "$(type -t getFormatCode)" != 'function' ];
+	then
+		source "$dir/../common/color.sh"
+	fi
 
 
 
@@ -136,6 +146,7 @@ bash_prompt() {
 
 	local separator_char=$'\uE0B0'
 	local enable_vertical_padding=true
+
 
 
 	## LOAD USER CONFIGURATION

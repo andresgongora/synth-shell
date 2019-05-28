@@ -459,9 +459,19 @@ printTop()
 status()
 {
 	## INCLUDE EXTERNAL DEPENDENCIES
+	## Only if the functions are not available
+	## If not, search in `common` folder
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-	source "$dir/../common/load_config.sh"
-	source "$dir/../common/color.sh"
+	
+	if [ "$(type -t loadConfigFile)" != 'function' ];
+	then
+		source "$dir/../common/load_config.sh"
+	fi
+	
+	if [ "$(type -t getFormatCode)" != 'function' ];
+	then
+		source "$dir/../common/color.sh"
+	fi
 
 
 
@@ -472,6 +482,7 @@ status()
 
 	## DEFAULT CONFIGURATION
 	## WARNING! Do not edit directly, use configuration files instead
+
 	local logo_01="        -oydNMMMMNdyo-        "
 	local logo_02="     -yNMMMMMMMMMMMMMMNy-     "
 	local logo_03="   .hMMMMMMmhsooshmMMMMMMh.   "

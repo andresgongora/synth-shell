@@ -27,31 +27,150 @@
 ##	THIS IS WORK IN PROGRESS
 ##
 
-installAll()
+
+
+INSTALL_DIR="/home/andy" 
+
+
+
+##==============================================================================
+##	FUNCTIONS
+##==============================================================================
+
+installStatus()
 {
-	## CHECK IF GIT IS PRESET
-	local gitbin=$(which git)
-	if [ -z $gitbin ]; then
-		echo "Git is not installed"
-		exit 1 
+	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+	local script="${INSTALL_DIR}/status.sh"
+
+
+
+	## CREATE EMPTY SCRIPT FILE	
+	if [ -f $script ]; then
+		rm $script
 	fi
+	touch "$script"
+	chmod 755 "$script"
+	
+
+	
+	echo "##!/bin/bash" >> ${script}
+	echo "##Created by https://github.com/andresgongora/scripts" >> ${script}
+	echo "##Do NOT modify manually" >> ${script}
+	echo "" >> ${script}
+		
+
+		
+	## ADD SCRIPT DEPENDENCIES TO FILE	
+	cat "${dir}/../common/load_config.sh" >> "$script"
+	echo "" >> ${script}
+	cat "${dir}/../common/color.sh" >> "$script"
+	echo "" >> ${script}
 
 
-	## GET ADMIN RIGHTS AND GO TO INSTALL FOLDER
-	sudo -v
-	cd /usr/local/bin
+
+	## ADD ACTUAL SCRIPT
+	cat "${dir}/../terminal/status.sh" >> "$script"
 
 
-	## DOWNLOAD SCRIPTS
-	if [ -d ./scripts ]; then
-		sudo rm -r ./scripts
-	fi
-	sudo 'git' clone --recursive --branch develop https://github.com/andresgongora/scripts.git
+
+	## ADD HOOK TO /etc/bash.bashrc
+	echo ""  >>  /etc/bash.bashrc
+	echo "## Added by: https://github.com/andresgongora/scripts/" >>  /etc/bash.bashrc
+	echo "if [ -f ${script} ]; then" >>  /etc/bash.bashrc
+	echo "	/usr/local/bin/scripts/terminal/status.sh" >>  /etc/bash.bashrc
+	echo "fi" >>  /etc/bash.bashrc
+	echo ""  >>  /etc/bash.bashrc
 
 
-	## INSTALL ANCHOR
-	sudo su root -c 'printf "if [ -f /usr/local/bin/scripts/install/anchor.sh ]; then\n\tsource /usr/local/bin/scripts/install/anchor.sh\nfi\n\n" >> /etc/bash.bashrc'
+	## COPY CONFIGURATION FILES
 }
 
+
+
+
+installFancyBashPrompt()
+{
+	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+	local script="${INSTALL_DIR}/fancy-bash-prompt.sh"
+
+
+
+	## CREATE EMPTY SCRIPT FILE	
+	if [ -f $script ]; then
+		rm $script
+	fi
+	touch "$script"
+	chmod 644 "$script"
+	
+
+	
+	echo "##!/bin/bash" >> ${script}
+	echo "##Created by https://github.com/andresgongora/scripts" >> ${script}
+	echo "##Do NOT modify manually" >> ${script}
+	echo "" >> ${script}
+		
+
+		
+	## ADD SCRIPT DEPENDENCIES TO FILE	
+	cat "${dir}/../common/load_config.sh" >> "$script"
+	echo "" >> ${script}
+	cat "${dir}/../common/color.sh" >> "$script"
+	echo "" >> ${script}
+
+
+
+	## ADD ACTUAL SCRIPT
+	cat "${dir}/../terminal/fancy-bash-prompt.sh" >> "$script"
+
+
+
+	## ADD HOOK TO /etc/bash.bashrc
+	echo ""  >>  /etc/bash.bashrc
+	echo "## Added by: https://github.com/andresgongora/scripts/" >>  /etc/bash.bashrc
+	echo "if [ -f ${script} ]; then" >>  /etc/bash.bashrc
+	echo "	source ${script}" >>  /etc/bash.bashrc
+	echo "fi" >>  /etc/bash.bashrc
+	echo ""  >>  /etc/bash.bashrc
+
+
+
+	## COPY CONFIGURATION FILES
+
+
+
+}
+
+
+
+
+
+installAll()
+{
+	installStatus
+	installFancyBashPrompt
+}
+
+
+
+
+##==============================================================================
+##	MAIN
+##==============================================================================
+
+
+
+
+if [ $(id -u) -ne 0 ];
+	then echo "Please run as root"
+	exit
+fi
+
+
+
 installAll
+
+unset INSTALL_DIR
+
+
+
 

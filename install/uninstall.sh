@@ -20,14 +20,103 @@
 ##  +-----------------------------------------------------------------------+
 
 ##
-##	QUICK INSTALLER
-##
-##	This script will install these scripts to /usr/bin/locale and will
-##	apply status.sh and fancy-bash-prompt.sh systemwide.
-##	THIS IS WORK IN PROGRESS
+##	QUICK UNINSTALLER
 ##
 
 
 
-source /usr/local/bin/scripts/terminal/status.sh
-source /usr/local/bin/scripts/terminal/fancy-bash-prompt.sh
+INSTALL_DIR="/home/andy" 
+
+
+
+##==============================================================================
+##	FUNCTIONS
+##==============================================================================
+
+uninstallStatus()
+{
+	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+	local script="${INSTALL_DIR}/status.sh"
+
+
+
+	## REMOVE SCRIPT FILE	
+	if [ -f $script ]; then
+		rm $script
+	fi
+	touch "$script"
+	chmod 755 "$script"
+	
+
+	
+	## REMOVE HOOK FROM /etc/bash.bashrc
+
+
+
+	## REMOVE CONFIGURATION FILES
+}
+
+
+
+
+uninstallFancyBashPrompt()
+{
+	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+	local script="${INSTALL_DIR}/fancy-bash-prompt.sh"
+
+
+
+	## REMOVE SCRIPT FILE	
+	if [ -f $script ]; then
+		rm $script
+	fi
+	touch "$script"
+	chmod 755 "$script"
+	
+
+	
+	## REMOVE HOOK FROM /etc/bash.bashrc
+
+
+
+	## REMOVE CONFIGURATION FILES
+
+
+
+
+}
+
+
+
+
+
+uninstallAll()
+{
+	uninstallStatus
+	uninstallFancyBashPrompt
+}
+
+
+
+
+##==============================================================================
+##	MAIN
+##==============================================================================
+
+
+
+
+if [ $(id -u) -ne 0 ];
+	then echo "Please run as root"
+	exit
+fi
+
+
+
+uninstallAll
+
+unset INSTALL_DIR
+
+
+
+
