@@ -517,9 +517,13 @@ status()
 
 
 	## LOAD USER CONFIGURATION
-	local config_file="$HOME/.config/scripts/status.config"
-	loadConfigFile $config_file
-
+	local user_config_file="$HOME/.config/scripts/status.config"
+	local sys_config_file="/etc/andresgongora/scripts/status.config"
+	if [ -f $user_config_file ]; then
+		loadConfigFile $user_config_file
+	elif [ -f $sys_config_file ];
+		loadConfigFile $sys_config_file	
+	fi
 
 
 	## COLOR AND TEXT FORMAL CODE

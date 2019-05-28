@@ -150,8 +150,14 @@ bash_prompt() {
 
 
 	## LOAD USER CONFIGURATION
-	local config_file="$HOME/.config/scripts/fancy-bash-prompt.config"
-	loadConfigFile $config_file
+		## LOAD USER CONFIGURATION
+	local user_config_file="$HOME/.config/scripts/fancy-bash-prompt.config"
+	local sys_config_file="/etc/andresgongora/scripts/fancy-bash-prompt.config"
+	if [ -f $user_config_file ]; then
+		loadConfigFile $user_config_file
+	elif [ -f $sys_config_file ];
+		loadConfigFile $sys_config_file	
+	fi
 
 	
 
