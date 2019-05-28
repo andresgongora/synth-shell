@@ -76,6 +76,7 @@ installStatus()
 
 
 	## ADD HOOK TO /etc/bash.bashrc
+	## TODO: Only if not already present
 	echo ""  >>  /etc/bash.bashrc
 	echo "## Added by: https://github.com/andresgongora/scripts/" >>  /etc/bash.bashrc
 	echo "if [ -f ${script} ]; then" >>  /etc/bash.bashrc
@@ -133,6 +134,7 @@ installFancyBashPrompt()
 
 
 	## ADD HOOK TO /etc/bash.bashrc
+	## TODO: Only if not already present
 	echo ""  >>  /etc/bash.bashrc
 	echo "## Added by: https://github.com/andresgongora/scripts/" >>  /etc/bash.bashrc
 	echo "if [ -f ${script} ]; then" >>  /etc/bash.bashrc
