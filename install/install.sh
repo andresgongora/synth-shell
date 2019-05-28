@@ -29,7 +29,8 @@
 
 
 
-INSTALL_DIR="/home/andy" 
+INSTALL_DIR="/usr/local/bin" 
+CONFIG_DIR="/etc/andresgongora/scripts"
 
 
 
@@ -41,6 +42,7 @@ installStatus()
 {
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 	local script="${INSTALL_DIR}/status.sh"
+	
 
 
 
@@ -48,7 +50,7 @@ installStatus()
 	if [ -f $script ]; then
 		rm $script
 	fi
-	touch "$script"
+	touch "$script" || exit 1
 	chmod 755 "$script"
 	
 
@@ -82,7 +84,13 @@ installStatus()
 	echo ""  >>  /etc/bash.bashrc
 
 
+
 	## COPY CONFIGURATION FILES
+	if [ ! -d $config_dir ]; then
+		mkdir -p $config_dir
+	fi
+	cp -u "${dir}/../config_templates/status.config" "${CONFIG_DIR}/"
+	cp -ur "${dir}/../config_templates/status.config.examples" "${CONFIG_DIR}/"
 }
 
 
@@ -99,7 +107,7 @@ installFancyBashPrompt()
 	if [ -f $script ]; then
 		rm $script
 	fi
-	touch "$script"
+	touch "$script" || exit 1
 	chmod 644 "$script"
 	
 
@@ -135,9 +143,11 @@ installFancyBashPrompt()
 
 
 	## COPY CONFIGURATION FILES
-
-
-
+	if [ ! -d $config_dir ]; then
+		mkdir -p $config_dir
+	fi
+	cp -u "${dir}/../config_templates/fancy-bash-prompt.config" "${CONFIG_DIR}/"
+	cp -ur "${dir}/../config_templates/fancy-bash-prompt.config.examples" "${CONFIG_DIR}/"
 }
 
 
@@ -170,6 +180,7 @@ fi
 installAll
 
 unset INSTALL_DIR
+unset CONFIG_DIR
 
 
 
