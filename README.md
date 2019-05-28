@@ -40,7 +40,7 @@ Alternatively, you may install the script manually for you current user
 (no elevated privileges required). Simply clone this repository and then tell your .bashrc file to source those scripts you want. When you install the scripts as a user, you have to store them somewhere on your system. For this, we suggest the folder ~/scripts, but feel free to use any other location.
 ```
 ## Clone repository to your computer
-git clone https://github.com/andresgongora/scripts.git
+git clone --recursive https://github.com/andresgongora/scripts.git
 cd scripts
 
 ## Source individual scripts. Choose the ones you want (or all).
