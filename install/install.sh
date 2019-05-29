@@ -31,6 +31,7 @@
 
 INSTALL_DIR="/usr/local/bin" 
 CONFIG_DIR="/etc/andresgongora/scripts"
+BASHRC="/etc/bash.bashrc"
 
 
 
@@ -38,11 +39,22 @@ CONFIG_DIR="/etc/andresgongora/scripts"
 ##	FUNCTIONS
 ##==============================================================================
 
-installStatus()
+##------------------------------------------------------------------------------
+##
+##	INSTALL SCRIPT
+##	This function installs a generic script to the system. It copies the
+##	script to INSTALL_DIR, and also adds to it all the dependencies from
+##	common to make the script completely self contained. Also, this
+##	function copies all configuration files to CONFIG_DIR
+##
+##	ARGUMENTS
+##	1. Name of script. (e.g. "status" or "fancy-bash-prompt")
+##
+installScript()
 {
+	script_name=$1	
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-	local script="${INSTALL_DIR}/status.sh"
-	
+	local script="${INSTALL_DIR}/${script_name}.sh"
 
 
 
@@ -52,17 +64,15 @@ installStatus()
 	fi
 	touch "$script" || exit 1
 	chmod 755 "$script"
-	
-
-	
 	echo "##!/bin/bash" >> ${script}
 	echo "##Created by https://github.com/andresgongora/scripts" >> ${script}
 	echo "##Do NOT modify manually" >> ${script}
 	echo "" >> ${script}
-		
 
-		
-	## ADD SCRIPT DEPENDENCIES TO FILE	
+
+
+	## ADD COMMON SCRIPTS TO FILE
+	## TODO: Make this configurable	
 	cat "${dir}/../common/load_config.sh" >> "$script"
 	echo "" >> ${script}
 	cat "${dir}/../common/color.sh" >> "$script"
@@ -77,12 +87,20 @@ installStatus()
 
 	## ADD HOOK TO /etc/bash.bashrc
 	## TODO: Only if not already present
-	echo ""  >>  /etc/bash.bashrc
-	echo "## Added by: https://github.com/andresgongora/scripts/" >>  /etc/bash.bashrc
-	echo "if [ -f ${script} ]; then" >>  /etc/bash.bashrc
-	echo "	/usr/local/bin/scripts/terminal/status.sh" >>  /etc/bash.bashrc
-	echo "fi" >>  /etc/bash.bashrc
-	echo ""  >>  /etc/bash.bashrc
+	local hook=$(printf '%s'\
+	             "##-----------------------------------------------------\n"\
+	             "## ${script_name}\n"\
+	             "## Added from https://github.com/andresgongora/scripts/\n"\
+                     "if [ -f ${script} ]; then\n"\
+	             "\t${script}\n"\
+                     "fi")
+
+	if [ ! -f "$BASHRC" ]; then
+		touch "$BASHRC" || exit 1
+	fi
+	echo ""         >> $BASHRC
+	echo -e "$hook" >> $BASHRC
+	echo ""         >> $BASHRC
 
 
 
@@ -90,76 +108,37 @@ installStatus()
 	if [ ! -d $config_dir ]; then
 		mkdir -p $config_dir
 	fi
-	cp -u "${dir}/../config_templates/status.config" "${CONFIG_DIR}/"
-	cp -ur "${dir}/../config_templates/status.config.examples" "${CONFIG_DIR}/"
+	cp -u "${dir}/../config_templates/${script_name}.config" "${CONFIG_DIR}/"
+	cp -ur "${dir}/../config_templates/${script_name}.config.examples" "${CONFIG_DIR}/"
+
 }
 
 
 
+##------------------------------------------------------------------------------
+##
+installStatus()
+{
+	installScript "status"
+}
 
+
+
+##------------------------------------------------------------------------------
+##
 installFancyBashPrompt()
 {
-	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-	local script="${INSTALL_DIR}/fancy-bash-prompt.sh"
-
-
-
-	## CREATE EMPTY SCRIPT FILE	
-	if [ -f $script ]; then
-		rm $script
-	fi
-	touch "$script" || exit 1
-	chmod 644 "$script"
-	
-
-	
-	echo "##!/bin/bash" >> ${script}
-	echo "##Created by https://github.com/andresgongora/scripts" >> ${script}
-	echo "##Do NOT modify manually" >> ${script}
-	echo "" >> ${script}
-		
-
-		
-	## ADD SCRIPT DEPENDENCIES TO FILE	
-	cat "${dir}/../common/load_config.sh" >> "$script"
-	echo "" >> ${script}
-	cat "${dir}/../common/color.sh" >> "$script"
-	echo "" >> ${script}
-
-
-
-	## ADD ACTUAL SCRIPT
-	cat "${dir}/../terminal/fancy-bash-prompt.sh" >> "$script"
-
-
-
-	## ADD HOOK TO /etc/bash.bashrc
-	## TODO: Only if not already present
-	echo ""  >>  /etc/bash.bashrc
-	echo "## Added by: https://github.com/andresgongora/scripts/" >>  /etc/bash.bashrc
-	echo "if [ -f ${script} ]; then" >>  /etc/bash.bashrc
-	echo "	source ${script}" >>  /etc/bash.bashrc
-	echo "fi" >>  /etc/bash.bashrc
-	echo ""  >>  /etc/bash.bashrc
-
-
-
-	## COPY CONFIGURATION FILES
-	if [ ! -d $config_dir ]; then
-		mkdir -p $config_dir
-	fi
-	cp -u "${dir}/../config_templates/fancy-bash-prompt.config" "${CONFIG_DIR}/"
-	cp -ur "${dir}/../config_templates/fancy-bash-prompt.config.examples" "${CONFIG_DIR}/"
+	installScript "fancy-bash-prompt"
 }
 
 
 
-
-
+##------------------------------------------------------------------------------
+##
 installAll()
 {
 	installStatus
-	installFancyBashPrompt
+	#installFancyBashPrompt
 }
 
 
@@ -183,6 +162,7 @@ installAll
 
 unset INSTALL_DIR
 unset CONFIG_DIR
+unset BASHRC
 
 
 
