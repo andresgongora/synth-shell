@@ -95,18 +95,14 @@ installScript()
 
 	## ADD HOOK TO /etc/bash.bashrc
 	
-	#local hook=$(printf '%s'\
-	#             "##-----------------------------------------------------\n"\
-	#             "## ${script_name}\n"\
-	#             "## Added from https://github.com/andresgongora/scripts/\n"\
-        #             "if [ -f ${script} ]; then\n"\
-	#             "\tsource ${script}\n"\
-        #             "fi")
-
 	local hook=$(printf '%s'\
-	             "if [ -f ${script} ]; then\n"\
+	             "\n\n"\
+	             "##-----------------------------------------------------\n"\
+	             "## ${script_name}\n"\
+	             "## Added from https://github.com/andresgongora/scripts/\n"\
+                     "if [ -f ${script} ]; then\n"\
 	             "\tsource ${script}\n"\
-	             "test_andy")
+                     "fi")
 
 
 
@@ -118,8 +114,8 @@ installScript()
 
 
 	## COPY CONFIGURATION FILES
-	if [ ! -d $config_dir ]; then
-		mkdir -p $config_dir
+	if [ ! -d $CONFIG_DIR ]; then
+		mkdir -p $CONFIG_DIR
 	fi
 	cp -u "${dir}/../config_templates/${script_name}.config" "${CONFIG_DIR}/"
 	cp -ur "${dir}/../config_templates/${script_name}.config.examples" "${CONFIG_DIR}/"
@@ -150,7 +146,7 @@ installFancyBashPrompt()
 installAll()
 {
 	installStatus
-	#installFancyBashPrompt
+	installFancyBashPrompt
 }
 
 

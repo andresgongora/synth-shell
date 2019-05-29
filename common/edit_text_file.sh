@@ -75,13 +75,3 @@ editTextFile()
 }
 
 
-hook=$(printf '%s'\
-	            "\n\the***\\\\qwello\nwo*rld\n")
-
-
-
-
-editTextFile "./text.test" append "$hook"
-editTextFile "./text.test" delete "$hook"
-
-#https://stackoverflow.com/questions/407523/escape-a-string-for-a-sed-replace-pattern
