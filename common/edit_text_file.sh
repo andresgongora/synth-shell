@@ -29,7 +29,7 @@ editTextFile()
 	case $option in
 
 	append)
-		flat_text=$(echo -e $text | sed -e ':a;N;$!ba;s/\n/\\\\n/g;s/\t/\\\\t/g')
+		flat_text=$(echo -e $text | sed -e ':a;N;$!ba;s/\n/\\\\n/g;s/\t/\\\\t/g;s/\//\\\\\//g')
 		found_text=$(sed -n ":a;N;\$!ba;s/\n/\\\n/g;s/\t/\\\t/g;/${flat_text}/p" $file)
 		if [ -z "$found_text" ]; then
 			echo "Appending"
