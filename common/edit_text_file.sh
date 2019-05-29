@@ -51,8 +51,8 @@ editTextFile()
 	case $option in
 
 	append)
-		flat_text=$(echo -e $text | sed -e ':a;N;$!ba;s/[]\/$*.^|[]/\\&/g;s/[\n\t]$//g;s/[\n\t]/\\\\\\&/g;')
-		found_text=$(sed -n ':a;N;$!ba;s/\n/\\\n/g;s/\t/\\\t/g;/'"$flat_text"'/p' $file)
+		flat_text=$(echo -e $text | sed ':a;N;$!ba;s/[]\/$*.^|[]/\\&/g;s/[\n\t]$//g;s/[\n\t]/\\\\\\&/g;')
+		found_text=$(sed -n ':a;N;$!ba;s/[\n\t]/\\&/g;/'"$flat_text"'/p' $file)
 		if [ -z "$found_text" ]; then
 			echo -e "\nAppending!!\n"			
 			echo -e "$text\n" >> "$file"
@@ -61,8 +61,8 @@ editTextFile()
 
 
 	delete)
-		#flat_text=$(echo -e $text | sed ":a;N;\$!ba;s/\n/\\\\\\\n/g;s/\t/\\\\\\\t/g")
-		#flat_file=$(sed ":a;N;\$!ba;s/\n/\\\n/g;s/\t/\\\t/g;s/${flat_text}//g" $file)
+		flat_text=$(echo -e $text | sed -e ':a;N;$!ba;s/[]\/$*.^|[]/\\&/g;s/[\n\t]$//g;s/[\n\t]/\\\\\\&/g;')
+		flat_file=$(sed ':a;N;$!ba;s/[\n\t]/\\&/g;s/'"$flat_text"'//g;s/\\\n/\n/g' $file)
 
 ## SUbstitute by d
 		echo -e "$flat_file" > "$file"
@@ -76,12 +76,12 @@ editTextFile()
 
 
 hook=$(printf '%s'\
-	            "hello/2asd3\naa/^/sdsd\nasd")
+	            "\n\the***\\\\qwello\nwo*rld\n")
 
 
 
 
 editTextFile "./text.test" append "$hook"
-
+editTextFile "./text.test" delete "$hook"
 
 #https://stackoverflow.com/questions/407523/escape-a-string-for-a-sed-replace-pattern
