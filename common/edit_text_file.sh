@@ -29,9 +29,12 @@ editTextFile()
 	case $option in
 
 	append)
-flat_text=$(echo -e $text | sed -e ':a;N;$!ba;s/\n/\\\n/g;s/\t/\\\t/g;s/\//\//g;s/\\/\\\\\\/g')
-		echo $flat_text
+		flat_text=$(echo -e $text | sed -e ':a;N;$!ba;s/\n/\\\n/g;s/\t/\\\t/g;s/\//\//g;s/\\/\\\\\\/g')
 		found_text=$(sed -n ':a;N;$!ba;s/\n/\\\n/g;s/\t/\\\t/g;/'"$flat_text"'/p' $file)
+
+
+
+		echo $flat_text
 
 		#found_text=$(sed -n ":a;N;\$!ba;s/\n/\\\n/g;s/\t/\\\t/g;/$flat_text/p" $file)
 
