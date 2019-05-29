@@ -19,6 +19,28 @@
 ##   |                                                                       |
 ##   +-----------------------------------------------------------------------+
 
+##
+##
+##	SED + RegEx	
+##	===========
+##
+##	:a;N;$!ba               Append all lines into a single stream
+##
+##	s/[]\/$*.^|[]/\\&/g     Replace all "special" characters with a version
+##	                        with an extra \ in front. But because we can
+##	                        just write \, we have to write \\. Finally,
+##				& becomes whatever character has ben matched.
+##				As for the match, surrounding everything with
+##				[] is a wildcard to match any.
+##
+##	s/[\n\t]$//g		Get rid of very last \n or \t (end of line)
+##
+##	s/[\n\t]/\\\\\\&/g      Replace any new-line or tab with a version
+##	                        with extra dashes in front. These are necesary
+##	                        because some get lost when the variable expands
+##	                        into subsequent seds.
+##
+
 
 editTextFile()
 {
@@ -29,25 +51,20 @@ editTextFile()
 	case $option in
 
 	append)
-		flat_text=$(echo -e $text | sed -e ':a;N;$!ba;s/\n/\\\n/g;s/\t/\\\t/g;s/\//\//g;s/\\/\\\\\\/g')
+		flat_text=$(echo -e $text | sed -e ':a;N;$!ba;s/[]\/$*.^|[]/\\&/g;s/[\n\t]$//g;s/[\n\t]/\\\\\\&/g;')
 		found_text=$(sed -n ':a;N;$!ba;s/\n/\\\n/g;s/\t/\\\t/g;/'"$flat_text"'/p' $file)
-
-
-
-		echo $flat_text
-
-		#found_text=$(sed -n ":a;N;\$!ba;s/\n/\\\n/g;s/\t/\\\t/g;/$flat_text/p" $file)
-
 		if [ -z "$found_text" ]; then
 			echo -e "\nAppending!!\n"			
-			echo -e "$text" >> "$file"
+			echo -e "$text\n" >> "$file"
 		fi
 		;;
 
 
 	delete)
-		flat_text=$(echo -e $text | sed ":a;N;\$!ba;s/\n/\\\\\\\n/g;s/\t/\\\\\\\t/g")
-		flat_file=$(sed ":a;N;\$!ba;s/\n/\\\n/g;s/\t/\\\t/g;s/${flat_text}//g" $file)
+		#flat_text=$(echo -e $text | sed ":a;N;\$!ba;s/\n/\\\\\\\n/g;s/\t/\\\\\\\t/g")
+		#flat_file=$(sed ":a;N;\$!ba;s/\n/\\\n/g;s/\t/\\\t/g;s/${flat_text}//g" $file)
+
+## SUbstitute by d
 		echo -e "$flat_file" > "$file"
 		;;
 
@@ -59,7 +76,7 @@ editTextFile()
 
 
 hook=$(printf '%s'\
-	            "hello\npepe\tadios")
+	            "hello/2asd3\naa/^/sdsd\nasd")
 
 
 
