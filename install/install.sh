@@ -55,6 +55,7 @@ installScript()
 	script_name=$1	
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 	local script="${INSTALL_DIR}/${script_name}.sh"
+	local source_script="${dir}/../terminal/${script_name}.sh"
 
 
 
@@ -81,7 +82,7 @@ installScript()
 
 
 	## ADD ACTUAL SCRIPT
-	cat "${dir}/../terminal/status.sh" >> "$script"
+	cat "$source_script" >> "$script"
 
 
 
@@ -92,7 +93,7 @@ installScript()
 	             "## ${script_name}\n"\
 	             "## Added from https://github.com/andresgongora/scripts/\n"\
                      "if [ -f ${script} ]; then\n"\
-	             "\t${script}\n"\
+	             "\tsource ${script}\n"\
                      "fi")
 
 	if [ ! -f "$BASHRC" ]; then
