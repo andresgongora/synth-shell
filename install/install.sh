@@ -56,6 +56,7 @@ installScript()
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 	local script="${INSTALL_DIR}/${script_name}.sh"
 	local source_script="${dir}/../terminal/${script_name}.sh"
+	source "$dir/../common/edit_text_file.sh"
 
 
 
@@ -86,8 +87,14 @@ installScript()
 
 
 
+	## REMOVE FUNCTION FROM ENVIRONMENT
+	echo "unset loadConfigFile" >> "$script"
+	echo "unset getFormatCode" >> "$script"
+
+
+
 	## ADD HOOK TO /etc/bash.bashrc
-	## TODO: Only if not already present
+	
 	local hook=$(printf '%s'\
 	             "##-----------------------------------------------------\n"\
 	             "## ${script_name}\n"\
@@ -99,9 +106,7 @@ installScript()
 	if [ ! -f "$BASHRC" ]; then
 		touch "$BASHRC" || exit 1
 	fi
-	echo ""         >> $BASHRC
-	echo -e "$hook" >> $BASHRC
-	echo ""         >> $BASHRC
+	editTextFile "$BASHRC" append "$hook"
 
 
 
@@ -138,7 +143,7 @@ installFancyBashPrompt()
 installAll()
 {
 	installStatus
-	installFancyBashPrompt
+	#installFancyBashPrompt
 }
 
 
