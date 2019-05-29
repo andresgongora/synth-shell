@@ -29,9 +29,12 @@ editTextFile()
 	case $option in
 
 	append)
-		flat_text=$(echo -e $text | sed -e ':a;N;$!ba;s/\n/\\\n/g;s/\t/\\\t/g;s/\//\//g;s/\\/\\\\/g')
+flat_text=$(echo -e $text | sed -e ':a;N;$!ba;s/\n/\\\n/g;s/\t/\\\t/g;s/\//\//g;s/\\/\\\\\\/g')
 		echo $flat_text
 		found_text=$(sed -n ':a;N;$!ba;s/\n/\\\n/g;s/\t/\\\t/g;/'"$flat_text"'/p' $file)
+
+		#found_text=$(sed -n ":a;N;\$!ba;s/\n/\\\n/g;s/\t/\\\t/g;/$flat_text/p" $file)
+
 		if [ -z "$found_text" ]; then
 			echo -e "\nAppending!!\n"			
 			echo -e "$text" >> "$file"
@@ -53,9 +56,12 @@ editTextFile()
 
 
 hook=$(printf '%s'\
-	            "\tl \/ ine8\n")
+	            "hello\npepe\tadios")
 
 
 
 
 editTextFile "./text.test" append "$hook"
+
+
+#https://stackoverflow.com/questions/407523/escape-a-string-for-a-sed-replace-pattern
