@@ -29,7 +29,8 @@ editTextFile()
 	case $option in
 
 	append)
-		flat_text=$(echo -e $text | sed -e ':a;N;$!ba;s/\n/\\\\n/g;s/\t/\\\\t/g;s/\//\\\\\//g')
+		flat_text=$(echo -e $text | sed -e ':a;N;$!ba;s/\\/\\\\/g;;s/\n/\\\\n/g;s/\t/\\\\t/g;s/\//\\\//g')
+		echo $flat_text
 		found_text=$(sed -n ":a;N;\$!ba;s/\n/\\\n/g;s/\t/\\\t/g;/${flat_text}/p" $file)
 		if [ -z "$found_text" ]; then
 			echo "Appending"
@@ -54,7 +55,7 @@ editTextFile()
 hook=$(printf '%s'\
 	             "line3\n"\
                      "\tline4\n"\
-                     "line5")
+                     "line5//2\3")
 
 
 
