@@ -110,7 +110,6 @@ installScript()
 	fi
 	cp -u "${dir}/../config_templates/${script_name}.config" "${CONFIG_DIR}/"
 	cp -ur "${dir}/../config_templates/${script_name}.config.examples" "${CONFIG_DIR}/"
-
 }
 
 
@@ -138,7 +137,7 @@ installFancyBashPrompt()
 installAll()
 {
 	installStatus
-	#installFancyBashPrompt
+	installFancyBashPrompt
 }
 
 
