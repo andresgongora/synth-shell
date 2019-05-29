@@ -95,13 +95,20 @@ installScript()
 
 	## ADD HOOK TO /etc/bash.bashrc
 	
+	#local hook=$(printf '%s'\
+	#             "##-----------------------------------------------------\n"\
+	#             "## ${script_name}\n"\
+	#             "## Added from https://github.com/andresgongora/scripts/\n"\
+        #             "if [ -f ${script} ]; then\n"\
+	#             "\tsource ${script}\n"\
+        #             "fi")
+
 	local hook=$(printf '%s'\
-	             "##-----------------------------------------------------\n"\
-	             "## ${script_name}\n"\
-	             "## Added from https://github.com/andresgongora/scripts/\n"\
-                     "if [ -f ${script} ]; then\n"\
+	             "if [ -f ${script} ]; then\n"\
 	             "\tsource ${script}\n"\
-                     "fi")
+	             "test_andy")
+
+
 
 	if [ ! -f "$BASHRC" ]; then
 		touch "$BASHRC" || exit 1
