@@ -352,7 +352,7 @@ printHeader()
 	do
   		local ROOT_CURRENT=" $ROOT_CURRENT"
 	done
-	local ROOT_MAX=$(df -B1G "/" | grep "/" | awk '{key=($2)} END {printf key}')
+	local ROOT_MAX=$(df -B1G / | grep "/" | awk '{key=($2)} END {printf key}')
 	while [ ${#ROOT_CURRENT} -lt $max_digits ]
 	do
   		local ROOT_CURRENT=" $ROOT_CURRENT"
