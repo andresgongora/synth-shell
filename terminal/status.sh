@@ -43,9 +43,7 @@
 
 getOSInfo()
 {
-	local os=$(cat /etc/*-release | grep PRETTY_NAME)
-	local os="${os#*=}"
-	echo "$os" | sed 's/"//g' # remove " characters
+	sed -En 's/PRETTY_NAME="(.*)"/\1/p' /etc/*-release
 }
 
 
@@ -57,8 +55,7 @@ getKernelInfo()
 
 getCPUInfo()
 {
-	local cpu=$(cat /proc/cpuinfo | grep "model name" | uniq | cut -f1 -d "@")
-	echo "${cpu#*:}" | sed 's/  */ /g' | awk '$1=$1'
+	sed -nE '0,/model name/s/^model name\s*:\s*(.*)\s+@/\1/p' /proc/cpuinfo
 }
 
 
