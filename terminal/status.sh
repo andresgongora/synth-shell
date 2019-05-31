@@ -300,10 +300,10 @@ printHeader()
 
 
 	## CPU LOAD
-	local CPU_AVG=$(cat /proc/loadavg | awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}')
-	local CPU_MAX=$(cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l)
+	local CPU_AVG=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
+	local CPU_MAX=$(nproc --all)
 	local CPU_BAR=$(printBar $CPU_AVG $CPU_MAX $bar_length $crit_cpu_percent)
-	local CPU_PER=$(cat /proc/loadavg | awk '{printf "%3.0f\n",$1*100}')
+	local CPU_PER=$(awk '{printf "%3.0f\n",$1*100}' /proc/loadavg)
 	local CPU_PER=$(($CPU_PER / $CPU_MAX))
 	local CPU_LOAD=$(echo -e "${fc_info}Sys load avg\t$CPU_BAR ${fc_highlight}${CPU_PER:0:9} %%${fc_none}")
 	if [ $CPU_PER -gt $crit_cpu_percent ]; then
