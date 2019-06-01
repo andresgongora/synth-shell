@@ -63,7 +63,7 @@ getKernelInfo()
 
 getCPUInfo()
 {
-	sed -nE '0,/^\s*model name/s/^\s*model name\s*:\s*(.*)\b\s+@(.*)/\1/p' /proc/cpuinfo
+	sed -nE '0,/^\s*model name/s/^\s*model name\s*:\s*(.*\S)/\1/p' /proc/cpuinfo|sed 's/\s*@.*//'
 }
 
 
