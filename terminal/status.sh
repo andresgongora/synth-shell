@@ -43,7 +43,15 @@
 
 getOSInfo()
 {
-	sed -En 's/PRETTY_NAME="(.*)"/\1/p' /etc/*-release
+	if [ -f /etc/os-release ]; then
+		local result=$(sed -En 's/PRETTY_NAME="(.*)"/\1/p' /etc/os-release)
+	elif [ -f /usr/lib/os-release ]; then
+		local result=$(sed -En 's/PRETTY_NAME="(.*)"/\1/p' /usr/lib/os-release)
+	else
+		local result="N/A"	
+	fi
+
+	printf "$result"
 }
 
 
