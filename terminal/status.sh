@@ -452,14 +452,14 @@ printSystemctl()
 printTop()
 {
 	if $cpu_is_crit; then
-		local top=$('nice' 'top' -b -w 80 -d 0.1 -1 | head -n 11)
+		local top=$('nice' 'top' -b -w 80 -d 0.1 | head -n 11 | sed 's/%/%%/g')
 		local load=$(echo "${top}" | head -n 3 | tail -n 1)
 		local head=$(echo "${top}" | head -n 7 | tail -n 1)
 		local proc=$(echo "${top}" | tail -n 4 | grep -v "top")
-
-		printf "\n\r${fc_highlight}SYSTEM LOAD:${fc_info}  ${load:8:35}${fc_highlight}\n\r"
-		echo "$head"
-		printf "${fc_info}${proc}${fc_none}"
+	
+		printf "\n\r${fc_crit}SYSTEM LOAD:${fc_info}  ${load:9:36}${fc_highlight}\n"
+		printf "${fc_crit}$head${fc_none}\n"
+		printf "${fc_info}${proc}${fc_none}\n"
 	fi
 }
 
