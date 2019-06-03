@@ -95,6 +95,7 @@ getUserName()
 ##
 ##  !!! NOTE: Still needs to figure out how to look for IP address that has default gateway
 ##  !!! attached to related interface, otherwise this returns list of IPv4's if there are many
+##  !!! TODO: Simplify?
 ##
 getLocalIPv4()
 {
@@ -103,7 +104,7 @@ getLocalIPv4()
 	elif which ifconfig > /dev/null; then
 		local result=$($(which ifconfig) | grep -oP '^\s*inet\s+(addr:?\s*)?\K(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))' | sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
 	else
-		local result="Error"	
+		local result="Error"
 	fi
 
 	## Returns "N/A" if actual query result is empty, and returns "Error" if no programs found
@@ -115,13 +116,13 @@ getLocalIPv4()
 ##
 ##	getExternalIPv4()
 ##
-##  Makes an query to internet-server and returns public IPv4-address
+##	Makes an query to internet-server and returns public IPv4-address
 ##
-##  Tries first program found,
-##  program search ordering is based on timed tests, fastest to slowest.
+##	Tries first program found,
+##	program search ordering is based on timed tests, fastest to slowest.
 ##
-##  DNS-based queries are always faster, around real time 0.1 seconds.
-##  URL-queries are relatively slow, around real time 1 seconds.
+##	DNS-based queries are always faster, around real time 0.1 seconds.
+##	URL-queries are relatively slow, around real time 1 seconds.
 ##
 getExternalIPv4()
 {
@@ -146,12 +147,12 @@ getExternalIPv4()
 ##
 ##	getLocalIPv6()
 ##
-##  Looks up and returns local IPv6-address.
+##	Looks up and returns local IPv6-address.
 ##
-##  Tries first program found.
+##	Tries first program found.
 ##
-##  !!! NOTE: Still needs to figure out how to look for IP address that has default gateway
-##  !!! attached to related interface, otherwise this returns list of IPv6's if there are many
+##	!!! NOTE: Still needs to figure out how to look for IP address that has default gateway
+##	!!! attached to related interface, otherwise this returns list of IPv6's if there are many
 ##
 getLocalIPv6()
 {
@@ -160,7 +161,7 @@ getLocalIPv6()
 	elif which ifconfig > /dev/null; then
 		local result=$($(which ifconfig) | grep -oP '^\s*inet6\s+(addr:?\s*)?\K((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?' | sed '/::1/d;:a;N;$!ba;s/\n/,/g')
 	else
-		local result="Error"	
+		local result="Error"
 	fi
 
 	## Returns "N/A" if actual query result is empty, and returns "Error" if no programs found
@@ -172,13 +173,13 @@ getLocalIPv6()
 ##
 ##	getExternalIPv6()
 ##
-##  Makes an query to internet-server and returns public IPv6-address
+##	Makes an query to internet-server and returns public IPv6-address
 ##
-##  Tries first program found,
-##  program search ordering is based on timed tests, fastest to slowest.
+##	Tries first program found,
+##	program search ordering is based on timed tests, fastest to slowest.
 ##
-##  DNS-based queries are always faster, around real time 0.1 seconds.
-##  URL-queries are relatively slow, around real time 1 seconds.
+##	DNS-based queries are always faster, around real time 0.1 seconds.
+##	URL-queries are relatively slow, around real time 1 seconds.
 ##
 getExternalIPv6()
 {
@@ -221,6 +222,7 @@ printBar()
 	local crit_percent=$4
 
 
+
 	## COMPUTE VARIABLES
 	local num_bars=$(($size * $current / $max))
 	if [ $num_bars -gt $size ]; then
@@ -231,7 +233,8 @@ printBar()
 	if [ $num_bars -gt $crit_num_bars ]; then
 		local bar_color=$fc_crit
 	fi
-	
+
+
 
 	## PRINT BAR
 	printf "${fc_deco}[${bar_color}"
@@ -266,6 +269,7 @@ printHeader()
 	done
 
 
+
 	## LOGO
 	local formatted_logo_01="${fc_logo}${logo_01}${fc_none}"
 	local formatted_logo_02="${fc_logo}${logo_02}${fc_none}"
@@ -283,7 +287,8 @@ printHeader()
 	local formatted_logo_14="${fc_logo}${logo_14}${fc_none}"
 
 
-	## GET SYS SUMMARY 
+
+	## GET SYS SUMMARY
 	local os_info="${fc_info}OS\t\t${fc_highlight}$(getOSInfo)${fc_none}"
 	local kernel_info="${fc_info}Kernel\t\t${fc_highlight}$(getKernelInfo)${fc_none}"
 	local cpu_info="${fc_info}CPU\t\t${fc_highlight}$(getCPUInfo)${fc_none}"
@@ -417,7 +422,7 @@ printLastLogins()
 	# 1. User configurable set to always on
 	# 2. If the IP/terminal is very diffefrent from usual
 	# 3. Other anomalies...
-	if false; then	
+	if false; then
 		printf "${fc_highlight}\nLAST LOGINS:\n${fc_info}"
 		last -iwa | head -n 4 | grep -v "reboot"
 	fi
@@ -465,9 +470,19 @@ printTop()
 status()
 {
 	## INCLUDE EXTERNAL DEPENDENCIES
+	## Only if the functions are not available
+	## If not, search in `common` folder
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-	source "$dir/../common/load_config.sh"
-	source "$dir/../common/color.sh"
+
+	if [ "$(type -t loadConfigFile)" != 'function' ];
+	then
+		source "$dir/../common/load_config.sh"
+	fi
+
+	if [ "$(type -t getFormatCode)" != 'function' ];
+	then
+		source "$dir/../common/color.sh"
+	fi
 
 
 
@@ -478,6 +493,7 @@ status()
 
 	## DEFAULT CONFIGURATION
 	## WARNING! Do not edit directly, use configuration files instead
+
 	local logo_01="        -oydNMMMMNdyo-        "
 	local logo_02="     -yNMMMMMMMMMMMMMMNy-     "
 	local logo_03="   .hMMMMMMmhsooshmMMMMMMh.   "
@@ -512,9 +528,13 @@ status()
 
 
 	## LOAD USER CONFIGURATION
-	local config_file="$HOME/.config/scripts/status.config"
-	loadConfigFile $config_file
-
+	local user_config_file="$HOME/.config/scripts/status.config"
+	local sys_config_file="/etc/andresgongora/scripts/status.config"
+	if [ -f $user_config_file ]; then
+		loadConfigFile $user_config_file
+	elif [ -f $sys_config_file ]; then
+		loadConfigFile $sys_config_file
+	fi
 
 
 	## COLOR AND TEXT FORMAL CODE

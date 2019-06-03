@@ -1,3 +1,2 @@
 ## Ignore developer's `test` and `config` files
-*.config
 *.test

@@ -27,31 +27,173 @@
 ##	THIS IS WORK IN PROGRESS
 ##
 
-installAll()
+
+
+
+
+
+
+##==============================================================================
+##	FUNCTIONS
+##==============================================================================
+
+##------------------------------------------------------------------------------
+##
+##	INSTALL SCRIPT
+##	This function installs a generic script to the system. It copies the
+##	script to INSTALL_DIR, and also adds to it all the dependencies from
+##	common to make the script completely self contained. Also, this
+##	function copies all configuration files to CONFIG_DIR
+##
+##	ARGUMENTS
+##	1. Name of script. (e.g. "status" or "fancy-bash-prompt")
+##
+installScript()
 {
-	## CHECK IF GIT IS PRESET
-	local gitbin=$(which git)
-	if [ -z $gitbin ]; then
-		echo "Git is not installed"
-		exit 1 
-	fi
+	## ARGUMENTS
+	local operation=$1
+	local script_name=$2	
 
 
-	## GET ADMIN RIGHTS AND GO TO INSTALL FOLDER
-	sudo -v
-	cd /usr/local/bin
+	## LOCAL VARIABLES
+	local INSTALL_DIR="/usr/local/bin" 
+	local CONFIG_DIR="/etc/andresgongora/scripts"
+	local BASHRC="/etc/bash.bashrc"
+	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+	local script="${INSTALL_DIR}/${script_name}.sh"
+	local source_script="${dir}/../terminal/${script_name}.sh"
+	source "$dir/../common/edit_text_file.sh"
+
+	local hook=$(printf '%s'\
+	             "\n\n"\
+	             "##-----------------------------------------------------\n"\
+	             "## ${script_name}\n"\
+	             "## Added from https://github.com/andresgongora/scripts/\n"\
+                     "if [ -f ${script} ]; then\n"\
+	             "\tsource ${script}\n"\
+                     "fi")
 
 
-	## DOWNLOAD SCRIPTS
-	if [ -d ./scripts ]; then
-		sudo rm -r ./scripts
-	fi
-	sudo 'git' clone --recursive --branch develop https://github.com/andresgongora/scripts.git
+	
+	case "$operation" in
+
+	uninstall)
+
+		## REMOVE HOOK
+		editTextFile "$BASHRC" delete "$hook"
 
 
-	## INSTALL ANCHOR
-	sudo su root -c 'printf "if [ -f /usr/local/bin/scripts/install/anchor.sh ]; then\n\tsource /usr/local/bin/scripts/install/anchor.sh\nfi\n\n" >> /etc/bash.bashrc'
+		## REMOVE SCRIPT
+		if [ -f $script ]; then
+			rm $script
+		fi
+		
+
+		;;
+
+	install)
+
+		## CREATE EMPTY SCRIPT FILE	
+		if [ -f $script ]; then
+			rm $script
+		fi
+		touch "$script" || exit 1
+		chmod 755 "$script"
+		echo "##!/bin/bash" >> ${script}
+		echo "##Created by https://github.com/andresgongora/scripts" >> ${script}
+		echo "##Do NOT modify manually" >> ${script}
+		echo "" >> ${script}
+
+
+		## ADD COMMON SCRIPTS TO FILE
+		## TODO: Make this configurable	
+		cat "${dir}/../common/load_config.sh" >> "$script"
+		echo "" >> ${script}
+		cat "${dir}/../common/color.sh" >> "$script"
+		echo "" >> ${script}
+
+
+		## ADD ACTUAL SCRIPT
+		cat "$source_script" >> "$script"
+
+
+		## REMOVE FUNCTION FROM ENVIRONMENT
+		echo "unset loadConfigFile" >> "$script"
+		echo "unset getFormatCode" >> "$script"
+
+
+		## ADD HOOK TO /etc/bash.bashrc
+		if [ ! -f "$BASHRC" ]; then
+			touch "$BASHRC" || exit 1
+		fi
+		editTextFile "$BASHRC" append "$hook"
+
+
+		## COPY CONFIGURATION FILES
+		if [ ! -d $CONFIG_DIR ]; then
+			mkdir -p $CONFIG_DIR
+		fi
+		cp -u "${dir}/../config_templates/${script_name}.config" "${CONFIG_DIR}/"
+		cp -ur "${dir}/../config_templates/${script_name}.config.examples" "${CONFIG_DIR}/"
+
+
+		;;
+
+	*)
+		echo $"Usage: $0 {install|uninstall}"
+            	exit 1
+		;;
+
+	esac
 }
 
-installAll
+
+
+##------------------------------------------------------------------------------
+##
+installAll()
+{
+	installScript install "status"
+	installScript install "fancy-bash-prompt"
+}
+
+
+
+##------------------------------------------------------------------------------
+##
+uninstallAll()
+{
+	installScript uninstall "status"
+	installScript uninstall "fancy-bash-prompt"
+}
+
+
+
+##==============================================================================
+##	MAIN
+##==============================================================================
+
+
+
+if [ $(id -u) -ne 0 ];
+	then echo "Please run as root"
+	exit
+fi
+
+
+
+case "$1" in
+	uninstall)
+		uninstallAll
+		;;
+
+	*)
+		installAll
+		;;
+esac
+
+
+
+
+
 
