@@ -74,6 +74,20 @@ hasEnoughMemory()
 
 
 
+
+<!--------------------------------------+-------------------------------------->
+#                         Use printf (instead echo, etc)
+<!--------------------------------------+-------------------------------------->
+
+Printf is more versatile to use especially with more complex output lines, so
+do use only printf when needing to say something into terminal or variables.
+
+This ensures consistent code, consistent behaviour of text output, so therefore
+easier to debug if need ever arises to.
+
+
+
+
 <!--------------------------------------+-------------------------------------->
 #                                  Tabs vs spaces
 <!--------------------------------------+-------------------------------------->
