@@ -48,23 +48,32 @@ editTextFile()
 	option=$2
 	text=${@:3}
 
+
+	## CHECK IF FILE EXISTS
+	if [ ! -f "$file" ]; then
+		echo "$file does not exists"
+		exit 0
+	elif [ ! -w "$file" ]; then
+		echo "$file can not be written"
+		exit 1
+	fi
+
+
+	## OPERATE ON FILE
 	case $option in
 
 	append)
 		flat_text=$(echo -e $text | sed ':a;N;$!ba;s/[]\/$*.^|[]/\\&/g;s/[\n\t]$//g;s/[\n\t]/\\\\\\&/g;')
 		found_text=$(sed -n ':a;N;$!ba;s/[\n\t]/\\&/g;/'"$flat_text"'/p' $file)
 		if [ -z "$found_text" ]; then
-			echo -e "\nAppending!!\n"			
 			echo -e "$text\n" >> "$file"
 		fi
 		;;
 
 
 	delete)
-		flat_text=$(echo -e $text | sed -e ':a;N;$!ba;s/[]\/$*.^|[]/\\&/g;s/[\n\t]$//g;s/[\n\t]/\\\\\\&/g;')
-		flat_file=$(sed ':a;N;$!ba;s/[\n\t]/\\&/g;s/'"$flat_text"'//g;s/\\\n/\n/g' $file)
-
-## SUbstitute by d
+		flat_text=$(echo -e $text | sed ':a;N;$!ba;s/[]\/$*.^|[]/\\&/g;s/[\n\t]$//g;s/[\n\t]/\\\\\\&/g;')
+		flat_file=$(sed ':a;N;$!ba;s/[\n\t]/\\&/g;s/'"$flat_text"'//g;s/\\\n/\n/g;s/\\\t/\t/g' $file)
 		echo -e "$flat_file" > "$file"
 		;;
 

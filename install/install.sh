@@ -29,9 +29,7 @@
 
 
 
-INSTALL_DIR="/usr/local/bin" 
-CONFIG_DIR="/etc/andresgongora/scripts"
-BASHRC="/etc/bash.bashrc"
+
 
 
 
@@ -52,49 +50,20 @@ BASHRC="/etc/bash.bashrc"
 ##
 installScript()
 {
-	script_name=$1	
+	## ARGUMENTS
+	local operation=$1
+	local script_name=$2	
+
+
+	## LOCAL VARIABLES
+	local INSTALL_DIR="/usr/local/bin" 
+	local CONFIG_DIR="/etc/andresgongora/scripts"
+	local BASHRC="/etc/bash.bashrc"
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 	local script="${INSTALL_DIR}/${script_name}.sh"
 	local source_script="${dir}/../terminal/${script_name}.sh"
 	source "$dir/../common/edit_text_file.sh"
 
-
-
-	## CREATE EMPTY SCRIPT FILE	
-	if [ -f $script ]; then
-		rm $script
-	fi
-	touch "$script" || exit 1
-	chmod 755 "$script"
-	echo "##!/bin/bash" >> ${script}
-	echo "##Created by https://github.com/andresgongora/scripts" >> ${script}
-	echo "##Do NOT modify manually" >> ${script}
-	echo "" >> ${script}
-
-
-
-	## ADD COMMON SCRIPTS TO FILE
-	## TODO: Make this configurable	
-	cat "${dir}/../common/load_config.sh" >> "$script"
-	echo "" >> ${script}
-	cat "${dir}/../common/color.sh" >> "$script"
-	echo "" >> ${script}
-
-
-
-	## ADD ACTUAL SCRIPT
-	cat "$source_script" >> "$script"
-
-
-
-	## REMOVE FUNCTION FROM ENVIRONMENT
-	echo "unset loadConfigFile" >> "$script"
-	echo "unset getFormatCode" >> "$script"
-
-
-
-	## ADD HOOK TO /etc/bash.bashrc
-	
 	local hook=$(printf '%s'\
 	             "\n\n"\
 	             "##-----------------------------------------------------\n"\
@@ -105,38 +74,77 @@ installScript()
                      "fi")
 
 
+	
+	case "$operation" in
 
-	if [ ! -f "$BASHRC" ]; then
-		touch "$BASHRC" || exit 1
-	fi
-	editTextFile "$BASHRC" append "$hook"
+	uninstall)
 
-
-
-	## COPY CONFIGURATION FILES
-	if [ ! -d $CONFIG_DIR ]; then
-		mkdir -p $CONFIG_DIR
-	fi
-	cp -u "${dir}/../config_templates/${script_name}.config" "${CONFIG_DIR}/"
-	cp -ur "${dir}/../config_templates/${script_name}.config.examples" "${CONFIG_DIR}/"
-}
+		## REMOVE HOOK
+		editTextFile "$BASHRC" delete "$hook"
 
 
+		## REMOVE SCRIPT
+		if [ -f $script ]; then
+			rm $script
+		fi
+		
 
-##------------------------------------------------------------------------------
-##
-installStatus()
-{
-	installScript "status"
-}
+		;;
+
+	install)
+
+		## CREATE EMPTY SCRIPT FILE	
+		if [ -f $script ]; then
+			rm $script
+		fi
+		touch "$script" || exit 1
+		chmod 755 "$script"
+		echo "##!/bin/bash" >> ${script}
+		echo "##Created by https://github.com/andresgongora/scripts" >> ${script}
+		echo "##Do NOT modify manually" >> ${script}
+		echo "" >> ${script}
 
 
+		## ADD COMMON SCRIPTS TO FILE
+		## TODO: Make this configurable	
+		cat "${dir}/../common/load_config.sh" >> "$script"
+		echo "" >> ${script}
+		cat "${dir}/../common/color.sh" >> "$script"
+		echo "" >> ${script}
 
-##------------------------------------------------------------------------------
-##
-installFancyBashPrompt()
-{
-	installScript "fancy-bash-prompt"
+
+		## ADD ACTUAL SCRIPT
+		cat "$source_script" >> "$script"
+
+
+		## REMOVE FUNCTION FROM ENVIRONMENT
+		echo "unset loadConfigFile" >> "$script"
+		echo "unset getFormatCode" >> "$script"
+
+
+		## ADD HOOK TO /etc/bash.bashrc
+		if [ ! -f "$BASHRC" ]; then
+			touch "$BASHRC" || exit 1
+		fi
+		editTextFile "$BASHRC" append "$hook"
+
+
+		## COPY CONFIGURATION FILES
+		if [ ! -d $CONFIG_DIR ]; then
+			mkdir -p $CONFIG_DIR
+		fi
+		cp -u "${dir}/../config_templates/${script_name}.config" "${CONFIG_DIR}/"
+		cp -ur "${dir}/../config_templates/${script_name}.config.examples" "${CONFIG_DIR}/"
+
+
+		;;
+
+	*)
+		echo $"Usage: $0 {install|uninstall}"
+            	exit 1
+		;;
+
+	esac
 }
 
 
@@ -145,17 +153,25 @@ installFancyBashPrompt()
 ##
 installAll()
 {
-	installStatus
-	installFancyBashPrompt
+	installScript install "status"
+	installScript install "fancy-bash-prompt"
 }
 
+
+
+##------------------------------------------------------------------------------
+##
+uninstallAll()
+{
+	installScript uninstall "status"
+	installScript uninstall "fancy-bash-prompt"
+}
 
 
 
 ##==============================================================================
 ##	MAIN
 ##==============================================================================
-
 
 
 
@@ -166,11 +182,17 @@ fi
 
 
 
-installAll
+case "$1" in
+	uninstall)
+		uninstallAll
+		;;
 
-unset INSTALL_DIR
-unset CONFIG_DIR
-unset BASHRC
+	*)
+		installAll
+		;;
+esac
+
+
 
 
 
