@@ -351,13 +351,17 @@ printHeader()
   		local SWAP_CURRENT=" $SWAP_CURRENT"
 	done
 	local SWAP_MAX=$(echo "$SWAP_INFO" | awk '{SWAP=($2)} END {printf SWAP}')
-	while [ ${#SWAP_CURRENT} -lt $max_digits ]
-	do
-  		local SWAP_CURRENT=" $SWAP_CURRENT"
-	done
-	local SWAP_BAR=$(printBar $SWAP_CURRENT $SWAP_MAX $bar_length $crit_swap_percent)
-	local SWAP_MAX=$SWAP_MAX$PAD
-	local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t$SWAP_BAR ${fc_highlight}${SWAP_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${SWAP_MAX:0:${max_digits}} MB${fc_none}")
+	if [ "$SWAP_MAX" -eq "0" ]; then
+		local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t${fc_highlight}N/A${fc_none}")
+	else
+		while [ ${#SWAP_CURRENT} -lt $max_digits ]
+		do
+	  		local SWAP_CURRENT=" $SWAP_CURRENT"
+		done
+		local SWAP_BAR=$(printBar $SWAP_CURRENT $SWAP_MAX $bar_length $crit_swap_percent)
+		local SWAP_MAX=$SWAP_MAX$PAD
+		local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t$SWAP_BAR ${fc_highlight}${SWAP_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${SWAP_MAX:0:${max_digits}} MB${fc_none}")
+	fi
 
 
 	## HDD /
@@ -449,14 +453,14 @@ printSystemctl()
 printTop()
 {
 	if $cpu_is_crit; then
-		local top=$('nice' 'top' -b -w 80 -d 0.1 -1 | head -n 11)
+		local top=$('nice' 'top' -b -w 80 -d 0.1 | head -n 11 | sed 's/%/%%/g')
 		local load=$(echo "${top}" | head -n 3 | tail -n 1)
 		local head=$(echo "${top}" | head -n 7 | tail -n 1)
 		local proc=$(echo "${top}" | tail -n 4 | grep -v "top")
-
-		printf "\n\r${fc_highlight}SYSTEM LOAD:${fc_info}  ${load:8:35}${fc_highlight}\n\r"
-		echo "$head"
-		printf "${fc_info}${proc}${fc_none}"
+	
+		printf "\n\r${fc_crit}SYSTEM LOAD:${fc_info}  ${load:9:36}${fc_highlight}\n"
+		printf "${fc_crit}$head${fc_none}\n"
+		printf "${fc_info}${proc}${fc_none}\n"
 	fi
 }
 
