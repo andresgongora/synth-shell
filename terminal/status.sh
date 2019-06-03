@@ -345,13 +345,17 @@ printHeader()
   		local SWAP_CURRENT=" $SWAP_CURRENT"
 	done
 	local SWAP_MAX=$(echo "$SWAP_INFO" | awk '{SWAP=($2)} END {printf SWAP}')
-	while [ ${#SWAP_CURRENT} -lt $max_digits ]
-	do
-  		local SWAP_CURRENT=" $SWAP_CURRENT"
-	done
-	local SWAP_BAR=$(printBar $SWAP_CURRENT $SWAP_MAX $bar_length $crit_swap_percent)
-	local SWAP_MAX=$SWAP_MAX$PAD
-	local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t$SWAP_BAR ${fc_highlight}${SWAP_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${SWAP_MAX:0:${max_digits}} MB${fc_none}")
+	if [ "$SWAP_MAX" -eq "0" ]; then
+		local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t${fc_highlight}N/A${fc_none}")
+	else
+		while [ ${#SWAP_CURRENT} -lt $max_digits ]
+		do
+	  		local SWAP_CURRENT=" $SWAP_CURRENT"
+		done
+		local SWAP_BAR=$(printBar $SWAP_CURRENT $SWAP_MAX $bar_length $crit_swap_percent)
+		local SWAP_MAX=$SWAP_MAX$PAD
+		local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t$SWAP_BAR ${fc_highlight}${SWAP_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${SWAP_MAX:0:${max_digits}} MB${fc_none}")
+	fi
 
 
 	## HDD /
