@@ -33,7 +33,7 @@ Simply download the git repository and run the install script as follows.
 git clone --recursive https://github.com/andresgongora/scripts.git
 chmod +x scripts/install/install.sh
 sudo bash scripts/install/install.sh
-rm -r scripts
+rm -fr scripts
 ```
 
 
