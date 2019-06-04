@@ -1,0 +1,26 @@
+##==============================================================================
+##	COLORS
+##==============================================================================
+
+## First color
+font_color_user			light-gray
+background_user			green
+texteffect_user			bold
+
+## Second color
+font_color_host			black
+background_host			light-green
+texteffect_host			bold
+
+## Third color
+font_color_pwd			dark-gray
+background_pwd			light-gray
+texteffect_pwd			bold
+
+## Input text font
+font_color_input		light-green
+background_input		none
+texteffect_input		bold
+
+enable_vertical_padding		true
+

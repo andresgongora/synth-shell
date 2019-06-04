@@ -63,15 +63,17 @@ sudo apt install fonts-powerline
 
 Lastly, you may configure your scripts by first copying the individual
 `*.config.example`-files included in this repo to your user's 
-`~/.config/scripts/` folder. First create the folder:
+`~/.config/scripts/` folder. First create a the configuration folder
+for your user under `~/.config`, and then copy the desired configuration files
+for the scripts you want.
 ```
-mkdir ~/.config/scripts
-```
+## Create configuration folder
+mkdir -p ~/.config/scripts
 
-
-Then copy configurations you need into place, while you still are on the downloaded scripts-folder:
-```
+## Configuration for status.sh
 cp /usr/local/bin/scripts/config_templates/status.config.example ~/.config/scripts/status.config
+
+## Configuration for fancy-bash-prompt.sh
 cp /usr/local/bin/scripts/config_templates/fancy-bash-prompt.config.example ~/.config/scripts/fancy-bash-prompt.config
 ```
 
@@ -84,8 +86,14 @@ nano ~/.config/scripts/status.config
 
 ## Colors of fancy-bash-promt.sh
 nano ~/.config/scripts/fancy-bash-prompt.config
-
 ```
+
+
+Alternatively, you can use any of the example configuration files contained
+inside the example folders `/scripts/config_templates/*.examples/` by renaming
+them, and you cal also apply a system-wide configuration by modifying the conf
+files in `/etc/andresgongora/scripts/`; which are automatically created when
+using the installer.
 
 
 
