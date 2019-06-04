@@ -3,6 +3,7 @@
 ##  +-----------------------------------+-----------------------------------+
 ##  |                                                                       |
 ##  | Copyright (c) 2019, Andres Gongora <mail@andresgongora.com>.          |
+##  | Copyright (c) 2019, Sami Olmari <sami@olmari.fi>.                     |
 ##  |                                                                       |
 ##  | This program is free software: you can redistribute it and/or modify  |
 ##  | it under the terms of the GNU General Public License as published by  |
@@ -42,9 +43,15 @@
 
 getOSInfo()
 {
-	local os=$(cat /etc/*-release | grep PRETTY_NAME)
-	local os="${os#*=}"
-	echo "$os" | sed 's/"//g' # remove " characters
+	if [ -f /etc/os-release ]; then
+		local result=$(sed -En 's/PRETTY_NAME="(.*)"/\1/p' /etc/os-release)
+	elif [ -f /usr/lib/os-release ]; then
+		local result=$(sed -En 's/PRETTY_NAME="(.*)"/\1/p' /usr/lib/os-release)
+	else
+		local result="N/A"	
+	fi
+
+	printf "$result"
 }
 
 
@@ -56,8 +63,8 @@ getKernelInfo()
 
 getCPUInfo()
 {
-	local cpu=$(cat /proc/cpuinfo | grep "model name" | uniq | cut -f1 -d "@")
-	echo "${cpu#*:}" | sed 's/  */ /g' | awk '$1=$1'
+	sed -nE '0,/^\s*model name/s/^\s*model name\s*:\s*(.*\S)/\1/p' /proc/cpuinfo |\
+	sed 's/\s*@.*//;s/ \+/ /g'
 }
 
 
@@ -69,7 +76,7 @@ getShellInfo()
 
 getSysDate()
 {
-	date +"%Y.%m.%d - %T"
+	date +"$date_format"
 }
 
 
@@ -89,15 +96,16 @@ getUserName()
 ##
 ##  !!! NOTE: Still needs to figure out how to look for IP address that has default gateway
 ##  !!! attached to related interface, otherwise this returns list of IPv4's if there are many
+##  !!! TODO: Simplify?
 ##
 getLocalIPv4()
 {
 	if which ip > /dev/null; then
-		local result=$($(which ip) -family inet addr show | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
+		local result=$($(which ip) -family inet addr show | grep -oP '^\s*inet\s+(addr:?\s*)?\K(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))' | sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
 	elif which ifconfig > /dev/null; then
-		local result=$($(which ifconfig) | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | awk 'ORS=","')
+		local result=$($(which ifconfig) | grep -oP '^\s*inet\s+(addr:?\s*)?\K(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))' | sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
 	else
-		local result="Error"	
+		local result="Error"
 	fi
 
 	## Returns "N/A" if actual query result is empty, and returns "Error" if no programs found
@@ -109,13 +117,13 @@ getLocalIPv4()
 ##
 ##	getExternalIPv4()
 ##
-##  Makes an query to internet-server and returns public IPv4-address
+##	Makes an query to internet-server and returns public IPv4-address
 ##
-##  Tries first program found,
-##  program search ordering is based on timed tests, fastest to slowest.
+##	Tries first program found,
+##	program search ordering is based on timed tests, fastest to slowest.
 ##
-##  DNS-based queries are always faster, around real time 0.1 seconds.
-##  URL-queries are relatively slow, around real time 1 seconds.
+##	DNS-based queries are always faster, around real time 0.1 seconds.
+##	URL-queries are relatively slow, around real time 1 seconds.
 ##
 getExternalIPv4()
 {
@@ -140,21 +148,21 @@ getExternalIPv4()
 ##
 ##	getLocalIPv6()
 ##
-##  Looks up and returns local IPv6-address.
+##	Looks up and returns local IPv6-address.
 ##
-##  Tries first program found.
+##	Tries first program found.
 ##
-##  !!! NOTE: Still needs to figure out how to look for IP address that has default gateway
-##  !!! attached to related interface, otherwise this returns list of IPv6's if there are many
+##	!!! NOTE: Still needs to figure out how to look for IP address that has default gateway
+##	!!! attached to related interface, otherwise this returns list of IPv6's if there are many
 ##
 getLocalIPv6()
 {
 	if which ip > /dev/null; then
-		local result=$($(which ip) -family inet6 addr show | grep "inet6" | awk -F' ' '{print $2}' | awk '{print $1}' | sed '/^::1/d' | sed 's/\/[0-9]*$//' | awk 'ORS=","')
+		local result=$($(which ip) -family inet6 addr show | grep -oP '^\s*inet6\s+(addr:?\s*)?\K((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?' | sed '/::1/d;:a;N;$!ba;s/\n/,/g')
 	elif which ifconfig > /dev/null; then
-		local result=$($(which ifconfig) | grep "inet6" | awk -F' ' '{print $2}' | awk '{print $1}' | sed '/^::1/d' | awk 'ORS=","')
+		local result=$($(which ifconfig) | grep -oP '^\s*inet6\s+(addr:?\s*)?\K((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?' | sed '/::1/d;:a;N;$!ba;s/\n/,/g')
 	else
-		local result="Error"	
+		local result="Error"
 	fi
 
 	## Returns "N/A" if actual query result is empty, and returns "Error" if no programs found
@@ -166,13 +174,13 @@ getLocalIPv6()
 ##
 ##	getExternalIPv6()
 ##
-##  Makes an query to internet-server and returns public IPv6-address
+##	Makes an query to internet-server and returns public IPv6-address
 ##
-##  Tries first program found,
-##  program search ordering is based on timed tests, fastest to slowest.
+##	Tries first program found,
+##	program search ordering is based on timed tests, fastest to slowest.
 ##
-##  DNS-based queries are always faster, around real time 0.1 seconds.
-##  URL-queries are relatively slow, around real time 1 seconds.
+##	DNS-based queries are always faster, around real time 0.1 seconds.
+##	URL-queries are relatively slow, around real time 1 seconds.
 ##
 getExternalIPv6()
 {
@@ -215,6 +223,7 @@ printBar()
 	local crit_percent=$4
 
 
+
 	## COMPUTE VARIABLES
 	local num_bars=$(($size * $current / $max))
 	if [ $num_bars -gt $size ]; then
@@ -225,7 +234,8 @@ printBar()
 	if [ $num_bars -gt $crit_num_bars ]; then
 		local bar_color=$fc_crit
 	fi
-	
+
+
 
 	## PRINT BAR
 	printf "${fc_deco}[${bar_color}"
@@ -260,6 +270,7 @@ printHeader()
 	done
 
 
+
 	## LOGO
 	local formatted_logo_01="${fc_logo}${logo_01}${fc_none}"
 	local formatted_logo_02="${fc_logo}${logo_02}${fc_none}"
@@ -277,7 +288,8 @@ printHeader()
 	local formatted_logo_14="${fc_logo}${logo_14}${fc_none}"
 
 
-	## GET SYS SUMMARY 
+
+	## GET SYS SUMMARY
 	local os_info="${fc_info}OS\t\t${fc_highlight}$(getOSInfo)${fc_none}"
 	local kernel_info="${fc_info}Kernel\t\t${fc_highlight}$(getKernelInfo)${fc_none}"
 	local cpu_info="${fc_info}CPU\t\t${fc_highlight}$(getCPUInfo)${fc_none}"
@@ -302,10 +314,10 @@ printHeader()
 
 
 	## CPU LOAD
-	local CPU_AVG=$(cat /proc/loadavg | awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}')
-	local CPU_MAX=$(cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l)
+	local CPU_AVG=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
+	local CPU_MAX=$(nproc --all)
 	local CPU_BAR=$(printBar $CPU_AVG $CPU_MAX $bar_length $crit_cpu_percent)
-	local CPU_PER=$(cat /proc/loadavg | awk '{printf "%3.0f\n",$1*100}')
+	local CPU_PER=$(awk '{printf "%3.0f\n",$1*100}' /proc/loadavg)
 	local CPU_PER=$(($CPU_PER / $CPU_MAX))
 	local CPU_LOAD=$(echo -e "${fc_info}Sys load avg\t$CPU_BAR ${fc_highlight}${CPU_PER:0:9} %%${fc_none}")
 	if [ $CPU_PER -gt $crit_cpu_percent ]; then
@@ -339,13 +351,17 @@ printHeader()
   		local SWAP_CURRENT=" $SWAP_CURRENT"
 	done
 	local SWAP_MAX=$(echo "$SWAP_INFO" | awk '{SWAP=($2)} END {printf SWAP}')
-	while [ ${#SWAP_CURRENT} -lt $max_digits ]
-	do
-  		local SWAP_CURRENT=" $SWAP_CURRENT"
-	done
-	local SWAP_BAR=$(printBar $SWAP_CURRENT $SWAP_MAX $bar_length $crit_swap_percent)
-	local SWAP_MAX=$SWAP_MAX$PAD
-	local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t$SWAP_BAR ${fc_highlight}${SWAP_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${SWAP_MAX:0:${max_digits}} MB${fc_none}")
+	if [ "$SWAP_MAX" -eq "0" ]; then
+		local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t${fc_highlight}N/A${fc_none}")
+	else
+		while [ ${#SWAP_CURRENT} -lt $max_digits ]
+		do
+	  		local SWAP_CURRENT=" $SWAP_CURRENT"
+		done
+		local SWAP_BAR=$(printBar $SWAP_CURRENT $SWAP_MAX $bar_length $crit_swap_percent)
+		local SWAP_MAX=$SWAP_MAX$PAD
+		local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t$SWAP_BAR ${fc_highlight}${SWAP_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${SWAP_MAX:0:${max_digits}} MB${fc_none}")
+	fi
 
 
 	## HDD /
@@ -354,7 +370,7 @@ printHeader()
 	do
   		local ROOT_CURRENT=" $ROOT_CURRENT"
 	done
-	local ROOT_MAX=$(df -B1G "/" | grep "/" | awk '{key=($2)} END {printf key}')
+	local ROOT_MAX=$(df -B1G / | grep "/" | awk '{key=($2)} END {printf key}')
 	while [ ${#ROOT_CURRENT} -lt $max_digits ]
 	do
   		local ROOT_CURRENT=" $ROOT_CURRENT"
@@ -411,7 +427,7 @@ printLastLogins()
 	# 1. User configurable set to always on
 	# 2. If the IP/terminal is very diffefrent from usual
 	# 3. Other anomalies...
-	if false; then	
+	if false; then
 		printf "${fc_highlight}\nLAST LOGINS:\n${fc_info}"
 		last -iwa | head -n 4 | grep -v "reboot"
 	fi
@@ -437,14 +453,14 @@ printSystemctl()
 printTop()
 {
 	if $cpu_is_crit; then
-		local top=$('nice' 'top' -b -w 80 -d 0.1 -1 | head -n 11)
+		local top=$('nice' 'top' -b -w 80 -d 0.1 | head -n 11 | sed 's/%/%%/g')
 		local load=$(echo "${top}" | head -n 3 | tail -n 1)
 		local head=$(echo "${top}" | head -n 7 | tail -n 1)
 		local proc=$(echo "${top}" | tail -n 4 | grep -v "top")
-
-		printf "\n\r${fc_highlight}SYSTEM LOAD:${fc_info}  ${load:8:35}${fc_highlight}\n\r"
-		echo "$head"
-		printf "${fc_info}${proc}${fc_none}"
+	
+		printf "\n\r${fc_crit}SYSTEM LOAD:${fc_info}  ${load:9:36}${fc_highlight}\n"
+		printf "${fc_crit}$head${fc_none}\n"
+		printf "${fc_info}${proc}${fc_none}\n"
 	fi
 }
 
@@ -459,9 +475,19 @@ printTop()
 status()
 {
 	## INCLUDE EXTERNAL DEPENDENCIES
+	## Only if the functions are not available
+	## If not, search in `common` folder
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-	source "$dir/../common/load_config.sh"
-	source "$dir/../common/color.sh"
+
+	if [ "$(type -t loadConfigFile)" != 'function' ];
+	then
+		source "$dir/../common/load_config.sh"
+	fi
+
+	if [ "$(type -t getFormatCode)" != 'function' ];
+	then
+		source "$dir/../common/color.sh"
+	fi
 
 
 
@@ -472,6 +498,7 @@ status()
 
 	## DEFAULT CONFIGURATION
 	## WARNING! Do not edit directly, use configuration files instead
+
 	local logo_01="        -oydNMMMMNdyo-        "
 	local logo_02="     -yNMMMMMMMMMMMMMMNy-     "
 	local logo_03="   .hMMMMMMmhsooshmMMMMMMh.   "
@@ -503,11 +530,18 @@ status()
 	local crit_hdd_percent=80
 	local max_digits=5
 
+	local date_format="%Y.%m.%d - %T"
+
 
 
 	## LOAD USER CONFIGURATION
-	local config_file="$HOME/.config/scripts/status.config"
-	loadConfigFile $config_file
+	local user_config_file="$HOME/.config/scripts/status.config"
+	local sys_config_file="/etc/andresgongora/scripts/status.config"
+	if [ -f $user_config_file ]; then
+		loadConfigFile $user_config_file
+	elif [ -f $sys_config_file ]; then
+		loadConfigFile $sys_config_file
+	fi
 
 
 

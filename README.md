@@ -19,19 +19,35 @@ If you recognize a snippet and the file has no reference
 
 
 
+
+
 <!--------------------------------------+-------------------------------------->
 #                                  Installation
 <!--------------------------------------+-------------------------------------->
 
-For now, the easiest way to install this scripts is to clone this repository
-and then tell your `.bashrc` file to source those scripts you want.
-When you install the scripts as a user, you have to store them somewhere
-on your system. For this, we suggest the folder `~/scripts`, but feel
-free to use any other location.
+### Automatic insallation (system wide)
 
+The quickuest way to get started is to simply run the installation script.
+Simply download the git repository and run the install script as follows.
+```
+git clone --recursive https://github.com/andresgongora/scripts.git
+chmod +x scripts/install/install.sh
+sudo bash scripts/install/install.sh
+rm -r scripts
+```
+
+
+
+### Manual insallation (current user only)
+
+Alternatively, you may install the script manually for you current user
+(no elevated privileges required). Simply clone this repository and then 
+tell your .bashrc file to source those scripts you want. When you install the 
+scripts as a user, you have to store them somewhere on your system. For this, 
+we suggest the folder ~/scripts, but feel free to use any other location.
 ```
 ## Clone repository to your computer
-git clone https://github.com/andresgongora/scripts.git
+git clone --recursive https://github.com/andresgongora/scripts.git
 cd scripts
 
 ## Source individual scripts. Choose the ones you want (or all).
@@ -40,9 +56,12 @@ echo "source $(pwd)/terminal/alias.sh" >> ~/.bashrc
 echo "source $(pwd)/terminal/status.sh" >> ~/.bashrc
 ```
 
+
+
+### Dependencies
+
 If you want to use `fancy-bash-promt.sh` you also need power-line fonts.
 Depending on your distro you can install it as:
-
 ```
 ## ArchLinux
 sudo pacman -S powerline-fonts
@@ -51,32 +70,42 @@ sudo pacman -S powerline-fonts
 sudo apt install fonts-powerline
 ```
 
+
+
+### Script configuration/customization
+
 Lastly, you may configure your scripts by first copying the individual
 `*.config.example`-files included in this repo to your user's 
-`~/.config/scripts/` folder. First create the folder:
+`~/.config/scripts/` folder. First create a the configuration folder
+for your user under `~/.config`, and then copy the desired configuration files
+for the scripts you want.
+```
+## Create configuration folder
+mkdir -p ~/.config/scripts
 
-```
-mkdir ~/.config/scripts
+## Configuration for status.sh
+cp /usr/local/bin/scripts/config_templates/status.config.example ~/.config/scripts/status.config
+
+## Configuration for fancy-bash-prompt.sh
+cp /usr/local/bin/scripts/config_templates/fancy-bash-prompt.config.example ~/.config/scripts/fancy-bash-prompt.config
 ```
 
-Then copy configurations you need into place, while you still are on the downloaded scripts-folder:
-
-```
-cp config_templates/status.config.example ~/.config/scripts/status.config
-cp config_templates/fancy-bash-prompt.config.example ~/.config/scripts/fancy-bash-prompt.config
-```
 
 Then you can modify them for your needs. For example, to configure
 the colors in`fancy-bash-promt.sh` or `status.sh`, you can do as follows:
-
 ```
 ## Colors and behaviour of status.sh
 nano ~/.config/scripts/status.config
 
 ## Colors of fancy-bash-promt.sh
 nano ~/.config/scripts/fancy-bash-prompt.config
-
 ```
+
+Alternatively, you can use any of the example configuration files contained
+inside the example folders `/scripts/config_templates/*.examples/` by renaming
+them, and you cal also apply a system-wide configuration by modifying the conf
+files in `/etc/andresgongora/scripts/`; which are automatically created when
+using the installer.
 
 
 

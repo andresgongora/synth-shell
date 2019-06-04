@@ -47,14 +47,14 @@
 ##		   part of $PS1 to be the window title)
 ##		6. Formating of the bash promt ($PS1).
 ##
-##	* Main script body:	
+##	* Main script body:
 ##	  It calls the adequate helper functions to colorize your promt and sets
 ##	  a hook to regenerate your working directory "NEW_PWD" when you change it.
-## 
 ##
 ##
 ##
-##	
+##
+##
 ##	REFFERENCES
 ##
 ##	* http://tldp.org/HOWTO/Bash-Prompt-HOWTO/index.html
@@ -93,7 +93,7 @@ bash_prompt_command() {
 	pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
 
 	NEW_PWD=${PWD/#$HOME/\~}
-	
+
 	local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
 
 	# Generate name
@@ -110,9 +110,19 @@ bash_prompt_command() {
 bash_prompt() {
 
 	## INCLUDE EXTERNAL DEPENDENCIES
+	## Only if the functions are not available
+	## If not, search in `common` folder
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-	source "$dir/../common/load_config.sh"
-	source "$dir/../common/color.sh"
+
+	if [ "$(type -t loadConfigFile)" != 'function' ];
+	then
+		source "$dir/../common/load_config.sh"
+	fi
+
+	if [ "$(type -t getFormatCode)" != 'function' ];
+	then
+		source "$dir/../common/color.sh"
+	fi
 
 
 
@@ -138,11 +148,17 @@ bash_prompt() {
 	local enable_vertical_padding=true
 
 
-	## LOAD USER CONFIGURATION
-	local config_file="$HOME/.config/scripts/fancy-bash-prompt.config"
-	loadConfigFile $config_file
 
-	
+	## LOAD USER CONFIGURATION
+	local user_config_file="$HOME/.config/scripts/fancy-bash-prompt.config"
+	local sys_config_file="/etc/andresgongora/scripts/fancy-bash-prompt.config"
+	if [ -f $user_config_file ]; then
+		loadConfigFile $user_config_file
+	elif [ -f $sys_config_file ]; then
+		loadConfigFile $sys_config_file
+	fi
+
+
 
 	## GENERATE COLOR FORMATING SEQUENCES
 	## The sequences will confuse the bash promt. To tell the terminal that they are non-printint
@@ -156,7 +172,7 @@ bash_prompt() {
 	local separator_2_format="\[$(getFormatCode -c $background_host  -b $background_pwd)\]"
 	local separator_3_format="\[$(getFormatCode -c $background_pwd)\]"
 
-	
+
 
 	## GENERATE USER/HOST/PWD TEXT
 	local ps1_user="${ps1_user_format} \u "
@@ -199,7 +215,7 @@ bash_prompt() {
 	## BASH PROMT - Generate promt and remove format from the rest
 	PS1="$titlebar${vertical_padding}${ps1_user}${separator_1}${ps1_host}${separator_2}${ps1_pwd}${separator_3}${ps1_input}"
 
-	
+
 
 	## For terminal line coloring, leaving the rest standard
 	none="$(tput sgr0)"
@@ -213,14 +229,14 @@ bash_prompt() {
 ##	MAIN
 ##==============================================================================
 
-##	Bash provides an environment variable called PROMPT_COMMAND. 
-##	The contents of this variable are executed as a regular Bash command 
-##	just before Bash displays a prompt. 
+##	Bash provides an environment variable called PROMPT_COMMAND.
+##	The contents of this variable are executed as a regular Bash command
+##	just before Bash displays a prompt.
 ##	We want it to call our own command to truncate PWD and store it in NEW_PWD
 PROMPT_COMMAND=bash_prompt_command
 
 ##	Call bash_promnt only once, then unset it (not needed any more)
-##	It will set $PS1 with colors and relative to $NEW_PWD, 
+##	It will set $PS1 with colors and relative to $NEW_PWD,
 ##	which gets updated by $PROMT_COMMAND on behalf of the terminal
 bash_prompt
 unset bash_prompt

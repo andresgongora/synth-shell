@@ -7,22 +7,20 @@
 ## you do not wish to be displayed.
 ##==============================================================================
 
-
-
-logo_01			"        -oydNMMMMNdyo-        "
-logo_02			"     -yNMMMMMMMMMMMMMMNy-     "
-logo_03			"   .hMMMMMMmhsooshmMMMMMMh.   "
-logo_04			"  :NMMMMmo.        .omMMMMN:  "
-logo_05			" -NMMMMs    -+ss+-    sMMMMN- "
-logo_06			" hMMMMs   -mMMMMMMm-   sMMMMh "
-logo_07			"'MMMMM.  'NMMMMMMMMN'  .MMMMM'"
-logo_08			"'MMMMM.  'NMMMMMMMMN'   yMMMM'"
-logo_09			" hMMMMs   -mMMMMMMMMy.   -yMh "
-logo_10			" -NMMMMs    -+ss+yMMMMy.   -. "
-logo_11			"  :NMMMMmo.       .yMMMMy.    "
-logo_12			"   .hMMMMMMmhsoo-   .yMMMy    "
-logo_13			"     -yNMMMMMMMMMy-   .o-     "
-logo_14			"        -oydNMMMMNd/          "
+logo_01			"                              "
+logo_02			"                              "
+logo_03			"    ___ ___ ___   _   _       "
+logo_04			"   |   \_ _/ __| /_\ | |      "
+logo_05			"   | |) | |\__ \/ _ \| |__    "
+logo_06			"   |___/___|___/_/ \_\____|   "
+logo_07			"                              "
+logo_08			"         DISTRIBUTED          "
+logo_09			"   INTELLIGENT SYSTEMS AND    "
+logo_10			"    ALGORITHMS LABORATORY     "
+logo_11			"                              "
+logo_12			"        disal.epfl.ch         "
+logo_13			"                              "
+logo_14			"                              "
 
 logo_padding		""
 
@@ -65,5 +63,6 @@ format_crit		"-c 208   -e bold"
 format_deco		"-c white -e bold"
 format_ok		"-c blue  -e bold"
 format_error		"-c 208   -e bold -e blink"
-format_logo		"-c blue  -e bold"
+format_logo		"-c red   -e bold"
+
 
