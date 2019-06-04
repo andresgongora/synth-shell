@@ -36,6 +36,7 @@ If you feel someone is missing, please fork and pull-request.
 <!--------------------------------------+-------------------------------------->
 
 Bug reports and new feature suggestions, provideded by users world-wide,
-are usually be mentioned in the changelogs.
+are usually mentioned in the changelogs.
 
 We kindly thank all of them for their valuable feedback.
+
