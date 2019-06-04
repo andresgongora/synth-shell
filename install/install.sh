@@ -62,6 +62,7 @@ installScript()
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 	local script="${INSTALL_DIR}/${script_name}.sh"
 	local source_script="${dir}/../terminal/${script_name}.sh"
+	local config_template_dir="${dir}/../config_templates"
 	source "$dir/../common/edit_text_file.sh"
 
 	local hook=$(printf '%s'\
@@ -130,11 +131,29 @@ installScript()
 
 
 		## COPY CONFIGURATION FILES
+		## - Create system config folder if there is none
+		## - Check if there is already some configuration in place
+		##   - If none, copy current configuration
+		##   - If there is, but different, copy with .new extension
+		## - Copy all examples files (overwrite old examples)
+		local sys_conf_file="${CONFIG_DIR}/${script_name}.config"
+		local conf_example_dir="${config_template_dir}/${script_name}.config.examples"
+		local conf_template="${config_template_dir}/${script_name}.config"
+
 		if [ ! -d $CONFIG_DIR ]; then
 			mkdir -p $CONFIG_DIR
 		fi
-		cp -u "${dir}/../config_templates/${script_name}.config" "${CONFIG_DIR}/"
-		cp -ur "${dir}/../config_templates/${script_name}.config.examples" "${CONFIG_DIR}/"
+	
+		if [ ! -f "$sys_conf_file" ]; then
+			cp -u "${conf_template}" "${sys_conf_file}"
+		elif ( ! cmp -s "$conf_template" "$sys_conf_file" ); then
+			cp -u "${conf_template}" "${sys_conf_file}.new"
+			printf "Old configuration file detected. "\
+			       "New configuration file written to "\
+			       "${sys_conf_file}.new\n"
+		fi
+
+		cp -ur "$conf_example_dir" "${CONFIG_DIR}/"
 
 
 		;;
