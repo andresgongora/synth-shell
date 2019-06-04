@@ -84,9 +84,17 @@ installScript()
 		editTextFile "$BASHRC" delete "$hook"
 
 
+
 		## REMOVE SCRIPT
 		if [ -f $script ]; then
 			rm $script
+		fi
+
+
+
+		## REMOVE CONFIG FILES
+		if [ -d $CONFIG_DIR ]; then
+			rm -r  $CONFIG_DIR
 		fi
 		
 
@@ -106,21 +114,21 @@ installScript()
 		echo "" >> ${script}
 
 
-		## ADD COMMON SCRIPTS TO FILE
-		## TODO: Make this configurable	
+
+		## ADD CONTENT TO SCRIPT FILE
+		## - Add common scripts TODO: Make this configurable	
+		## - Add actual script
+		## - Remove common functions from environment
 		cat "${dir}/../common/load_config.sh" >> "$script"
 		echo "" >> ${script}
 		cat "${dir}/../common/color.sh" >> "$script"
 		echo "" >> ${script}
 
-
-		## ADD ACTUAL SCRIPT
 		cat "$source_script" >> "$script"
 
-
-		## REMOVE FUNCTION FROM ENVIRONMENT
 		echo "unset loadConfigFile" >> "$script"
 		echo "unset getFormatCode" >> "$script"
+
 
 
 		## ADD HOOK TO /etc/bash.bashrc
@@ -128,6 +136,7 @@ installScript()
 			touch "$BASHRC" || exit 1
 		fi
 		editTextFile "$BASHRC" append "$hook"
+
 
 
 		## COPY CONFIGURATION FILES
