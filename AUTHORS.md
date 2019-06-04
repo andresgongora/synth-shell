@@ -23,7 +23,7 @@ The following list is roughly sorted in reverse cronological order.
 	Main developer
 
 	
-*	**Sami Olmari**	
+*	**Sami Olmari**	 
 	<sami@olmari.fi>  
 	www.olmari.fi  
 	Major improvements to `status.sh`
