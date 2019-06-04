@@ -49,7 +49,7 @@
 ##	-c	color name or 256bit code for font face
 ##	-b	background color name or 256bit code
 ##	-e	effect name (e.g. bold, blink, etc.)
-##	
+##
 ##
 ##
 ##
@@ -85,19 +85,19 @@
 ##	that the next code (after the semicolon) should be interpreted as
 ##	a 256 bit formatting color. So, for example, the code 82 is a light
 ##	green. We can paint the text using this code as follows, plus bold
-##	face as follows - but notice that not all terminal support 256 colors:##	
+##	face as follows - but notice that not all terminal support 256 colors:##
 ##		\e[1;38;5;82m Hello World! \e[0m
 ##
 ##	For a detailed list of all codes, this site has an excellent guide:
 ##	https://misc.flogisoft.com/bash/tip_colors_and_formatting
-##	
-##	
-##	
-##	
-##	
+##
+##
+##
+##
+##
 ##	TODO: When requesting an 8 bit colorcode, detect if terminal supports
 ##	256 bits, and return appropriate code instead
-##	
+##
 ##	TODO: Improve this description/manual text
 ##
 ##	TODO: Currently, if only one parameter is passed, its treated as a
@@ -188,14 +188,14 @@ getColorCode()
 {
 	COLOR=$1
 
-	## Check if color is a 256-color code 
+	## Check if color is a 256-color code
 	if [ $COLOR -eq $COLOR ] 2> /dev/null; then
 		if [ $COLOR -gt 0 -a $COLOR -lt 256 ]; then
 			echo "38;5;$COLOR"
 		else
 			echo 0
 		fi
-	## Or if color key-workd	
+	## Or if color key-workd
 	else
 		BITCODE=$(get8bitCode $COLOR)
 		COLORCODE=$(($BITCODE + 30))
@@ -209,14 +209,14 @@ getBackgroundCode()
 {
 	COLOR=$1
 
-	## Check if color is a 256-color code 
+	## Check if color is a 256-color code
 	if [ $COLOR -eq $COLOR ] 2> /dev/null; then
 		if [ $COLOR -gt 0 -a $COLOR -lt 256 ]; then
 			echo "48;5;$COLOR"
 		else
 			echo 0
 		fi
-	## Or if color key-workd	
+	## Or if color key-workd
 	else
 		BITCODE=$(get8bitCode $COLOR)
 		COLORCODE=$(($BITCODE + 40))
@@ -343,15 +343,15 @@ getFormatCode()
 
 			## APPEND CODE
 			FORMAT="$FORMAT$CODE"
-	
+
 			# Remove arguments from stack
 			shift
 			shift
 		done
-		
+
 		## APPLY FORMAT TO TEXT
 		FORMAT_CODE=$(getFormattingSequence $FORMAT)
-		echo -n "${FORMAT_CODE}"	
+		echo -n "${FORMAT_CODE}"
 	fi
 
 }

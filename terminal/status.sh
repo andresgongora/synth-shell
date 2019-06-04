@@ -48,7 +48,7 @@ getOSInfo()
 	elif [ -f /usr/lib/os-release ]; then
 		local result=$(sed -En 's/PRETTY_NAME="(.*)"/\1/p' /usr/lib/os-release)
 	else
-		local result="N/A"	
+		local result="N/A"
 	fi
 
 	printf "$result"
@@ -86,17 +86,30 @@ getUserName()
 }
 
 
+getSystemctlStatus()
+{
+	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
+
+	if [ "$systcl_num_failed" -eq "0" ]; then
+		echo -e "All services OK"
+	else
+		echo -e "${fc_error}$systcl_num_failed services failed!${fc_none}"
+	fi
+}
+
+
+
 ##------------------------------------------------------------------------------
 ##
 ##	getLocalIPv4()
 ##
-##  Looks up and returns local IPv4-address.
+##	Looks up and returns local IPv4-address.
 ##
-##  Tries first program found.
+##	Tries first program found.
 ##
-##  !!! NOTE: Still needs to figure out how to look for IP address that has default gateway
-##  !!! attached to related interface, otherwise this returns list of IPv4's if there are many
-##  !!! TODO: Simplify?
+##	!!! NOTE: Still needs to figure out how to look for IP address that has default gateway
+##	!!! attached to related interface, otherwise this returns list of IPv4's if there are many
+##	!!! TODO: Simplify?
 ##
 getLocalIPv4()
 {
@@ -154,6 +167,7 @@ getExternalIPv4()
 ##
 ##	!!! NOTE: Still needs to figure out how to look for IP address that has default gateway
 ##	!!! attached to related interface, otherwise this returns list of IPv6's if there are many
+##	!!! TODO: Simplify?
 ##
 getLocalIPv6()
 {
@@ -298,19 +312,11 @@ printHeader()
 	local user_name="${fc_info}Login\t\t${fc_highlight}$(getUserName)${fc_none}"
 	local local_ipv4="${fc_info}Local IPv4\t${fc_highlight}$(getLocalIPv4)${fc_none}"
 	local external_ipv4="${fc_info}External IPv4\t${fc_highlight}$(getExternalIPv4)${fc_none}"
+	local sysctl_status="${fc_info}Services\t${fc_highlight}$(getSystemctlStatus)${fc_none}"
 
 
 
 	#### UGLY FROM HERE ON #################################################
-
-
-	## SYSTEM CTL FAILED TO LOAD
-	local NUM_FAILED=$(systemctl --failed | head -c 1)
-	if [ "$NUM_FAILED" -eq "0" ]; then
-		local SYSCTL=$(echo -e "${fc_info}SystemCTL\t${fc_highlight}All services OK${fc_none}")
-	else
-		local SYSCTL=$(echo -e "${fc_info}SystemCTL\t${fc_error}$NUM_FAILED services failed!${fc_none}")
-	fi
 
 
 	## CPU LOAD
@@ -343,6 +349,7 @@ printHeader()
 	local MEM_USAGE=$(echo -e "${fc_info}Memory\t\t$MEM_BAR ${fc_highlight}${MEM_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${MEM_MAX:0:${max_digits}} MB${fc_none}")
 
 
+
 	## SWAP
 	local SWAP_INFO=$('free' -m | tail -n 1)
 	local SWAP_CURRENT=$(echo "$SWAP_INFO" | awk '{SWAP=($3)} END {printf SWAP}')
@@ -364,6 +371,7 @@ printHeader()
 	fi
 
 
+
 	## HDD /
 	local ROOT_CURRENT=$(df -B1G / | grep "/" | awk '{key=($3)} END {printf key}')
 	while [ ${#ROOT_CURRENT} -lt $max_digits ]
@@ -378,6 +386,7 @@ printHeader()
 	local ROOT_BAR=$(printBar $ROOT_CURRENT $ROOT_MAX $bar_length $crit_hdd_percent)
 	local ROOT_MAX=$ROOT_MAX$PAD
 	local ROOT_USAGE=$(echo -e "${fc_info}Storage /\t$ROOT_BAR ${fc_highlight}${ROOT_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${ROOT_MAX:0:${max_digits}} GB${fc_none}")
+
 
 
 	## HDD /home
@@ -408,7 +417,7 @@ printHeader()
 	printf "${logo_padding}${formatted_logo_06}\t${user_name}\n\r"
 	printf "${logo_padding}${formatted_logo_07}\t${local_ipv4}\n\r"
 	printf "${logo_padding}${formatted_logo_08}\t${external_ipv4}\n\r"
-	printf "${logo_padding}${formatted_logo_09}\t${SYSCTL}\n\r"
+	printf "${logo_padding}${formatted_logo_09}\t${sysctl_status}\n\r"
 	printf "${logo_padding}${formatted_logo_10}\t${CPU_LOAD}\n\r"
 	printf "${logo_padding}${formatted_logo_11}\t${MEM_USAGE}\n\r"
 	printf "${logo_padding}${formatted_logo_12}\t${SWAP_USAGE}\n\r"
@@ -439,9 +448,8 @@ printLastLogins()
 
 printSystemctl()
 {
-	local NUM_FAILED=$(systemctl --failed | head -c 1)
-	if [ "$NUM_FAILED" -ne "0" ]; then
-		printf "\n\r${fc_highlight}SYSTEMCTL STATUS: ${fc_error}At least one service failed to load!!${fc_none}\n\r"
+	if [ "$systcl_num_failed" -ne "0" ]; then
+		printf "\n\r${fc_highlight}SYSTEMCTL STATUS: ${fc_crit}${systcl_num_failed} service failed to load!!${fc_none}\n\r"
 		systemctl --failed
 	fi
 }
@@ -453,11 +461,11 @@ printSystemctl()
 printTop()
 {
 	if $cpu_is_crit; then
-		local top=$('nice' 'top' -b -w 80 -d 0.1 | head -n 11 | sed 's/%/%%/g')
+		local top=$('nice' 'top' -b -w 80 -d 1 | head -n 11 | sed 's/%/%%/g')
 		local load=$(echo "${top}" | head -n 3 | tail -n 1)
 		local head=$(echo "${top}" | head -n 7 | tail -n 1)
 		local proc=$(echo "${top}" | tail -n 4 | grep -v "top")
-	
+
 		printf "\n\r${fc_crit}SYSTEM LOAD:${fc_info}  ${load:9:36}${fc_highlight}\n"
 		printf "${fc_crit}$head${fc_none}\n"
 		printf "${fc_info}${proc}${fc_none}\n"
@@ -493,6 +501,7 @@ status()
 
 	## SCRIPT WIDE VARIABLES
 	local cpu_is_crit=false
+	local systcl_num_failed=0
 
 
 
@@ -568,7 +577,6 @@ status()
 
 ## CALL MAIN FUNCTION
 status
-
 
 
 
