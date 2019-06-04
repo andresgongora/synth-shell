@@ -542,6 +542,7 @@ status()
 	fi
 
 
+
 	## COLOR AND TEXT FORMAL CODE
 	local fc_info=$(getFormatCode $format_info)
 	local fc_highlight=$(getFormatCode $format_highlight)
