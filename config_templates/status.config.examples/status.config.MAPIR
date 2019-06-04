@@ -63,6 +63,6 @@ format_crit		"-c 208   -e bold"
 format_deco		"-c white -e bold"
 format_ok		"-c blue  -e bold"
 format_error		"-c 208   -e bold -e blink"
-format_logo		"-c blue  -e bold"
+format_logo		"-c cyan  -e bold"
 
 
