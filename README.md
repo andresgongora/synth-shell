@@ -25,7 +25,8 @@ If you recognize a snippet and the file has no reference
 #                                  Installation
 <!--------------------------------------+-------------------------------------->
 
-**Requires sudo, skip this block of code for safer manual installation** 
+### Automatic insallation (system wide)
+
 The quickuest way to get started is to simply run the installation script.
 Simply download the git repository and run the install script as follows.
 ```
@@ -36,8 +37,14 @@ rm -r scripts
 ```
 
 
+
+### Manual insallation (current user only)
+
 Alternatively, you may install the script manually for you current user
-(no elevated privileges required). Simply clone this repository and then tell your .bashrc file to source those scripts you want. When you install the scripts as a user, you have to store them somewhere on your system. For this, we suggest the folder ~/scripts, but feel free to use any other location.
+(no elevated privileges required). Simply clone this repository and then 
+tell your .bashrc file to source those scripts you want. When you install the 
+scripts as a user, you have to store them somewhere on your system. For this, 
+we suggest the folder ~/scripts, but feel free to use any other location.
 ```
 ## Clone repository to your computer
 git clone --recursive https://github.com/andresgongora/scripts.git
@@ -50,6 +57,9 @@ echo "source $(pwd)/terminal/status.sh" >> ~/.bashrc
 ```
 
 
+
+### Dependencies
+
 If you want to use `fancy-bash-promt.sh` you also need power-line fonts.
 Depending on your distro you can install it as:
 ```
@@ -60,6 +70,9 @@ sudo pacman -S powerline-fonts
 sudo apt install fonts-powerline
 ```
 
+
+
+### Script configuration/customization
 
 Lastly, you may configure your scripts by first copying the individual
 `*.config.example`-files included in this repo to your user's 
@@ -87,7 +100,6 @@ nano ~/.config/scripts/status.config
 ## Colors of fancy-bash-promt.sh
 nano ~/.config/scripts/fancy-bash-prompt.config
 ```
-
 
 Alternatively, you can use any of the example configuration files contained
 inside the example folders `/scripts/config_templates/*.examples/` by renaming
