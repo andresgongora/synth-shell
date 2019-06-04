@@ -76,7 +76,7 @@ getShellInfo()
 
 getSysDate()
 {
-	date +"%Y.%m.%d - %T"
+	date +"$date_format"
 }
 
 
@@ -529,6 +529,8 @@ status()
 	local crit_swap_percent=25
 	local crit_hdd_percent=80
 	local max_digits=5
+
+	local date_format="%Y.%m.%d - %T"
 
 
 
