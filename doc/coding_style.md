@@ -76,19 +76,6 @@ hasEnoughMemory()
 
 
 <!--------------------------------------+-------------------------------------->
-#                         Use printf (instead echo, etc)
-<!--------------------------------------+-------------------------------------->
-
-Printf is more versatile to use especially with more complex output lines, so
-do use only printf when needing to say something into terminal or variables.
-
-This ensures consistent code, consistent behaviour of text output, so therefore
-easier to debug if need ever arises to.
-
-
-
-
-<!--------------------------------------+-------------------------------------->
 #                                  Tabs vs spaces
 <!--------------------------------------+-------------------------------------->
 
@@ -109,6 +96,34 @@ getData()
 ```
 
 **Why??** - Because some of us just want to see the world burn
+
+
+
+
+
+<!--------------------------------------+-------------------------------------->
+#                         Built-in and system functions
+<!--------------------------------------+-------------------------------------->
+
+
+### Use printf (instead echo, etc)
+Printf is more versatile to use especially with more complex output lines, so
+do use only printf when needing to say something into terminal or variables.
+This ensures consistent code, consistent behaviour of text output, so therefore
+easier to debug if need ever arises to.
+
+
+### System binary calls
+Please do not call any system binary using only it's name, wrap it in `'`, 
+or use `which`. 
+
+For example, do not do call `ls` or `/usr/bin/ls`, as the
+former is susceptible to be aliased by the user to a different command, and the
+latter might have a different path for a different distro. Instead `'ls'` or
+(if need be) `$(which ls)` provide more consistent behaviour.
+
+
+
 
 
 
