@@ -66,6 +66,7 @@ getKernelInfo()
 }
 
 
+
 ##------------------------------------------------------------------------------
 ##
 ##	getCPUInfo()
@@ -150,6 +151,7 @@ getLocalIPv4()
 }
 
 
+
 ##------------------------------------------------------------------------------
 ##
 ##	getExternalIPv4()
@@ -181,6 +183,7 @@ getExternalIPv4()
 }
 
 
+
 ##------------------------------------------------------------------------------
 ##
 ##	getLocalIPv6()
@@ -206,6 +209,7 @@ getLocalIPv6()
 	## Returns "N/A" if actual query result is empty, and returns "Error" if no programs found
 	[ $result ] && printf $result || printf "N/A"
 }
+
 
 
 ##------------------------------------------------------------------------------
@@ -237,6 +241,7 @@ getExternalIPv6()
 	## Returns "N/A" if actual query result is empty, and returns "Error" if no programs found
 	[ $result ] && printf $result || printf "N/A"
 }
+
 
 
 ##------------------------------------------------------------------------------
@@ -290,6 +295,7 @@ printBar()
 }
 
 
+
 ##------------------------------------------------------------------------------
 ##
 ##	printFraction(NUMERAND, DENOMINTOR, PADDING_DIGITS, UNITS)
@@ -309,36 +315,91 @@ printFraction()
 
 
 
-printBarCPU()
+##------------------------------------------------------------------------------
+##
+printBarAndInfo()
 {
-	local avg=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
-	local max=$(nproc --all)
-	local per=$(awk '{printf "%3.0f\n",$1*100/'"$max"'}' /proc/loadavg)
-	local avg_float=$(awk '{avg_1m=($1)} END {printf "%3.1f", avg_1m}' /proc/loadavg)
+	local current=$1
+	local max=$2
+	local crit_percent=$3
+	local print_as_percentage=$4
+	local units=$5
+	local description=${@:6}
 
-	printBar $avg $max $bar_length $crit_cpu_percent
+	printf "${fc_info}${description}"
+	printBar $current $max $bar_length $crit_percent
 
-	if $print_cpu_percentage; then
-		printf " ${fc_highlight}%${bar_num_digits}s${fc_info}%%%%${fc_none}\n" $per
+	if $print_as_percentage; then
+		per=$(($current*100/$max))
+		printf " ${fc_highlight}%${bar_num_digits}s${fc_info}%%%%${fc_none}" $per
 	else
-		printFraction $avg_float $max $bar_num_digits
+		printFraction $current $max $bar_num_digits $units
 	fi
 
-	if [ $per -gt $crit_cpu_percent ]; then
-		cpu_is_crit=true
-	fi
+
 }
 
 
-printBarRAM()
+printCPU()
 {
+	local message="Sys load avg\t"
+	local units=" "
+	local current=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
+	local max=$(nproc --all)
+	local percent=$(awk '{printf "%3.0f\n",$1*100/'"$max"'}' /proc/loadavg)
+
+	if [ $percent -gt $crit_cpu_percent ]; then
+		cpu_is_crit=true
+	fi
+
+	printBarAndInfo $current $max $crit_cpu_percent $cpu_as_percentage $units $message
+}
+
+
+
+printRAM()
+{
+	local message="Memory\t\t"
+	local units="MB"
 	local mem_info=$('free' -m | head -n 2 | tail -n 1)
 	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
 	local max=$(echo "$mem_info" | awk '{mem=($2)} END {printf mem}')
+	local percent=$(($current*100/$max))
 
-	printBar $current $max $bar_length $crit_mem_percent
-	printFraction $current $max $bar_num_digits "MB"
+	if [ $percent -gt $crit_ram_percent ]; then
+		mem_is_crit=true
+	fi
+
+	printBarAndInfo $current $max $crit_ram_percent $ram_as_percentage $units $message
 }
+
+
+
+printSwap()
+{
+	local message="Swap\t\t"
+	local units="MB"
+	local swap_info=$('free' -m | tail -n 1)
+	local current=$(echo "$swap_info" | awk '{SWAP=($3)} END {printf SWAP}')
+	local max=$(echo "$swap_info" | awk '{SWAP=($2)} END {printf SWAP}')
+	local percent=$(($current*100/$max))
+
+	if [ "$max" -eq "0" ]; then
+		printf "${fc_info}${message}${fc_highlight}N/A{fc_none}"
+	else
+
+		if [ $percent -gt $crit_swap_percent ]; then
+			swap_is_crit=true
+		fi
+
+		printBarAndInfo $current $max $crit_swap_percent $swap_as_percentage $units $message
+	fi
+
+
+}
+
+
+
 
 
 
@@ -386,34 +447,13 @@ printHeader()
 	local local_ipv4="${fc_info}Local IPv4\t${fc_highlight}$(getLocalIPv4)${fc_none}"
 	local external_ipv4="${fc_info}External IPv4\t${fc_highlight}$(getExternalIPv4)${fc_none}"
 	local sysctl_status="${fc_info}Services\t${fc_highlight}$(getSystemctlStatus)${fc_none}"
-	local cpu_load="${fc_info}Sys load avg\t$(printBarCPU)"
-	local mem_usage="${fc_info}Memory\t\t$(printBarRAM)"
 
+	local root_hdd=""
+	local home_hdd=""
 
 
 
 	#### UGLY FROM HERE ON #################################################
-
-
-	## SWAP
-	local SWAP_INFO=$('free' -m | tail -n 1)
-	local SWAP_CURRENT=$(echo "$SWAP_INFO" | awk '{SWAP=($3)} END {printf SWAP}')
-	while [ ${#SWAP_CURRENT} -lt $bar_num_digits ]
-	do
-  		local SWAP_CURRENT=" $SWAP_CURRENT"
-	done
-	local SWAP_MAX=$(echo "$SWAP_INFO" | awk '{SWAP=($2)} END {printf SWAP}')
-	if [ "$SWAP_MAX" -eq "0" ]; then
-		local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t${fc_highlight}N/A${fc_none}")
-	else
-		while [ ${#SWAP_CURRENT} -lt $bar_num_digits ]
-		do
-	  		local SWAP_CURRENT=" $SWAP_CURRENT"
-		done
-		local SWAP_BAR=$(printBar $SWAP_CURRENT $SWAP_MAX $bar_length $crit_swap_percent)
-		local SWAP_MAX=$SWAP_MAX$PAD
-		local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t$SWAP_BAR ${fc_highlight}${SWAP_CURRENT:0:${bar_num_digits}}${fc_info}/${fc_highlight}${SWAP_MAX:0:${bar_num_digits}} MB${fc_none}")
-	fi
 
 
 
@@ -463,9 +503,9 @@ printHeader()
 	printf "${logo_padding}${formatted_logo_07}\t${local_ipv4}\n\r"
 	printf "${logo_padding}${formatted_logo_08}\t${external_ipv4}\n\r"
 	printf "${logo_padding}${formatted_logo_09}\t${sysctl_status}\n\r"
-	printf "${logo_padding}${formatted_logo_10}\t${cpu_load}\n\r"
-	printf "${logo_padding}${formatted_logo_11}\t${mem_usage}\n\r"
-	printf "${logo_padding}${formatted_logo_12}\t${SWAP_USAGE}\n\r"
+	printf "${logo_padding}${formatted_logo_10}\t$(printCPU)\n\r"
+	printf "${logo_padding}${formatted_logo_11}\t$(printRAM)\n\r"
+	printf "${logo_padding}${formatted_logo_12}\t$(printSwap)\n\r"
 	printf "${logo_padding}${formatted_logo_13}\t${ROOT_USAGE}\n\r"
 	printf "${logo_padding}${formatted_logo_14}\t${HOME_USAGE}\n\r\n\r"
 	printf '\033[?7h'	# Re-enable line wrap
@@ -546,6 +586,7 @@ status()
 
 	## SCRIPT WIDE VARIABLES
 	local cpu_is_crit=false
+	local mem_is_crit=false
 	local systcl_num_failed=0
 
 
@@ -579,11 +620,13 @@ status()
 
 	local bar_length=13
 	local crit_cpu_percent=50
-	local crit_mem_percent=75
+	local crit_ram_percent=75
 	local crit_swap_percent=25
 	local crit_hdd_percent=80
 	local bar_num_digits=5
-	local print_cpu_percentage=true
+	local cpu_as_percentage=true
+	local ram_as_percentage=false
+	local swap_as_percentage=false
 
 	local date_format="%Y.%m.%d - %T"
 
@@ -623,7 +666,6 @@ status()
 
 ## CALL MAIN FUNCTION
 status
-
 
 
 
