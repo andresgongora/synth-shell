@@ -394,13 +394,39 @@ printSwap()
 
 		printBarAndInfo $current $max $crit_swap_percent $swap_as_percentage $units $message
 	fi
-
-
 }
 
 
+printHDD()
+{
+	local message="Storage /\t"
+	local units="GB"
+	local current=$(df -B1G / | grep "/" | awk '{key=($3)} END {printf key}')
+	local max=$(df -B1G / | grep "/" | awk '{key=($2)} END {printf key}')
+	local percent=$(($current*100/$max))
+
+	if [ $percent -gt $crit_hdd_percent ]; then
+		hdd_is_crit=true
+	fi
+
+	printBarAndInfo $current $max $crit_hdd_percent $hdd_as_percentage $units $message
+}
 
 
+printHome()
+{
+	local message="Storage /home\t"
+	local units="GB"
+	local current=$(df -B1G ~ | grep "/" | awk '{key=($3)} END {printf key}')
+	local max=$(df -B1G ~ | grep "/" | awk '{key=($2)} END {printf key}')
+	local percent=$(($current*100/$max))
+
+	if [ $percent -gt $crit_home_percent ]; then
+		home_is_crit=true
+	fi
+
+	printBarAndInfo $current $max $crit_home_percent $home_as_percentage $units $message
+}
 
 
 ##==============================================================================
@@ -448,47 +474,6 @@ printHeader()
 	local external_ipv4="${fc_info}External IPv4\t${fc_highlight}$(getExternalIPv4)${fc_none}"
 	local sysctl_status="${fc_info}Services\t${fc_highlight}$(getSystemctlStatus)${fc_none}"
 
-	local root_hdd=""
-	local home_hdd=""
-
-
-
-	#### UGLY FROM HERE ON #################################################
-
-
-
-	## HDD /
-	local ROOT_CURRENT=$(df -B1G / | grep "/" | awk '{key=($3)} END {printf key}')
-	while [ ${#ROOT_CURRENT} -lt $bar_num_digits ]
-	do
-  		local ROOT_CURRENT=" $ROOT_CURRENT"
-	done
-	local ROOT_MAX=$(df -B1G / | grep "/" | awk '{key=($2)} END {printf key}')
-	while [ ${#ROOT_CURRENT} -lt $bar_num_digits ]
-	do
-  		local ROOT_CURRENT=" $ROOT_CURRENT"
-	done
-	local ROOT_BAR=$(printBar $ROOT_CURRENT $ROOT_MAX $bar_length $crit_hdd_percent)
-	local ROOT_MAX=$ROOT_MAX$PAD
-	local ROOT_USAGE=$(echo -e "${fc_info}Storage /\t$ROOT_BAR ${fc_highlight}${ROOT_CURRENT:0:${bar_num_digits}}${fc_info}/${fc_highlight}${ROOT_MAX:0:${bar_num_digits}} GB${fc_none}")
-
-
-
-	## HDD /home
-	local HOME_CURRENT=$(df -B1G ~ | grep "/" | awk '{key=($3)} END {printf key}')
-	while [ ${#HOME_CURRENT} -lt $bar_num_digits ]
-	do
-  		local HOME_CURRENT=" $HOME_CURRENT"
-	done
-	local HOME_MAX=$(df -B1G ~ | grep "/" | awk '{key=($2)} END {printf key}')
-	while [ ${#HOME_CURRENT} -lt $bar_num_digits ]
-	do
-  		local HOME_CURRENT=" $HOME_CURRENT"
-	done
-	local HOME_BAR=$(printBar $HOME_CURRENT $HOME_MAX $bar_length $crit_hdd_percent)
-	local HOME_MAX=$HOME_MAX$PAD
-	local HOME_USAGE=$(echo -e "${fc_info}Storage /home\t$HOME_BAR ${fc_highlight}${HOME_CURRENT:0:${bar_num_digits}}${fc_info}/${fc_highlight}${HOME_MAX:0:${bar_num_digits}} GB${fc_none}")
-
 
 
 	## PRINT HEADER WITH OVERALL STATUS REPORT
@@ -506,8 +491,8 @@ printHeader()
 	printf "${logo_padding}${formatted_logo_10}\t$(printCPU)\n\r"
 	printf "${logo_padding}${formatted_logo_11}\t$(printRAM)\n\r"
 	printf "${logo_padding}${formatted_logo_12}\t$(printSwap)\n\r"
-	printf "${logo_padding}${formatted_logo_13}\t${ROOT_USAGE}\n\r"
-	printf "${logo_padding}${formatted_logo_14}\t${HOME_USAGE}\n\r\n\r"
+	printf "${logo_padding}${formatted_logo_13}\t$(printHDD)\n\r"
+	printf "${logo_padding}${formatted_logo_14}\t$(printHome)\n\r\n\r"
 	printf '\033[?7h'	# Re-enable line wrap
 }
 
@@ -587,6 +572,9 @@ status()
 	## SCRIPT WIDE VARIABLES
 	local cpu_is_crit=false
 	local mem_is_crit=false
+	local swap_is_crit=false
+	local hdd_is_crit=false
+	local home_is_crit=false
 	local systcl_num_failed=0
 
 
@@ -623,10 +611,13 @@ status()
 	local crit_ram_percent=75
 	local crit_swap_percent=25
 	local crit_hdd_percent=80
+	local crit_home_percent=80
 	local bar_num_digits=5
 	local cpu_as_percentage=true
 	local ram_as_percentage=false
 	local swap_as_percentage=false
+	local hdd_as_percentage=false
+	local home_as_percentage=false
 
 	local date_format="%Y.%m.%d - %T"
 
