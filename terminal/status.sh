@@ -48,6 +48,10 @@ getOSInfo()
 	elif [ -f /usr/lib/os-release ]; then
 		local os_name=$(sed -En 's/PRETTY_NAME="(.*)"/\1/p' /usr/lib/os-release)
 	else
+		local os_name=$(uname -sr)
+	fi
+
+	if [-z "$os_name" ]; then
 		local os_name="N/A"
 	fi
 
@@ -64,7 +68,7 @@ getKernelInfo()
 ##------------------------------------------------------------------------------
 ##
 ##	getCPUInfo()
-##	Get CPU model name, but trim all fluf.
+##	Get CPU model name, but trim all fluff.
 ##
 getCPUInfo()
 {
