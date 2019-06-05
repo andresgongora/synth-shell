@@ -41,6 +41,11 @@
 ##	AUXILIARY FUNCTIONS
 ##==============================================================================
 
+##------------------------------------------------------------------------------
+##
+##	getOSInfo()
+##	Get OS name - Tries different sources
+##
 getOSInfo()
 {
 	if [ -f /etc/os-release ]; then
@@ -49,10 +54,6 @@ getOSInfo()
 		local os_name=$(sed -En 's/PRETTY_NAME="(.*)"/\1/p' /usr/lib/os-release)
 	else
 		local os_name=$(uname -sr)
-	fi
-
-	if [-z "$os_name" ]; then
-		local os_name="N/A"
 	fi
 
 	printf "${os_name}\n"
@@ -289,6 +290,55 @@ printBar()
 }
 
 
+##------------------------------------------------------------------------------
+##
+##	printFraction(NUMERAND, DENOMINTOR, PADDING_DIGITS, UNITS)
+##	Prints a color-formatted fraction with padding to reach MAX_DIGITS
+printFraction()
+{
+	local a=$1
+	local b=$2
+	local padding=$3
+	local units=$4
+
+	printf " ${fc_highlight}%${padding}s" $a
+	printf "${fc_info}/"
+	printf "${fc_highlight}%-${padding}s" $b
+	printf " ${units}${fc_none}"
+}
+
+
+
+printBarCPU()
+{
+	local avg=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
+	local max=$(nproc --all)
+	local per=$(awk '{printf "%3.0f\n",$1*100/'"$max"'}' /proc/loadavg)
+	local avg_float=$(awk '{avg_1m=($1)} END {printf "%3.1f", avg_1m}' /proc/loadavg)
+
+	printBar $avg $max $bar_length $crit_cpu_percent
+
+	if $print_cpu_percentage; then
+		printf " ${fc_highlight}%${bar_num_digits}s${fc_info}%%%%${fc_none}\n" $per
+	else
+		printFraction $avg_float $max $bar_num_digits
+	fi
+
+	if [ $per -gt $crit_cpu_percent ]; then
+		cpu_is_crit=true
+	fi
+}
+
+
+printBarRAM()
+{
+	local mem_info=$('free' -m | head -n 2 | tail -n 1)
+	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
+	local max=$(echo "$mem_info" | awk '{mem=($2)} END {printf mem}')
+
+	printBar $current $max $bar_length $crit_mem_percent
+	printFraction $current $max $bar_num_digits "MB"
+}
 
 
 
@@ -301,7 +351,7 @@ printHeader()
 {
 	## GENERATE PROPER AMOUNT OF PAD
 	i=0
-	while [ $i -lt $max_digits ]; do
+	while [ $i -lt $bar_num_digits ]; do
 		PAD="${PAD} "
 		i=$[$i+1]
 	done
@@ -336,47 +386,19 @@ printHeader()
 	local local_ipv4="${fc_info}Local IPv4\t${fc_highlight}$(getLocalIPv4)${fc_none}"
 	local external_ipv4="${fc_info}External IPv4\t${fc_highlight}$(getExternalIPv4)${fc_none}"
 	local sysctl_status="${fc_info}Services\t${fc_highlight}$(getSystemctlStatus)${fc_none}"
+	local cpu_load="${fc_info}Sys load avg\t$(printBarCPU)"
+	local mem_usage="${fc_info}Memory\t\t$(printBarRAM)"
+
 
 
 
 	#### UGLY FROM HERE ON #################################################
 
 
-	## CPU LOAD
-	local CPU_AVG=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
-	local CPU_MAX=$(nproc --all)
-	local CPU_BAR=$(printBar $CPU_AVG $CPU_MAX $bar_length $crit_cpu_percent)
-	local CPU_PER=$(awk '{printf "%3.0f\n",$1*100}' /proc/loadavg)
-	local CPU_PER=$(($CPU_PER / $CPU_MAX))
-	local CPU_LOAD=$(echo -e "${fc_info}Sys load avg\t$CPU_BAR ${fc_highlight}${CPU_PER:0:9} %%${fc_none}")
-	if [ $CPU_PER -gt $crit_cpu_percent ]; then
-		cpu_is_crit=true
-	fi
-
-
-
-	## MEMORY
-	local MEM_INFO=$('free' -m | head -n 2 | tail -n 1)
-	local MEM_CURRENT=$(echo "$MEM_INFO" | awk '{mem=($2-$7)} END {printf mem}')
-	while [ ${#MEM_CURRENT} -lt $max_digits ]
-	do
-  		local MEM_CURRENT=" $MEM_CURRENT"
-	done
-	local MEM_MAX=$(echo "$MEM_INFO" | awk '{mem=($2)} END {printf mem}')
-	while [ ${#MEM_MAX} -lt $max_digits ]
-	do
-  		local MEM_MAX="$MEM_MAX "
-	done
-	local MEM_BAR=$(printBar $MEM_CURRENT $MEM_MAX $bar_length $crit_mem_percent)
-	local MEM_MAX=$MEM_MAX$PAD
-	local MEM_USAGE=$(echo -e "${fc_info}Memory\t\t$MEM_BAR ${fc_highlight}${MEM_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${MEM_MAX:0:${max_digits}} MB${fc_none}")
-
-
-
 	## SWAP
 	local SWAP_INFO=$('free' -m | tail -n 1)
 	local SWAP_CURRENT=$(echo "$SWAP_INFO" | awk '{SWAP=($3)} END {printf SWAP}')
-	while [ ${#SWAP_CURRENT} -lt $max_digits ]
+	while [ ${#SWAP_CURRENT} -lt $bar_num_digits ]
 	do
   		local SWAP_CURRENT=" $SWAP_CURRENT"
 	done
@@ -384,48 +406,48 @@ printHeader()
 	if [ "$SWAP_MAX" -eq "0" ]; then
 		local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t${fc_highlight}N/A${fc_none}")
 	else
-		while [ ${#SWAP_CURRENT} -lt $max_digits ]
+		while [ ${#SWAP_CURRENT} -lt $bar_num_digits ]
 		do
 	  		local SWAP_CURRENT=" $SWAP_CURRENT"
 		done
 		local SWAP_BAR=$(printBar $SWAP_CURRENT $SWAP_MAX $bar_length $crit_swap_percent)
 		local SWAP_MAX=$SWAP_MAX$PAD
-		local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t$SWAP_BAR ${fc_highlight}${SWAP_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${SWAP_MAX:0:${max_digits}} MB${fc_none}")
+		local SWAP_USAGE=$(echo -e "${fc_info}Swap\t\t$SWAP_BAR ${fc_highlight}${SWAP_CURRENT:0:${bar_num_digits}}${fc_info}/${fc_highlight}${SWAP_MAX:0:${bar_num_digits}} MB${fc_none}")
 	fi
 
 
 
 	## HDD /
 	local ROOT_CURRENT=$(df -B1G / | grep "/" | awk '{key=($3)} END {printf key}')
-	while [ ${#ROOT_CURRENT} -lt $max_digits ]
+	while [ ${#ROOT_CURRENT} -lt $bar_num_digits ]
 	do
   		local ROOT_CURRENT=" $ROOT_CURRENT"
 	done
 	local ROOT_MAX=$(df -B1G / | grep "/" | awk '{key=($2)} END {printf key}')
-	while [ ${#ROOT_CURRENT} -lt $max_digits ]
+	while [ ${#ROOT_CURRENT} -lt $bar_num_digits ]
 	do
   		local ROOT_CURRENT=" $ROOT_CURRENT"
 	done
 	local ROOT_BAR=$(printBar $ROOT_CURRENT $ROOT_MAX $bar_length $crit_hdd_percent)
 	local ROOT_MAX=$ROOT_MAX$PAD
-	local ROOT_USAGE=$(echo -e "${fc_info}Storage /\t$ROOT_BAR ${fc_highlight}${ROOT_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${ROOT_MAX:0:${max_digits}} GB${fc_none}")
+	local ROOT_USAGE=$(echo -e "${fc_info}Storage /\t$ROOT_BAR ${fc_highlight}${ROOT_CURRENT:0:${bar_num_digits}}${fc_info}/${fc_highlight}${ROOT_MAX:0:${bar_num_digits}} GB${fc_none}")
 
 
 
 	## HDD /home
 	local HOME_CURRENT=$(df -B1G ~ | grep "/" | awk '{key=($3)} END {printf key}')
-	while [ ${#HOME_CURRENT} -lt $max_digits ]
+	while [ ${#HOME_CURRENT} -lt $bar_num_digits ]
 	do
   		local HOME_CURRENT=" $HOME_CURRENT"
 	done
 	local HOME_MAX=$(df -B1G ~ | grep "/" | awk '{key=($2)} END {printf key}')
-	while [ ${#HOME_CURRENT} -lt $max_digits ]
+	while [ ${#HOME_CURRENT} -lt $bar_num_digits ]
 	do
   		local HOME_CURRENT=" $HOME_CURRENT"
 	done
 	local HOME_BAR=$(printBar $HOME_CURRENT $HOME_MAX $bar_length $crit_hdd_percent)
 	local HOME_MAX=$HOME_MAX$PAD
-	local HOME_USAGE=$(echo -e "${fc_info}Storage /home\t$HOME_BAR ${fc_highlight}${HOME_CURRENT:0:${max_digits}}${fc_info}/${fc_highlight}${HOME_MAX:0:${max_digits}} GB${fc_none}")
+	local HOME_USAGE=$(echo -e "${fc_info}Storage /home\t$HOME_BAR ${fc_highlight}${HOME_CURRENT:0:${bar_num_digits}}${fc_info}/${fc_highlight}${HOME_MAX:0:${bar_num_digits}} GB${fc_none}")
 
 
 
@@ -441,8 +463,8 @@ printHeader()
 	printf "${logo_padding}${formatted_logo_07}\t${local_ipv4}\n\r"
 	printf "${logo_padding}${formatted_logo_08}\t${external_ipv4}\n\r"
 	printf "${logo_padding}${formatted_logo_09}\t${sysctl_status}\n\r"
-	printf "${logo_padding}${formatted_logo_10}\t${CPU_LOAD}\n\r"
-	printf "${logo_padding}${formatted_logo_11}\t${MEM_USAGE}\n\r"
+	printf "${logo_padding}${formatted_logo_10}\t${cpu_load}\n\r"
+	printf "${logo_padding}${formatted_logo_11}\t${mem_usage}\n\r"
 	printf "${logo_padding}${formatted_logo_12}\t${SWAP_USAGE}\n\r"
 	printf "${logo_padding}${formatted_logo_13}\t${ROOT_USAGE}\n\r"
 	printf "${logo_padding}${formatted_logo_14}\t${HOME_USAGE}\n\r\n\r"
@@ -555,12 +577,13 @@ status()
 	local format_error="-c 208   -e bold -e blink"
 	local format_logo="-c blue -e bold"
 
-	local bar_length=15
+	local bar_length=13
 	local crit_cpu_percent=50
 	local crit_mem_percent=75
 	local crit_swap_percent=25
 	local crit_hdd_percent=80
-	local max_digits=5
+	local bar_num_digits=5
+	local print_cpu_percentage=true
 
 	local date_format="%Y.%m.%d - %T"
 
@@ -600,6 +623,7 @@ status()
 
 ## CALL MAIN FUNCTION
 status
+
 
 
 
