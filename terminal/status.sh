@@ -61,10 +61,29 @@ getKernelInfo()
 }
 
 
+##------------------------------------------------------------------------------
+##
+##	getCPUInfo()
+##	Get CPU model name, but trim all fluf.
+##
 getCPUInfo()
 {
-	sed -nE '0,/^\s*model name/s/^\s*model name\s*:\s*(.*\S)/\1/p' /proc/cpuinfo |\
-	sed 's/\s*@.*//;s/ \+/ /g'
+	## Get first instance of "model name" in /proc/cpuinfo, pipe into 'sed'
+	## s/model name\s*:\s*//  remove "model name : " and accompanying spaces
+	## s/\s*@.*//             remove anything from "@" onwards
+	## s/(R)//                remove "(R)"
+	## s/(TM)//               remove "(TM)"
+	## s/CPU//                remove "CPU"
+	## s/\s\s\+/ /            clean up double spaces (replace by single space)
+	## p                      print final output
+	grep -m 1 "model name" /proc/cpuinfo |\
+	sed -n 's/model name\s*:\s*//;
+		s/\s*@.*//;
+		s/(R)//;
+		s/(TM)//;
+		s/CPU//;
+		s/\s\s\+/ /;
+		p'
 }
 
 
