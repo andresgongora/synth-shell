@@ -43,149 +43,6 @@
 
 ##------------------------------------------------------------------------------
 ##
-##	getOSInfo()
-##	Get OS name - Tries different sources
-##
-getOSInfo()
-{
-	if [ -f /etc/os-release ]; then
-		local os_name=$(sed -En 's/PRETTY_NAME="(.*)"/\1/p' /etc/os-release)
-	elif [ -f /usr/lib/os-release ]; then
-		local os_name=$(sed -En 's/PRETTY_NAME="(.*)"/\1/p' /usr/lib/os-release)
-	else
-		local os_name=$(uname -sr)
-	fi
-
-	printf "${os_name}\n"
-}
-
-
-getKernelInfo()
-{
-	uname -r
-}
-
-
-
-##------------------------------------------------------------------------------
-##
-##	getCPUInfo()
-##	Get CPU model name, but trim all fluff.
-##
-getCPUInfo()
-{
-	## Get first instance of "model name" in /proc/cpuinfo, pipe into 'sed'
-	## s/model name\s*:\s*//  remove "model name : " and accompanying spaces
-	## s/\s*@.*//             remove anything from "@" onwards
-	## s/(R)//                remove "(R)"
-	## s/(TM)//               remove "(TM)"
-	## s/CPU//                remove "CPU"
-	## s/\s\s\+/ /            clean up double spaces (replace by single space)
-	## p                      print final output
-	grep -m 1 "model name" /proc/cpuinfo |\
-	sed -n 's/model name\s*:\s*//;
-		s/\s*@.*//;
-		s/(R)//;
-		s/(TM)//;
-		s/CPU//;
-		s/\s\s\+/ /;
-		p'
-}
-
-
-getShellInfo()
-{
-	readlink /proc/$$/exe
-}
-
-
-getSysDate()
-{
-	date +"$date_format"
-}
-
-
-getUserName()
-{
-	echo "$USER@$HOSTNAME"
-}
-
-
-getSystemctlStatus()
-{
-	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
-
-	if [ "$systcl_num_failed" -eq "0" ]; then
-		echo -e "All services OK"
-	else
-		echo -e "${fc_error}$systcl_num_failed services failed!${fc_none}"
-	fi
-}
-
-
-
-##------------------------------------------------------------------------------
-##
-##	getLocalIPv4()
-##
-##	Looks up and returns local IPv4-address.
-##
-##	Tries first program found.
-##
-##	!!! NOTE: Still needs to figure out how to look for IP address that has default gateway
-##	!!! attached to related interface, otherwise this returns list of IPv4's if there are many
-##	!!! TODO: Simplify?
-##
-getLocalIPv4()
-{
-	if which ip > /dev/null; then
-		local result=$($(which ip) -family inet addr show | grep -oP '^\s*inet\s+(addr:?\s*)?\K(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))' | sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
-	elif which ifconfig > /dev/null; then
-		local result=$($(which ifconfig) | grep -oP '^\s*inet\s+(addr:?\s*)?\K(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))' | sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
-	else
-		local result="Error"
-	fi
-
-	## Returns "N/A" if actual query result is empty, and returns "Error" if no programs found
-	[ $result ] && printf $result || printf "N/A"
-}
-
-
-
-##------------------------------------------------------------------------------
-##
-##	getExternalIPv4()
-##
-##	Makes an query to internet-server and returns public IPv4-address
-##
-##	Tries first program found,
-##	program search ordering is based on timed tests, fastest to slowest.
-##
-##	DNS-based queries are always faster, around real time 0.1 seconds.
-##	URL-queries are relatively slow, around real time 1 seconds.
-##
-getExternalIPv4()
-{
-	if which dig > /dev/null; then
-		local result=$($(which dig) TXT -4 +short o-o.myaddr.l.google.com @ns1.google.com | awk -F\" '{print $2}')
-	elif which nslookup > /dev/null; then
-		local result=$($(which nslookup) -q=txt o-o.myaddr.l.google.com 216.239.32.10 | awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
-	elif which curl > /dev/null; then
-		local result=$($(which curl) -s https://api.ipify.org)
-	elif which wget > /dev/null; then
-		local result=$($(which wget) -q -O - https://api.ipify.org)
-	else
-		local result="Error"
-	fi
-
-	## Returns "N/A" if actual query result is empty, and returns "Error" if no programs found
-	[ $result ] && printf $result || printf "N/A"
-}
-
-
-
-##------------------------------------------------------------------------------
-##
 ##	getLocalIPv6()
 ##
 ##	Looks up and returns local IPv6-address.
@@ -240,6 +97,23 @@ getExternalIPv6()
 
 	## Returns "N/A" if actual query result is empty, and returns "Error" if no programs found
 	[ $result ] && printf $result || printf "N/A"
+}
+
+
+
+
+##==============================================================================
+##	INFO AND MONITOR PRINTING HELPERS
+##==============================================================================
+
+##------------------------------------------------------------------------------
+##
+printInfo()
+{
+	property_name=$1
+	property_value=$2	
+
+	printf "$fc_info$property_name$fc_highlight$property_value$fc_none"
 }
 
 
@@ -317,7 +191,7 @@ printFraction()
 
 ##------------------------------------------------------------------------------
 ##
-printBarAndInfo()
+printMonitor()
 {
 	local current=$1
 	local max=$2
@@ -340,7 +214,154 @@ printBarAndInfo()
 }
 
 
-printCPU()
+
+
+
+##==============================================================================
+##	INFO AND MONITOR MESSAGES
+##==============================================================================
+
+printInfoOS()
+{
+	if [ -f /etc/os-release ]; then
+		local os_name=$(sed -En 's/PRETTY_NAME="(.*)"/\1/p' /etc/os-release)
+	elif [ -f /usr/lib/os-release ]; then
+		local os_name=$(sed -En 's/PRETTY_NAME="(.*)"/\1/p' /usr/lib/os-release)
+	else
+		local os_name=$(uname -sr)
+	fi
+
+	printInfo "OS\t\t" "$os_name"
+}
+
+
+
+printInfoKernel()
+{
+	local kernel=$(uname -r)
+	printInfo "Kernel\t\t" "$kernel"
+}
+
+
+
+printInfoCPU()
+{
+	## Get first instance of "model name" in /proc/cpuinfo, pipe into 'sed'
+	## s/model name\s*:\s*//  remove "model name : " and accompanying spaces
+	## s/\s*@.*//             remove anything from "@" onwards
+	## s/(R)//                remove "(R)"
+	## s/(TM)//               remove "(TM)"
+	## s/CPU//                remove "CPU"
+	## s/\s\s\+/ /            clean up double spaces (replace by single space)
+	## p                      print final output
+	local cpu=$(grep -m 1 "model name" /proc/cpuinfo |\
+	            sed -n 's/model name\s*:\s*//;
+	                    s/\s*@.*//;
+	                    s/(R)//;
+	                    s/(TM)//;
+	                    s/CPU//;
+	                    s/\s\s\+/ /;
+	                    p')
+
+	printInfo "CPU\t\t" "$cpu"
+}
+
+
+
+printInfoShell()
+{
+	local shell=$(readlink /proc/$$/exe)
+	printInfo "Shell\t\t" "$shell"
+}
+
+
+
+printInfoDate()
+{
+	local sys_date=$(date +"$date_format")
+	printInfo "Date\t\t" "$sys_date"
+}
+
+
+
+printInfoUser()
+{
+	printInfo "User\t\t" "$USER@$HOSTNAME"
+}
+
+
+
+printInfoSystemctl()
+{
+	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
+
+	if [ "$systcl_num_failed" -eq "0" ]; then
+		local sysctl="All services OK"
+	else
+		local sysctl="${fc_error}$systcl_num_failed services failed!${fc_none}"
+	fi
+
+	printInfo "Services\t" "$sysctl"
+}
+
+
+
+##------------------------------------------------------------------------------
+##
+##	getLocalIPv4()
+##
+##	Looks up and returns local IPv4-address.
+##	Tries first program found.
+##	!!! NOTE: Still needs to figure out how to look for IP address that has default gateway
+##	!!! attached to related interface, otherwise this returns list of IPv4's if there are many
+##	!!! TODO: Simplify?
+##	!!! TODO: Update this descriptio
+##
+printInfoLocalIPv4()
+{
+	if which ip > /dev/null; then
+		local ip=$($(which ip) -family inet addr show | grep -oP '^\s*inet\s+(addr:?\s*)?\K(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))' | sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
+	elif which ifconfig > /dev/null; then
+		local ip=$($(which ifconfig) | grep -oP '^\s*inet\s+(addr:?\s*)?\K(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))' | sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
+	else
+		local ip="N/A"
+	fi
+
+	printInfo "Local IPv4\t" "$ip"
+}
+
+
+##------------------------------------------------------------------------------
+##
+##	getExternalIPv4()
+##
+##	Makes an query to internet-server and returns public IPv4-address
+##
+##	Tries first program found,
+##	program search ordering is based on timed tests, fastest to slowest.
+##	DNS-based queries are always faster, around real time 0.1 seconds.
+##	URL-queries are relatively slow, around real time 1 seconds.
+##
+printInfoExternalIPv4()
+{
+	if which dig > /dev/null; then
+		local ip=$($(which dig) TXT -4 +short o-o.myaddr.l.google.com @ns1.google.com | awk -F\" '{print $2}')
+	elif which nslookup > /dev/null; then
+		local ip=$($(which nslookup) -q=txt o-o.myaddr.l.google.com 216.239.32.10 | awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
+	elif which curl > /dev/null; then
+		local ip=$($(which curl) -s https://api.ipify.org)
+	elif which wget > /dev/null; then
+		local ip=$($(which wget) -q -O - https://api.ipify.org)
+	else
+		local result="N/A"
+	fi
+
+	printInfo "External IPv4\t" "$ip"
+}
+
+
+
+printMonitorCPU()
 {
 	local message="Sys load avg\t"
 	local units=" "
@@ -352,12 +373,13 @@ printCPU()
 		cpu_is_crit=true
 	fi
 
-	printBarAndInfo $current $max $crit_cpu_percent $cpu_as_percentage $units $message
+	printMonitor $current $max $crit_cpu_percent \
+	             $cpu_as_percentage $units $message
 }
 
 
 
-printRAM()
+printMonitorRAM()
 {
 	local message="Memory\t\t"
 	local units="MB"
@@ -370,12 +392,13 @@ printRAM()
 		mem_is_crit=true
 	fi
 
-	printBarAndInfo $current $max $crit_ram_percent $ram_as_percentage $units $message
+	printMonitor $current $max $crit_ram_percent \
+	             $ram_as_percentage $units $message
 }
 
 
 
-printSwap()
+printMonitorSwap()
 {
 	local message="Swap\t\t"
 	local units="MB"
@@ -392,12 +415,14 @@ printSwap()
 			swap_is_crit=true
 		fi
 
-		printBarAndInfo $current $max $crit_swap_percent $swap_as_percentage $units $message
+		printMonitor $current $max $crit_swap_percent \
+		             $swap_as_percentage $units $message
 	fi
 }
 
 
-printHDD()
+
+printMonitorHDD()
 {
 	local message="Storage /\t"
 	local units="GB"
@@ -409,11 +434,12 @@ printHDD()
 		hdd_is_crit=true
 	fi
 
-	printBarAndInfo $current $max $crit_hdd_percent $hdd_as_percentage $units $message
+	printMonitor $current $max $crit_hdd_percent \
+	             $hdd_as_percentage $units $message
 }
 
 
-printHome()
+printMonitorHome()
 {
 	local message="Storage /home\t"
 	local units="GB"
@@ -425,8 +451,12 @@ printHome()
 		home_is_crit=true
 	fi
 
-	printBarAndInfo $current $max $crit_home_percent $home_as_percentage $units $message
+	printMonitor $current $max $crit_home_percent \
+	                    $home_as_percentage $units $message
 }
+
+
+
 
 
 ##==============================================================================
@@ -446,53 +476,40 @@ printHeader()
 
 
 	## LOGO
-	local formatted_logo_01="${fc_logo}${logo_01}${fc_none}"
-	local formatted_logo_02="${fc_logo}${logo_02}${fc_none}"
-	local formatted_logo_03="${fc_logo}${logo_03}${fc_none}"
-	local formatted_logo_04="${fc_logo}${logo_04}${fc_none}"
-	local formatted_logo_05="${fc_logo}${logo_05}${fc_none}"
-	local formatted_logo_06="${fc_logo}${logo_06}${fc_none}"
-	local formatted_logo_07="${fc_logo}${logo_07}${fc_none}"
-	local formatted_logo_08="${fc_logo}${logo_08}${fc_none}"
-	local formatted_logo_09="${fc_logo}${logo_09}${fc_none}"
-	local formatted_logo_10="${fc_logo}${logo_10}${fc_none}"
-	local formatted_logo_11="${fc_logo}${logo_11}${fc_none}"
-	local formatted_logo_12="${fc_logo}${logo_12}${fc_none}"
-	local formatted_logo_13="${fc_logo}${logo_13}${fc_none}"
-	local formatted_logo_14="${fc_logo}${logo_14}${fc_none}"
-
-
-
-	## GET SYS SUMMARY
-	local os_info="${fc_info}OS\t\t${fc_highlight}$(getOSInfo)${fc_none}"
-	local kernel_info="${fc_info}Kernel\t\t${fc_highlight}$(getKernelInfo)${fc_none}"
-	local cpu_info="${fc_info}CPU\t\t${fc_highlight}$(getCPUInfo)${fc_none}"
-	local shell_info="${fc_info}Shell\t\t${fc_highlight}$(getShellInfo)${fc_none}"
-	local sys_date="${fc_info}Date\t\t${fc_highlight}$(getSysDate)${fc_none}"
-	local user_name="${fc_info}Login\t\t${fc_highlight}$(getUserName)${fc_none}"
-	local local_ipv4="${fc_info}Local IPv4\t${fc_highlight}$(getLocalIPv4)${fc_none}"
-	local external_ipv4="${fc_info}External IPv4\t${fc_highlight}$(getExternalIPv4)${fc_none}"
-	local sysctl_status="${fc_info}Services\t${fc_highlight}$(getSystemctlStatus)${fc_none}"
+	local formatted_logo_01="${logo_padding}${fc_logo}${logo_01}${fc_none}"
+	local formatted_logo_02="${logo_padding}${fc_logo}${logo_02}${fc_none}"
+	local formatted_logo_03="${logo_padding}${fc_logo}${logo_03}${fc_none}"
+	local formatted_logo_04="${logo_padding}${fc_logo}${logo_04}${fc_none}"
+	local formatted_logo_05="${logo_padding}${fc_logo}${logo_05}${fc_none}"
+	local formatted_logo_06="${logo_padding}${fc_logo}${logo_06}${fc_none}"
+	local formatted_logo_07="${logo_padding}${fc_logo}${logo_07}${fc_none}"
+	local formatted_logo_08="${logo_padding}${fc_logo}${logo_08}${fc_none}"
+	local formatted_logo_09="${logo_padding}${fc_logo}${logo_09}${fc_none}"
+	local formatted_logo_10="${logo_padding}${fc_logo}${logo_10}${fc_none}"
+	local formatted_logo_11="${logo_padding}${fc_logo}${logo_11}${fc_none}"
+	local formatted_logo_12="${logo_padding}${fc_logo}${logo_12}${fc_none}"
+	local formatted_logo_13="${logo_padding}${fc_logo}${logo_13}${fc_none}"
+	local formatted_logo_14="${logo_padding}${fc_logo}${logo_14}${fc_none}"
 
 
 
 	## PRINT HEADER WITH OVERALL STATUS REPORT
 	printf '\033[?7l'	# Disable line wrap -> Crop instead
-	printf "\n\r"
-	printf "${logo_padding}${formatted_logo_01}\t${os_info}\n\r"
-	printf "${logo_padding}${formatted_logo_02}\t${kernel_info}\n\r"
-	printf "${logo_padding}${formatted_logo_03}\t${cpu_info}\n\r"
-	printf "${logo_padding}${formatted_logo_04}\t${shell_info}\n\r"
-	printf "${logo_padding}${formatted_logo_05}\t${sys_date}\n\r"
-	printf "${logo_padding}${formatted_logo_06}\t${user_name}\n\r"
-	printf "${logo_padding}${formatted_logo_07}\t${local_ipv4}\n\r"
-	printf "${logo_padding}${formatted_logo_08}\t${external_ipv4}\n\r"
-	printf "${logo_padding}${formatted_logo_09}\t${sysctl_status}\n\r"
-	printf "${logo_padding}${formatted_logo_10}\t$(printCPU)\n\r"
-	printf "${logo_padding}${formatted_logo_11}\t$(printRAM)\n\r"
-	printf "${logo_padding}${formatted_logo_12}\t$(printSwap)\n\r"
-	printf "${logo_padding}${formatted_logo_13}\t$(printHDD)\n\r"
-	printf "${logo_padding}${formatted_logo_14}\t$(printHome)\n\r\n\r"
+	printf "\n"
+	printf "${formatted_logo_01}\t$(printInfoOS)\n"
+	printf "${formatted_logo_02}\t$(printInfoKernel)\n"
+	printf "${formatted_logo_03}\t$(printInfoCPU)\n"
+	printf "${formatted_logo_04}\t$(printInfoShell)\n"
+	printf "${formatted_logo_05}\t$(printInfoDate)\n"
+	printf "${formatted_logo_06}\t$(printInfoUser)\n"
+	printf "${formatted_logo_07}\t$(printInfoLocalIPv4)\n"
+	printf "${formatted_logo_08}\t$(printInfoExternalIPv4)\n"
+	printf "${formatted_logo_09}\t$(printInfoSystemctl)\n"
+	printf "${formatted_logo_10}\t$(printMonitorCPU)\n"
+	printf "${formatted_logo_11}\t$(printMonitorRAM)\n"
+	printf "${formatted_logo_12}\t$(printMonitorSwap)\n"
+	printf "${formatted_logo_13}\t$(printMonitorHDD)\n"
+	printf "${formatted_logo_14}\t$(printMonitorHome)\n\n"
 	printf '\033[?7h'	# Re-enable line wrap
 }
 
@@ -523,8 +540,6 @@ printSystemctl()
 		systemctl --failed
 	fi
 }
-
-
 
 
 
@@ -657,6 +672,7 @@ status()
 
 ## CALL MAIN FUNCTION
 status
+
 
 
 
