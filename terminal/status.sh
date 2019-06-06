@@ -55,9 +55,9 @@
 ##
 getLocalIPv6()
 {
-	if which ip > /dev/null; then
+	if   ( which ip > /dev/null 2>&1 ); then
 		local result=$($(which ip) -family inet6 addr show | grep -oP '^\s*inet6\s+(addr:?\s*)?\K((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?' | sed '/::1/d;:a;N;$!ba;s/\n/,/g')
-	elif which ifconfig > /dev/null; then
+	elif ( which ifconfig > /dev/null 2>&1 ); then
 		local result=$($(which ifconfig) | grep -oP '^\s*inet6\s+(addr:?\s*)?\K((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?' | sed '/::1/d;:a;N;$!ba;s/\n/,/g')
 	else
 		local result="Error"
@@ -83,13 +83,13 @@ getLocalIPv6()
 ##
 getExternalIPv6()
 {
-	if which dig > /dev/null; then
+	if   ( which dig > /dev/null 2>&1 ); then
 		local result=$($(which dig) TXT -6 +short o-o.myaddr.l.google.com @ns1.google.com | awk -F\" '{print $2}')
-	elif which nslookup > /dev/null; then
+	elif ( which nslookup > /dev/nul 2>&1 ); then
 		local result=$($(which nslookup) -q=txt o-o.myaddr.l.google.com 2001:4860:4802:32::a | awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
-	elif which curl > /dev/null; then
+	elif ( which curl > /dev/null 2>&1 ); then
 		local result=$($(which curl) -s https://api6.ipify.org)
-	elif which wget > /dev/null; then
+	elif ( which wget > /dev/null 2>&1 ); then
 		local result=$($(which wget) -q -O - https://api6.ipify.org)
 	else
 		local result="Error"
@@ -223,7 +223,7 @@ printMonitor()
 
 printInfoOS()
 {
-	if [ -f /etc/os-release ]; then
+	if   [ -f /etc/os-release ]; then
 		local os_name=$(sed -En 's/PRETTY_NAME="(.*)"/\1/p' /etc/os-release)
 	elif [ -f /usr/lib/os-release ]; then
 		local os_name=$(sed -En 's/PRETTY_NAME="(.*)"/\1/p' /usr/lib/os-release)
@@ -319,14 +319,18 @@ printInfoSystemctl()
 ##
 printInfoLocalIPv4()
 {
-	if which ip > /dev/null; then
-		local ip=$($(which ip) -family inet addr show | grep -oP '^\s*inet\s+(addr:?\s*)?\K(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))' | sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
-	elif which ifconfig > /dev/null; then
-		local ip=$($(which ifconfig) | grep -oP '^\s*inet\s+(addr:?\s*)?\K(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))' | sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
-	else
-		local ip="N/A"
+	if   ( which ip > /dev/null 2>&1 ); then
+		local ip=$($(which ip) -family inet addr show |\
+		           grep -oP '^\s*inet\s+(addr:?\s*)?\K(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))' |\
+		           sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
+
+	elif ( which ifconfig > /dev/null 2>&1 ); then
+		local ip=$($(which ifconfig) |\
+		           grep -oP '^\s*inet\s+(addr:?\s*)?\K(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))' |\
+		           sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
 	fi
 
+	[ $ip ] || local ip="N/A"
 	printInfo "Local IPv4\t" "$ip"
 }
 
@@ -344,18 +348,25 @@ printInfoLocalIPv4()
 ##
 printInfoExternalIPv4()
 {
-	if which dig > /dev/null; then
-		local ip=$($(which dig) TXT -4 +short o-o.myaddr.l.google.com @ns1.google.com | awk -F\" '{print $2}')
-	elif which nslookup > /dev/null; then
-		local ip=$($(which nslookup) -q=txt o-o.myaddr.l.google.com 216.239.32.10 | awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
-	elif which curl > /dev/null; then
-		local ip=$($(which curl) -s https://api.ipify.org)
-	elif which wget > /dev/null; then
+	if   ( which dig > /dev/null 2>&1 ); then
+		local ip=$($(which dig) TXT -4 +short \
+		           o-o.myaddr.l.google.com @ns1.google.com |\
+		           awk -F\" '{print $2}')
+
+	elif ( which nslookup > /dev/null 2>&1 ); then
+		local ip=$($(which nslookup) -q=txt \
+		           o-o.myaddr.l.google.com 216.239.32.10 |\
+		           awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
+
+	elif ( which curl > /dev/null 2>&1 ); then
+		local ip=$($(which curl2>&1 ) -s https://api.ipify.org)
+
+	elif ( which wget > /dev/null 2>&1 ); then
 		local ip=$($(which wget) -q -O - https://api.ipify.org)
-	else
-		local result="N/A"
 	fi
 
+
+	[ $ip ] || local ip="N/A"
 	printInfo "External IPv4\t" "$ip"
 }
 
@@ -439,6 +450,7 @@ printMonitorHDD()
 }
 
 
+
 printMonitorHome()
 {
 	local message="Storage /home\t"
@@ -452,7 +464,7 @@ printMonitorHome()
 	fi
 
 	printMonitor $current $max $crit_home_percent \
-	                    $home_as_percentage $units $message
+	             $home_as_percentage $units $message
 }
 
 
@@ -462,7 +474,6 @@ printMonitorHome()
 ##==============================================================================
 ##	STATUS COMPOSITION
 ##==============================================================================
-
 
 printHeader()
 {
@@ -519,10 +530,11 @@ printHeader()
 
 printLastLogins()
 {
-	## DO NOTHING FOR NOW -> This is all commented out intentionally. Printing logins should only be done under different conditions
-	# 1. User configurable set to always on
-	# 2. If the IP/terminal is very diffefrent from usual
-	# 3. Other anomalies...
+	## DO NOTHING FOR NOW -> This is disabled  intentionally for now. 
+	## Printing logins should only be done under different conditions
+	## 1. User configurable set to always on
+	## 2. If the IP/terminal is very diffefrent from usual
+	## 3. Other anomalies...
 	if false; then
 		printf "${fc_highlight}\nLAST LOGINS:\n${fc_info}"
 		last -iwa | head -n 4 | grep -v "reboot"
