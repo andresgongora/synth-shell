@@ -73,13 +73,11 @@ getLocalIPv6()
 ##
 ##	getExternalIPv6()
 ##
-##	Makes an query to internet-server and returns public IPv6-address
-##
-##	Tries first program found,
-##	program search ordering is based on timed tests, fastest to slowest.
-##
-##	DNS-based queries are always faster, around real time 0.1 seconds.
-##	URL-queries are relatively slow, around real time 1 seconds.
+##	Makes an query to internet-server and returns public IPv6-address.
+##	Test for the presence of several program in case one is missing.
+##	Program search ordering is based on timed tests, fastest to slowest.
+##	DNS-based queries are always faster, ~0.1 seconds.
+##	URL-queries are relatively slow, ~1 seconds.
 ##
 getExternalIPv6()
 {
@@ -174,6 +172,15 @@ printBar()
 ##
 ##	printFraction(NUMERAND, DENOMINTOR, PADDING_DIGITS, UNITS)
 ##	Prints a color-formatted fraction with padding to reach MAX_DIGITS
+##
+##	1. NUMERAND: first shown number
+##	2. DENOMINATOR: second shown number
+##	3. PADDING_DIGITS: determines the minimum lenght of NUMERAND and
+##	   DENOMINATOR. If they have less digits than this, extra spaces
+##	   are appended for padding.
+##	4. UNITS: a string that is attached to the end of the fraction,
+##	   meant to include optional units (e.g. MB) for display purposes.
+##
 printFraction()
 {
 	local a=$1
@@ -191,6 +198,20 @@ printFraction()
 
 ##------------------------------------------------------------------------------
 ##
+##	printMonitor()
+##
+##	Prints a resurse utilization monitor,c omprised of a bar and a fraction.
+##
+##	1. CURRENT: current resource utilization (e.g. occupied GB in HDD)
+##	2. MAX: max resource utilization (e.g. HDD size)
+##	3. CRIT_PERCENT: point at which to warn the user (e.g. 80 for 80%)
+##	4. PRINT_AS_PERCENTAGE: whether to print a simple percentage after
+##	   the utilization bar (true), or to print a fraction (false). 
+##	5. UNITS: units of the resource, for display purposes only. This are
+##	   not shown if PRINT_AS_PERCENTAGE=true, but must be set nonetheless.
+##	6. LABEL: A description of the resource that will be printed in front
+##	   of the utilization bar.
+##
 printMonitor()
 {
 	local current=$1
@@ -198,9 +219,9 @@ printMonitor()
 	local crit_percent=$3
 	local print_as_percentage=$4
 	local units=$5
-	local description=${@:6}
+	local label=${@:6}
 
-	printf "${fc_info}${description}"
+	printf "${fc_info}${label}"
 	printBar $current $max $bar_length $crit_percent
 
 	if $print_as_percentage; then
@@ -339,12 +360,11 @@ printInfoLocalIPv4()
 ##
 ##	getExternalIPv4()
 ##
-##	Makes an query to internet-server and returns public IPv4-address
-##
-##	Tries first program found,
-##	program search ordering is based on timed tests, fastest to slowest.
-##	DNS-based queries are always faster, around real time 0.1 seconds.
-##	URL-queries are relatively slow, around real time 1 seconds.
+##	Makes an query to internet-server and returns public IPv4-address.
+##	Test for the presence of several program in case one is missing.
+##	Program search ordering is based on timed tests, fastest to slowest.
+##	DNS-based queries are always faster, ~0.1 seconds.
+##	URL-queries are relatively slow, ~1 seconds.
 ##
 printInfoExternalIPv4()
 {
