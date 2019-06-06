@@ -590,7 +590,7 @@ printHeader()
 	printf "${formatted_logo_12}\t${formatted_status_12}\n"
 	printf "${formatted_logo_13}\t${formatted_status_13}\n"
 	printf "${formatted_logo_14}\t${formatted_status_14}\n\n"
-	printf '\e[7h'	# Re-enable line wrap
+	printf '\e[?7h'	# Re-enable line wrap
 }
 
 
