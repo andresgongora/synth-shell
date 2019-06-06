@@ -48,8 +48,8 @@ status()
 ##	getLocalIPv6()
 ##
 ##	Looks up and returns local IPv6-address.
-##
-##	Tries first program found.
+##	Test for the presence of several program in case one is missing.
+##	Program search ordering is based on timed tests, fastest to slowest.
 ##
 ##	!!! NOTE: Still needs to figure out how to look for IP address that has default gateway
 ##	!!! attached to related interface, otherwise this returns list of IPv6's if there are many
@@ -73,11 +73,14 @@ getLocalIPv6()
 		local result=$($(which ifconfig) |\
 		grep -oP '\s*inet6\s+(addr:?\s*)?\K(([0-9abcdef]){0,4}:*){1,8}'|\
 		sed '/::1/d;:a;N;$!ba;s/\n/,/g')
+
 	else
 		local result="Error"
 	fi
 
-	## Returns "N/A" if actual query result is empty, and returns "Error" if no programs found
+
+	## Returns "N/A" if actual query result is empty, 
+	## and returns "Error" if no programs found
 	[ $result ] && printf $result || printf "N/A"
 }
 
@@ -96,20 +99,29 @@ getLocalIPv6()
 getExternalIPv6()
 {
 	if   ( which dig > /dev/null 2>&1 ); then
-		local result=$($(which dig) TXT -6 +short o-o.myaddr.l.google.com @ns1.google.com | awk -F\" '{print $2}')
+		local result=$($(which dig) TXT -6 +short o-o.myaddr.l.google.com @ns1.google.com |\
+		               awk -F\" '{print $2}')
+
 	elif ( which nslookup > /dev/nul 2>&1 ); then
-		local result=$($(which nslookup) -q=txt o-o.myaddr.l.google.com 2001:4860:4802:32::a | awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
+		local result=$($(which nslookup) -q=txt o-o.myaddr.l.google.com 2001:4860:4802:32::a |\
+		               awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
+
 	elif ( which curl > /dev/null 2>&1 ); then
 		local result=$($(which curl) -s https://api6.ipify.org)
+
 	elif ( which wget > /dev/null 2>&1 ); then
 		local result=$($(which wget) -q -O - https://api6.ipify.org)
+
 	else
 		local result="Error"
 	fi
 
-	## Returns "N/A" if actual query result is empty, and returns "Error" if no programs found
+
+	## Returns "N/A" if actual query result is empty, 
+	## and returns "Error" if no programs found
 	[ $result ] && printf $result || printf "N/A"
 }
+
 
 
 
@@ -369,11 +381,17 @@ printInfoLocalIPv4()
 		local ip=$($(which ifconfig) |\
 		           grep -oP '^\s*inet\s+(addr:?\s*)?\K(([0-9]){1,3}\.*){4}'|\
 		           sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
+	else
+		local result="Error"
 	fi
 
+
+	## Returns "N/A" if actual query result is empty, 
+	## and returns "Error" if no programs found
 	[ $ip ] || local ip="N/A"
 	printInfo "Local IPv4\t" "$ip"
 }
+
 
 
 ##------------------------------------------------------------------------------
@@ -403,9 +421,13 @@ printInfoExternalIPv4()
 
 	elif ( which wget > /dev/null 2>&1 ); then
 		local ip=$($(which wget) -q -O - https://api.ipify.org)
+	else
+		local result="Error"
 	fi
 
 
+	## Returns "N/A" if actual query result is empty, 
+	## and returns "Error" if no programs found
 	[ $ip ] || local ip="N/A"
 	printInfo "External IPv4\t" "$ip"
 }
