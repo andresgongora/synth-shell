@@ -253,8 +253,10 @@ printMonitor()
 	local print_as_percentage=$4
 	local units=$5
 	local label=${@:6}
+	local pad=$info_label_width
 
-	printf "${fc_info}${label}"
+
+	printf "${fc_info}%-${pad}s" "$label"
 	printBar $current $max $bar_length $crit_percent
 
 	if $print_as_percentage; then
@@ -263,8 +265,6 @@ printMonitor()
 	else
 		printFraction $current $max $bar_num_digits $units
 	fi
-
-
 }
 
 
@@ -443,7 +443,7 @@ printInfoSystemctl()
 
 printMonitorCPU()
 {
-	local message="Sys load avg\t"
+	local message="Sys load avg"
 	local units=" "
 	local current=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
 	local max=$(nproc --all)
@@ -459,7 +459,7 @@ printMonitorCPU()
 
 printMonitorRAM()
 {
-	local message="Memory\t\t"
+	local message="Memory"
 	local units="MB"
 	local mem_info=$('free' -m | head -n 2 | tail -n 1)
 	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
@@ -474,7 +474,7 @@ printMonitorRAM()
 
 printMonitorSwap()
 {
-	local message="Swap\t\t"
+	local message="Swap"
 	local units="MB"
 	local swap_info=$('free' -m | tail -n 1)
 	local current=$(echo "$swap_info" | awk '{SWAP=($3)} END {printf SWAP}')
@@ -493,7 +493,7 @@ printMonitorSwap()
 
 printMonitorHDD()
 {
-	local message="Storage /\t"
+	local message="Storage /"
 	local units="GB"
 	local current=$(df -B1G / | grep "/" | awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G / | grep "/" | awk '{key=($2)} END {printf key}')
@@ -507,7 +507,7 @@ printMonitorHDD()
 
 printMonitorHome()
 {
-	local message="Storage /home\t"
+	local message="Storage /home"
 	local units="GB"
 	local current=$(df -B1G ~ | grep "/" | awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G ~ | grep "/" | awk '{key=($2)} END {printf key}')
