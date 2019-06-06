@@ -126,6 +126,7 @@ getExternalIPv6()
 
 
 
+
 ##==============================================================================
 ##	INFO AND MONITOR PRINTING HELPERS
 ##==============================================================================
@@ -514,6 +515,7 @@ printMonitorHome()
 
 
 
+
 ##==============================================================================
 ##	STATUS COMPOSITION
 ##==============================================================================
@@ -547,24 +549,42 @@ printHeader()
 
 
 
+	## STATUS INFO
+	local formatted_status_01="$(printInfoOS)"
+	local formatted_status_02="$(printInfoKernel)"
+	local formatted_status_03="$(printInfoCPU)"
+	local formatted_status_04="$(printInfoShell)"
+	local formatted_status_05="$(printInfoDate)"
+	local formatted_status_06="$(printInfoUser)"
+	local formatted_status_07="$(printInfoLocalIPv4)"
+	local formatted_status_08="$(printInfoExternalIPv4)"
+	local formatted_status_09="$(printInfoSystemctl)"
+	local formatted_status_10="$(printMonitorCPU)"
+	local formatted_status_11="$(printMonitorRAM)"
+	local formatted_status_12="$(printMonitorSwap)"
+	local formatted_status_13="$(printMonitorHDD)"
+	local formatted_status_14="$(printMonitorHome)"
+
+
+
 	## PRINT HEADER WITH OVERALL STATUS REPORT
-	printf '\033[?7l'	# Disable line wrap -> Crop instead
+	printf '\e[?7l'	# Disable line wrap -> Crop instead
 	printf "\n"
-	printf "${formatted_logo_01}\t$(printInfoOS)\n"
-	printf "${formatted_logo_02}\t$(printInfoKernel)\n"
-	printf "${formatted_logo_03}\t$(printInfoCPU)\n"
-	printf "${formatted_logo_04}\t$(printInfoShell)\n"
-	printf "${formatted_logo_05}\t$(printInfoDate)\n"
-	printf "${formatted_logo_06}\t$(printInfoUser)\n"
-	printf "${formatted_logo_07}\t$(printInfoLocalIPv4)\n"
-	printf "${formatted_logo_08}\t$(printInfoExternalIPv4)\n"
-	printf "${formatted_logo_09}\t$(printInfoSystemctl)\n"
-	printf "${formatted_logo_10}\t$(printMonitorCPU)\n"
-	printf "${formatted_logo_11}\t$(printMonitorRAM)\n"
-	printf "${formatted_logo_12}\t$(printMonitorSwap)\n"
-	printf "${formatted_logo_13}\t$(printMonitorHDD)\n"
-	printf "${formatted_logo_14}\t$(printMonitorHome)\n\n"
-	printf '\033[?7h'	# Re-enable line wrap
+	printf "${formatted_logo_01}\t${formatted_status_01}\n"
+	printf "${formatted_logo_02}\t${formatted_status_02}\n"
+	printf "${formatted_logo_03}\t${formatted_status_03}\n"
+	printf "${formatted_logo_04}\t${formatted_status_04}\n"
+	printf "${formatted_logo_05}\t${formatted_status_05}\n"
+	printf "${formatted_logo_06}\t${formatted_status_06}\n"
+	printf "${formatted_logo_07}\t${formatted_status_07}\n"
+	printf "${formatted_logo_08}\t${formatted_status_08}\n"
+	printf "${formatted_logo_09}\t${formatted_status_09}\n"
+	printf "${formatted_logo_10}\t${formatted_status_10}\n"
+	printf "${formatted_logo_11}\t${formatted_status_11}\n"
+	printf "${formatted_logo_12}\t${formatted_status_12}\n"
+	printf "${formatted_logo_13}\t${formatted_status_13}\n"
+	printf "${formatted_logo_14}\t${formatted_status_14}\n\n"
+	printf '\e[7h'	# Re-enable line wrap
 }
 
 
@@ -612,6 +632,7 @@ printTop()
 		printf "${fc_info}${proc}${fc_none}\n"
 	fi
 }
+
 
 
 
@@ -720,6 +741,9 @@ printTop
 }
 (status)
 unset status
+
+
+
 
 
 
