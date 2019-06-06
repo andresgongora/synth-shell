@@ -337,19 +337,17 @@ printInfoSystemctl()
 ##	Tries first program found.
 ##	!!! NOTE: Still needs to figure out how to look for IP address that has default gateway
 ##	!!! attached to related interface, otherwise this returns list of IPv4's if there are many
-##	!!! TODO: Simplify?
-##	!!! TODO: Update this descriptio
 ##
 printInfoLocalIPv4()
 {
 	if   ( which ip > /dev/null 2>&1 ); then
 		local ip=$($(which ip) -family inet addr show |\
-		           grep -oP '^\s*inet\s+(addr:?\s*)?\K(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))' |\
+		           grep -oP '^\s*inet\s+(addr:?\s*)?\K([0-9]+\.*){4}' |\
 		           sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
 
 	elif ( which ifconfig > /dev/null 2>&1 ); then
 		local ip=$($(which ifconfig) |\
-		           grep -oP '^\s*inet\s+(addr:?\s*)?\K(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))' |\
+		           grep -oP '^\s*inet\s+(addr:?\s*)?\K([0-9]+\.*){4}' |\
 		           sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
 	fi
 
