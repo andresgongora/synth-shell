@@ -141,9 +141,10 @@ getExternalIPv6()
 printInfo()
 {
 	label=$1
-	value=$2	
+	value=$2
+	pad=$info_label_width
 
-	printf "$fc_info$label$fc_highlight$value$fc_none"
+	printf "${fc_info}%-${pad}s${fc_highlight}${value}${fc_none}" "$label" 
 }
 
 
@@ -284,7 +285,7 @@ printInfoOS()
 		local os_name=$(uname -sr)
 	fi
 
-	printInfo "OS\t\t" "$os_name"
+	printInfo "OS" "$os_name"
 }
 
 
@@ -292,7 +293,7 @@ printInfoOS()
 printInfoKernel()
 {
 	local kernel=$(uname -r)
-	printInfo "Kernel\t\t" "$kernel"
+	printInfo "Kernel" "$kernel"
 }
 
 
@@ -316,7 +317,7 @@ printInfoCPU()
 	                    s/\s\s\+/ /;
 	                    p')
 
-	printInfo "CPU\t\t" "$cpu"
+	printInfo "CPU" "$cpu"
 }
 
 
@@ -324,7 +325,7 @@ printInfoCPU()
 printInfoShell()
 {
 	local shell=$(readlink /proc/$$/exe)
-	printInfo "Shell\t\t" "$shell"
+	printInfo "Shell" "$shell"
 }
 
 
@@ -332,29 +333,14 @@ printInfoShell()
 printInfoDate()
 {
 	local sys_date=$(date +"$date_format")
-	printInfo "Date\t\t" "$sys_date"
+	printInfo "Date" "$sys_date"
 }
 
 
 
 printInfoUser()
 {
-	printInfo "User\t\t" "$USER@$HOSTNAME"
-}
-
-
-
-printInfoSystemctl()
-{
-	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
-
-	if [ "$systcl_num_failed" -eq "0" ]; then
-		local sysctl="All services OK"
-	else
-		local sysctl="${fc_error}$systcl_num_failed services failed!${fc_none}"
-	fi
-
-	printInfo "Services\t" "$sysctl"
+	printInfo "User" "$USER@$HOSTNAME"
 }
 
 
@@ -395,7 +381,7 @@ printInfoLocalIPv4()
 	## Returns "N/A" if actual query result is empty, 
 	## and returns "Error" if no programs found
 	[ $ip ] || local ip="N/A"
-	printInfo "Local IPv4\t" "$ip"
+	printInfo "Local IPv4" "$ip"
 }
 
 
@@ -435,7 +421,22 @@ printInfoExternalIPv4()
 	## Returns "N/A" if actual query result is empty, 
 	## and returns "Error" if no programs found
 	[ $ip ] || local ip="N/A"
-	printInfo "External IPv4\t" "$ip"
+	printInfo "External IPv4" "$ip"
+}
+
+
+
+printInfoSystemctl()
+{
+	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
+
+	if [ "$systcl_num_failed" -eq "0" ]; then
+		local sysctl="All services OK"
+	else
+		local sysctl="${fc_error}$systcl_num_failed services failed!${fc_none}"
+	fi
+
+	printInfo "Services" "$sysctl"
 }
 
 
@@ -698,6 +699,7 @@ local crit_swap_percent=25
 local crit_hdd_percent=80
 local crit_home_percent=80
 local bar_num_digits=5
+local info_label_width=16
 local cpu_as_percentage=true
 local ram_as_percentage=false
 local swap_as_percentage=false
