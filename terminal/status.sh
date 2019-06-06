@@ -35,6 +35,8 @@
 ##
 
 
+status()
+{
 
 
 ##==============================================================================
@@ -400,12 +402,10 @@ printMonitorCPU()
 	local max=$(nproc --all)
 	local percent=$(awk '{printf "%3.0f\n",$1*100/'"$max"'}' /proc/loadavg)
 
-	if [ $percent -gt $crit_cpu_percent ]; then
-		cpu_is_crit=true
-	fi
-
 	printMonitor $current $max $crit_cpu_percent \
 	             $cpu_as_percentage $units $message
+
+	cpu_is_crit=true
 }
 
 
@@ -418,10 +418,6 @@ printMonitorRAM()
 	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
 	local max=$(echo "$mem_info" | awk '{mem=($2)} END {printf mem}')
 	local percent=$(($current*100/$max))
-
-	if [ $percent -gt $crit_ram_percent ]; then
-		mem_is_crit=true
-	fi
 
 	printMonitor $current $max $crit_ram_percent \
 	             $ram_as_percentage $units $message
@@ -441,11 +437,6 @@ printMonitorSwap()
 	if [ "$max" -eq "0" ]; then
 		printf "${fc_info}${message}${fc_highlight}N/A{fc_none}"
 	else
-
-		if [ $percent -gt $crit_swap_percent ]; then
-			swap_is_crit=true
-		fi
-
 		printMonitor $current $max $crit_swap_percent \
 		             $swap_as_percentage $units $message
 	fi
@@ -461,10 +452,6 @@ printMonitorHDD()
 	local max=$(df -B1G / | grep "/" | awk '{key=($2)} END {printf key}')
 	local percent=$(($current*100/$max))
 
-	if [ $percent -gt $crit_hdd_percent ]; then
-		hdd_is_crit=true
-	fi
-
 	printMonitor $current $max $crit_hdd_percent \
 	             $hdd_as_percentage $units $message
 }
@@ -478,10 +465,6 @@ printMonitorHome()
 	local current=$(df -B1G ~ | grep "/" | awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G ~ | grep "/" | awk '{key=($2)} END {printf key}')
 	local percent=$(($current*100/$max))
-
-	if [ $percent -gt $crit_home_percent ]; then
-		home_is_crit=true
-	fi
 
 	printMonitor $current $max $crit_home_percent \
 	             $home_as_percentage $units $message
@@ -546,8 +529,6 @@ printHeader()
 
 
 
-
-
 printLastLogins()
 {
 	## DO NOTHING FOR NOW -> This is disabled  intentionally for now. 
@@ -563,10 +544,9 @@ printLastLogins()
 
 
 
-
-
 printSystemctl()
 {
+	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
 	if [ "$systcl_num_failed" -ne "0" ]; then
 		printf "\n\r${fc_highlight}SYSTEMCTL STATUS: ${fc_crit}${systcl_num_failed} service failed to load!!${fc_none}\n\r"
 		systemctl --failed
@@ -577,7 +557,11 @@ printSystemctl()
 
 printTop()
 {
-	if $cpu_is_crit; then
+	local current=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
+	local max=$(nproc --all)
+	local percent=$(awk '{printf "%3.0f\n",$1*100/'"$max"'}' /proc/loadavg)
+
+	if [ $percent -gt $crit_cpu_percent ]; then
 		local top=$('nice' 'top' -b -w 80 -d 1 | head -n 11 | sed 's/%/%%/g')
 		local load=$(echo "${top}" | head -n 3 | tail -n 1)
 		local head=$(echo "${top}" | head -n 7 | tail -n 1)
@@ -594,117 +578,108 @@ printTop()
 
 
 ##==============================================================================
-##	STATUS
+##	MAIN FUNCTION
 ##==============================================================================
 
-status()
-{
-	## INCLUDE EXTERNAL DEPENDENCIES
-	## Only if the functions are not available
-	## If not, search in `common` folder
-	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+## INCLUDE EXTERNAL DEPENDENCIES
+## Only if the functions are not available
+## If not, search in `common` folder
+local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-	if [ "$(type -t loadConfigFile)" != 'function' ];
-	then
-		source "$dir/../common/load_config.sh"
-	fi
+if [ "$(type -t loadConfigFile)" != 'function' ];
+then
+	source "$dir/../common/load_config.sh"
+fi
 
-	if [ "$(type -t getFormatCode)" != 'function' ];
-	then
-		source "$dir/../common/color.sh"
-	fi
+if [ "$(type -t getFormatCode)" != 'function' ];
+then
+	source "$dir/../common/color.sh"
+fi
 
 
 
-	## SCRIPT WIDE VARIABLES
-	local cpu_is_crit=false
-	local mem_is_crit=false
-	local swap_is_crit=false
-	local hdd_is_crit=false
-	local home_is_crit=false
-	local systcl_num_failed=0
+## DEFAULT CONFIGURATION
+## WARNING! Do not edit directly, use configuration files instead
+
+local logo_01="        -oydNMMMMNdyo-        "
+local logo_02="     -yNMMMMMMMMMMMMMMNy-     "
+local logo_03="   .hMMMMMMmhsooshmMMMMMMh.   "
+local logo_04="  :NMMMMmo.        .omMMMMN:  "
+local logo_05=" -NMMMMs    -+ss+-    sMMMMN- "
+local logo_06=" hMMMMs   -mMMMMMMm-   sMMMMh "
+local logo_07="'MMMMM.  'NMMMMMMMMN'  .MMMMM'"
+local logo_08="'MMMMM.  'NMMMMMMMMN'   yMMMM'"
+local logo_09=" hMMMMs   -mMMMMMMMMy.   -yMh "
+local logo_10=" -NMMMMs    -+ss+yMMMMy.   -. "
+local logo_11="  :NMMMMmo.       .yMMMMy.    "
+local logo_12="   .hMMMMMMmhsoo-   .yMMMy    "
+local logo_13="     -yNMMMMMMMMMy-   .o-     "
+local logo_14="        -oydNMMMMNd/          "
+local logo_padding=""
+
+local format_info="-c white"
+local format_highlight="-c blue  -e bold"
+local format_crit="-c 208   -e bold"
+local format_deco="-c white -e bold"
+local format_ok="-c blue  -e bold"
+local format_error="-c 208   -e bold -e blink"
+local format_logo="-c blue -e bold"
+
+local bar_length=13
+local crit_cpu_percent=50
+local crit_ram_percent=75
+local crit_swap_percent=25
+local crit_hdd_percent=80
+local crit_home_percent=80
+local bar_num_digits=5
+local cpu_as_percentage=true
+local ram_as_percentage=false
+local swap_as_percentage=false
+local hdd_as_percentage=false
+local home_as_percentage=false
+
+local date_format="%Y.%m.%d - %T"
 
 
 
-	## DEFAULT CONFIGURATION
-	## WARNING! Do not edit directly, use configuration files instead
-
-	local logo_01="        -oydNMMMMNdyo-        "
-	local logo_02="     -yNMMMMMMMMMMMMMMNy-     "
-	local logo_03="   .hMMMMMMmhsooshmMMMMMMh.   "
-	local logo_04="  :NMMMMmo.        .omMMMMN:  "
-	local logo_05=" -NMMMMs    -+ss+-    sMMMMN- "
-	local logo_06=" hMMMMs   -mMMMMMMm-   sMMMMh "
-	local logo_07="'MMMMM.  'NMMMMMMMMN'  .MMMMM'"
-	local logo_08="'MMMMM.  'NMMMMMMMMN'   yMMMM'"
-	local logo_09=" hMMMMs   -mMMMMMMMMy.   -yMh "
-	local logo_10=" -NMMMMs    -+ss+yMMMMy.   -. "
-	local logo_11="  :NMMMMmo.       .yMMMMy.    "
-	local logo_12="   .hMMMMMMmhsoo-   .yMMMy    "
-	local logo_13="     -yNMMMMMMMMMy-   .o-     "
-	local logo_14="        -oydNMMMMNd/          "
-	local logo_padding=""
-
-	local format_info="-c white"
-	local format_highlight="-c blue  -e bold"
-	local format_crit="-c 208   -e bold"
-	local format_deco="-c white -e bold"
-	local format_ok="-c blue  -e bold"
-	local format_error="-c 208   -e bold -e blink"
-	local format_logo="-c blue -e bold"
-
-	local bar_length=13
-	local crit_cpu_percent=50
-	local crit_ram_percent=75
-	local crit_swap_percent=25
-	local crit_hdd_percent=80
-	local crit_home_percent=80
-	local bar_num_digits=5
-	local cpu_as_percentage=true
-	local ram_as_percentage=false
-	local swap_as_percentage=false
-	local hdd_as_percentage=false
-	local home_as_percentage=false
-
-	local date_format="%Y.%m.%d - %T"
+## LOAD USER CONFIGURATION
+local user_config_file="$HOME/.config/scripts/status.config"
+local sys_config_file="/etc/andresgongora/scripts/status.config"
+if [ -f $user_config_file ]; then
+	loadConfigFile $user_config_file
+elif [ -f $sys_config_file ]; then
+	loadConfigFile $sys_config_file
+fi
 
 
 
-	## LOAD USER CONFIGURATION
-	local user_config_file="$HOME/.config/scripts/status.config"
-	local sys_config_file="/etc/andresgongora/scripts/status.config"
-	if [ -f $user_config_file ]; then
-		loadConfigFile $user_config_file
-	elif [ -f $sys_config_file ]; then
-		loadConfigFile $sys_config_file
-	fi
+## COLOR AND TEXT FORMAL CODE
+local fc_info=$(getFormatCode $format_info)
+local fc_highlight=$(getFormatCode $format_highlight)
+local fc_crit=$(getFormatCode $format_crit)
+local fc_deco=$(getFormatCode $format_deco)
+local fc_ok=$(getFormatCode $format_ok)
+local fc_error=$(getFormatCode $format_error)
+local fc_logo=$(getFormatCode $format_logo)
+local fc_none=$(getFormatCode -e reset)
 
 
 
-	## COLOR AND TEXT FORMAL CODE
-	local fc_info=$(getFormatCode $format_info)
-	local fc_highlight=$(getFormatCode $format_highlight)
-	local fc_crit=$(getFormatCode $format_crit)
-	local fc_deco=$(getFormatCode $format_deco)
-	local fc_ok=$(getFormatCode $format_ok)
-	local fc_error=$(getFormatCode $format_error)
-	local fc_logo=$(getFormatCode $format_logo)
-	local fc_none=$(getFormatCode -e reset)
+## PRINT STATUS ELEMENTS
+clear
+printHeader
+printLastLogins
+printSystemctl
+printTop
 
 
 
-	## PRINT STATUS ELEMENTS
-	clear
-	printHeader
-	printLastLogins
-	printSystemctl
-	printTop
+## RUN SCRIPT
+## It's wrapped with "{}" to avoid environment pollution
+## It's also called in a subshell with "()" to REALLY avoid pollution
 }
-
-
-## CALL MAIN FUNCTION
-status
-
+(status)
+unset status
 
 
 
