@@ -133,12 +133,17 @@ getExternalIPv6()
 
 ##------------------------------------------------------------------------------
 ##
+##	printInfo(LABEL, VALUE)
+##	Print a formatted message comprised of a label and a value
+##	1. LABEL will be printed with info color
+##	2. VALUE will be printed with highlight color
+##
 printInfo()
 {
-	property_name=$1
-	property_value=$2	
+	label=$1
+	value=$2	
 
-	printf "$fc_info$property_name$fc_highlight$property_value$fc_none"
+	printf "$fc_info$label$fc_highlight$value$fc_none"
 }
 
 
