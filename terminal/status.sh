@@ -144,7 +144,7 @@ printInfo()
 	value=$2
 	pad=$info_label_width
 
-	printf "${fc_info}%-${pad}s${fc_highlight}${value}${fc_none}" "$label" 
+	printf "${fc_info}%-${pad}s${fc_highlight}${value}${fc_none}" "$label"
 }
 
 
