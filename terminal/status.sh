@@ -637,9 +637,9 @@ printTop()
 		local head=$(echo "${top}" | head -n 7 | tail -n 1)
 		local proc=$(echo "${top}" | tail -n 4 | grep -v "top")
 
-		printf "\n\r${fc_crit}SYSTEM LOAD:${fc_info}  ${load:9:36}${fc_highlight}\n"
+		printf "${fc_crit}SYSTEM LOAD:${fc_info}  ${load:9:36}${fc_highlight}\n"
 		printf "${fc_crit}$head${fc_none}\n"
-		printf "${fc_info}${proc}${fc_none}\n"
+		printf "${fc_info}${proc}${fc_none}\n\n"
 	fi
 }
 
