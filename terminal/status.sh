@@ -53,14 +53,26 @@ status()
 ##
 ##	!!! NOTE: Still needs to figure out how to look for IP address that has default gateway
 ##	!!! attached to related interface, otherwise this returns list of IPv6's if there are many
-##	!!! TODO: Simplify?
 ##
 getLocalIPv6()
 {
+	## grep explanation:
+	## -oP				only match and perl reggex
+	## \s*inet6\s+			any-spaces "inet6" at-least-1-space
+	## (addr:?\s*)?			optionally, followed by addr or addr:
+	## \K				everything until here, ommit
+	## (){1,8}			repeat block at least 1 time, up to 8
+	## ([0-9abcdef]){0,4}:*		up to 4 chars from [] followed by :
+
 	if   ( which ip > /dev/null 2>&1 ); then
-		local result=$($(which ip) -family inet6 addr show | grep -oP '^\s*inet6\s+(addr:?\s*)?\K((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?' | sed '/::1/d;:a;N;$!ba;s/\n/,/g')
+		local result=$($(which ip) -family inet6 addr show |\
+		grep -oP '\s*inet6\s+(addr:?\s*)?\K(([0-9abcdef]){0,4}:*){1,8}'|\
+		sed '/::1/d;:a;N;$!ba;s/\n/,/g')
+
 	elif ( which ifconfig > /dev/null 2>&1 ); then
-		local result=$($(which ifconfig) | grep -oP '^\s*inet6\s+(addr:?\s*)?\K((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?' | sed '/::1/d;:a;N;$!ba;s/\n/,/g')
+		local result=$($(which ifconfig) |\
+		grep -oP '\s*inet6\s+(addr:?\s*)?\K(([0-9abcdef]){0,4}:*){1,8}'|\
+		sed '/::1/d;:a;N;$!ba;s/\n/,/g')
 	else
 		local result="Error"
 	fi
@@ -340,14 +352,22 @@ printInfoSystemctl()
 ##
 printInfoLocalIPv4()
 {
+	## grep explanation:
+	## -oP				only match and perl reggex
+	## \s*inet\s+			any-spaces "inet6" at-least-1-space
+	## (addr:?\s*)?			optionally, followed by addr or addr:
+	## \K				everything until here, ommit
+	## (){4}			repeat block at least 1 time, up to 8
+	## ([0-9]){1,4}:*		1 to 3 integers [0-9] followed by "."
+
 	if   ( which ip > /dev/null 2>&1 ); then
 		local ip=$($(which ip) -family inet addr show |\
-		           grep -oP '^\s*inet\s+(addr:?\s*)?\K([0-9]+\.*){4}' |\
+		           grep -oP '^\s*inet\s+(addr:?\s*)?\K(([0-9]){1,3}\.*){4}' |\
 		           sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
 
 	elif ( which ifconfig > /dev/null 2>&1 ); then
 		local ip=$($(which ifconfig) |\
-		           grep -oP '^\s*inet\s+(addr:?\s*)?\K([0-9]+\.*){4}' |\
+		           grep -oP '^\s*inet\s+(addr:?\s*)?\K(([0-9]){1,3}\.*){4}'|\
 		           sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
 	fi
 
