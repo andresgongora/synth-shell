@@ -430,8 +430,10 @@ printInfoSystemctl()
 {
 	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
 
-	if [ "$systcl_num_failed" -eq "0" ]; then
+	if   [ "$systcl_num_failed" -eq "0" ]; then
 		local sysctl="All services OK"
+	elif [ "$systcl_num_failed" -eq "1" ]; then
+		local sysctl="${fc_error}1 service failed!${fc_none}"
 	else
 		local sysctl="${fc_error}$systcl_num_failed services failed!${fc_none}"
 	fi
@@ -614,8 +616,10 @@ printSystemctl()
 {
 	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
 	if [ "$systcl_num_failed" -ne "0" ]; then
-		printf "\n\r${fc_highlight}SYSTEMCTL STATUS: ${fc_crit}${systcl_num_failed} service failed to load!!${fc_none}\n\r"
-		systemctl --failed
+		local failed=$(systemctl --failed | grep ".service")
+		printf "${fc_crit}SYSTEMCTL FAILED SERVICES:\n"
+		printf "${fc_info}${failed}${fc_none}\n\n"
+
 	fi
 }
 
