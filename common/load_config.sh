@@ -105,7 +105,7 @@ loadConfigFile() {
 		while IFS="" read -r p || [ -n "$p" ]
 		do
 			## REMOVE COMMENTS FROM LINE
-			local trimmed_line=$(printf "$p" | sed '/^$/d;/^\#/d;/\#.*$/d;/\n/d;')
+			local trimmed_line=$(printf %b "$p" | sed '/^$/d;/^\#/d;/\#.*$/d;/\n/d;')
 
 			## CONVERT LINE INTO SCRIPT PARAMETERS
 			set -- $trimmed_line
