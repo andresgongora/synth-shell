@@ -98,7 +98,7 @@ getData()
 }
 ```
 
-**Why??** - Because some of us just want to see the world burn
+**Why??** - Because some of us just want to see the world burn.
 
 
 
