@@ -682,7 +682,6 @@ printTopCPU()
 
 
 
-
 printTopRAM()
 {
 	local mem_info=$('free' -m | head -n 2 | tail -n 1)
@@ -703,6 +702,7 @@ printTopRAM()
 		printf "${fc_info}${procs}${fc_none}\n\n"
 	fi
 }
+
 
 
 
@@ -760,8 +760,8 @@ local bar_length=13
 local crit_cpu_percent=50
 local crit_ram_percent=75
 local crit_swap_percent=25
-local crit_hdd_percent=80
-local crit_home_percent=80
+local crit_hdd_percent=85
+local crit_home_percent=85
 local bar_num_digits=5
 local info_label_width=16
 local cpu_as_percentage=true
