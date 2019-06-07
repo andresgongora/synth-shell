@@ -51,7 +51,7 @@
 ##		## LOAD CONFIG
 ##		source load_config.sh
 ##		loadConfigFile "/home/user/config"
-##		
+##
 ##		## USE VARIABLES
 ##		echo $my_var	# Will print 7 or fallback to 1
 ## 		echo $MY_STR	# Will print "Hello" or fallback to "Message"
@@ -70,9 +70,9 @@
 ##
 ##	* Empty lines and comments (starting with #) are ignored.
 ##
-##	* A KEY-VALUE pair might be followd by a comment (again, 
+##	* A KEY-VALUE pair might be followd by a comment (again,
 ##	  starting with #) which will be trimmed before loading the data.
-##	
+##
 ##
 
 
@@ -100,16 +100,16 @@ loadConfigFile() {
 	## CHECK IF CONFIGURATION FILE EXISTS
 	local config_file=$1
 	if [ -f $config_file ]; then
-		
+
 		## ITERATE THROUGH LINES IN CONFIGURATION FILE
 		while IFS="" read -r p || [ -n "$p" ]
 		do
 			## REMOVE COMMENTS FROM LINE
-			local trimmed_line=$(printf "$p" | sed '/^$/d;/^\#/d;/\#.*$/d;/\n/d;')
+			local trimmed_line=$(printf %b "$p" | sed '/^$/d;/^\#/d;/\#.*$/d;/\n/d;')
 
 			## CONVERT LINE INTO SCRIPT PARAMETERS
 			set -- $trimmed_line
-			
+
 
 			## LOAD CONFIG IF AT LEAST 2 PARAMETERS
 			## Config-key-name and desired config value
@@ -121,7 +121,7 @@ loadConfigFile() {
 				local config_param=$(echo "$trimmed_line" |\
 				                     sed "s/$config_key_name\s*//" |\
 				                     sed "s/^\"//;s/\"$//")
-		
+
 				## REASSING CONFIG PARAMETER TO KEY
 				## ONLY IF ALREADY DECLARED AND NOT EMPTY
 				## This is meant to avoid loading config parameters
@@ -130,7 +130,7 @@ loadConfigFile() {
 
 					## LOAD CONFIG PARAMETER
 					export "${config_key_name}"="$config_param"
-				fi				
+				fi
 			fi
 		done < $config_file
 	fi

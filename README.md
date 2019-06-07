@@ -21,6 +21,7 @@ If you recognize a snippet and the file has no reference
 
 
 
+
 <!--------------------------------------+-------------------------------------->
 #                                  Installation
 <!--------------------------------------+-------------------------------------->
@@ -29,11 +30,14 @@ If you recognize a snippet and the file has no reference
 
 The quickuest way to get started is to simply run the installation script.
 Simply download the git repository and run the install script as follows.
+This will add the scripts to `/usr/local/bin`, source them from
+within `/etc/bash.bashrc`, and create a configuration file under
+`/etc/andresgongora/scripts`.
 ```
 git clone --recursive https://github.com/andresgongora/scripts.git
 chmod +x scripts/install/install.sh
 sudo bash scripts/install/install.sh
-rm -r scripts
+rm -fr scripts
 ```
 
 
@@ -119,6 +123,34 @@ in a single script from my collection, check whether it depends on a common
 script, and copy the content of it into the script you want.
 Also, some script might depend on third party packages which might require
 your manual intervention. Check the content of each script for details.
+
+
+
+
+
+
+<!--------------------------------------+-------------------------------------->
+#                                  Uninstallation
+<!--------------------------------------+-------------------------------------->
+
+Removing the script is very easy. If you installed it with the auto-installer,
+then run the following commands. Notice that they are almost the same as for
+the installation, but with the added parameter `uninstall`. This will
+remove the scripts from the system, remove the hook from `/etc/bash.bashrc`,
+and remove the configuration from `/etc/andresgongora/scripts`.
+```
+git clone --recursive https://github.com/andresgongora/scripts.git
+chmod +x scripts/install/install.sh
+sudo bash scripts/install/install.sh uninstall
+rm -fr scripts
+```
+
+If you installed them manually, all you ahve to do is edit your user's bashrc
+file, either by removing the call to the script all together, or just commenting
+them out. You can do so from the terminal running nano.
+```
+nano ~/.bashrc
+```
 
 
 

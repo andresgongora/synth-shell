@@ -21,7 +21,7 @@
 
 ##
 ##
-##	SED + RegEx	
+##	SED + RegEx
 ##	===========
 ##
 ##	:a;N;$!ba               Append all lines into a single stream
@@ -40,6 +40,7 @@
 ##	                        because some get lost when the variable expands
 ##	                        into subsequent seds.
 ##
+
 
 
 editTextFile()
