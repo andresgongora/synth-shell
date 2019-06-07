@@ -187,11 +187,11 @@ printBar()
 	local max=$2
 	local size=$3
 	local crit_percent=$4
-	local percent=$(($current*100/$max))
+	local percent=$(bc <<< "$current/$max")
 
 
 	## COMPUTE VARIABLES
-	local num_bars=$(($size * $current / $max))
+	local num_bars=$(bc <<< "$size * $current / $max")  #$(($size * $current / $max))
 	if [ $num_bars -gt $size ]; then
 		num_bars=$size
 	fi
@@ -283,8 +283,8 @@ printMonitor()
 
 
 	if $print_as_percentage; then
-		per=$(($current*100/$max))
-		printf " ${fc_highlight}%${bar_num_digits}s${fc_info}%%%%${fc_none}" $per
+		percent=$(bc <<< "$current*100/$max")	
+		printf "${fc_highlight}%${bar_num_digits}s${fc_info} %%%%${fc_none}" $percent
 	else
 		printFraction $current $max $bar_num_digits $units
 	fi
@@ -486,10 +486,8 @@ printMonitorCPU()
 {
 	local message="Sys load avg"
 	local units="none"
-	local current=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
+	local current=$(awk '{avg_1m=($1)} END {printf "%3.2f", avg_1m}' /proc/loadavg)
 	local max=$(nproc --all)
-	local percent=$(awk '{printf "%3.0f\n",$1*100/'"$max"'}' /proc/loadavg)
-	local cpu_as_percentage=false
 
 	printMonitor $current $max $crit_cpu_percent \
 	             $cpu_as_percentage $units $message
@@ -755,14 +753,14 @@ local format_error="-c 208   -e bold -e blink"
 local format_logo="-c blue -e bold"
 
 local bar_length=13
-local crit_cpu_percent=50
+local crit_cpu_percent=40
 local crit_ram_percent=75
 local crit_swap_percent=25
 local crit_hdd_percent=85
 local crit_home_percent=85
 local bar_num_digits=5
 local info_label_width=16
-local cpu_as_percentage=true
+local cpu_as_percentage=false
 local ram_as_percentage=false
 local swap_as_percentage=false
 local hdd_as_percentage=false
