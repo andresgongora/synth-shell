@@ -30,13 +30,11 @@ If you recognize a snippet and the file has no reference
 
 The quickuest way to get started is to simply run the installation script.
 Simply download the git repository and run the install script as follows.
-This will add the scripts to `/usr/local/bin`, source them from
-within `/etc/bash.bashrc`, and create a configuration file under
-`/etc/andresgongora/scripts`.
+The script will prompt you and guide you through the installation process.
 ```
 git clone --recursive https://github.com/andresgongora/scripts.git
 chmod +x scripts/install/install.sh
-sudo bash scripts/install/install.sh
+scripts/install/install.sh
 rm -fr scripts
 ```
 
@@ -134,14 +132,11 @@ your manual intervention. Check the content of each script for details.
 <!--------------------------------------+-------------------------------------->
 
 Removing the script is very easy. If you installed it with the auto-installer,
-then run the following commands. Notice that they are almost the same as for
-the installation, but with the added parameter `uninstall`. This will
-remove the scripts from the system, remove the hook from `/etc/bash.bashrc`,
-and remove the configuration from `/etc/andresgongora/scripts`.
+just run it again and select the appropriate options. 
 ```
 git clone --recursive https://github.com/andresgongora/scripts.git
 chmod +x scripts/install/install.sh
-sudo bash scripts/install/install.sh uninstall
+scripts/install/install.sh uninstall
 rm -fr scripts
 ```
 
