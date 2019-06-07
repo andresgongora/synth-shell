@@ -232,6 +232,7 @@ printBar()
 ##	   are appended for padding.
 ##	4. UNITS: a string that is attached to the end of the fraction,
 ##	   meant to include optional units (e.g. MB) for display purposes.
+##	   if "none", no units are displayed.
 ##
 printFraction()
 {
@@ -239,6 +240,8 @@ printFraction()
 	local b=$2
 	local padding=$3
 	local units=$4
+
+	if [ $units == "none" ]; then local units=""; fi
 
 	printf " ${fc_highlight}%${padding}s" $a
 	printf "${fc_info}/"
@@ -482,15 +485,14 @@ printInfoSystemctl()
 printMonitorCPU()
 {
 	local message="Sys load avg"
-	local units=" "
+	local units="none"
 	local current=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
 	local max=$(nproc --all)
 	local percent=$(awk '{printf "%3.0f\n",$1*100/'"$max"'}' /proc/loadavg)
+	local cpu_as_percentage=false
 
 	printMonitor $current $max $crit_cpu_percent \
 	             $cpu_as_percentage $units $message
-
-	cpu_is_crit=true
 }
 
 
@@ -502,7 +504,6 @@ printMonitorRAM()
 	local mem_info=$('free' -m | head -n 2 | tail -n 1)
 	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
 	local max=$(echo "$mem_info" | awk '{mem=($2)} END {printf mem}')
-	local percent=$(($current*100/$max))
 
 	printMonitor $current $max $crit_ram_percent \
 	             $ram_as_percentage $units $message
@@ -517,7 +518,6 @@ printMonitorSwap()
 	local swap_info=$('free' -m | tail -n 1)
 	local current=$(echo "$swap_info" | awk '{SWAP=($3)} END {printf SWAP}')
 	local max=$(echo "$swap_info" | awk '{SWAP=($2)} END {printf SWAP}')
-	local percent=$(($current*100/$max))
 
 	if [ "$max" -eq "0" ]; then
 		printf "${fc_info}${message}${fc_highlight}N/A{fc_none}"
@@ -535,7 +535,6 @@ printMonitorHDD()
 	local units="GB"
 	local current=$(df -B1G / | grep "/" | awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G / | grep "/" | awk '{key=($2)} END {printf key}')
-	local percent=$(($current*100/$max))
 
 	printMonitor $current $max $crit_hdd_percent \
 	             $hdd_as_percentage $units $message
@@ -549,7 +548,6 @@ printMonitorHome()
 	local units="GB"
 	local current=$(df -B1G ~ | grep "/" | awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G ~ | grep "/" | awk '{key=($2)} END {printf key}')
-	local percent=$(($current*100/$max))
 
 	printMonitor $current $max $crit_home_percent \
 	             $home_as_percentage $units $message
