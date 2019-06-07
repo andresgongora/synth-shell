@@ -51,11 +51,21 @@ status()
 ##	Test for the presence of several program in case one is missing.
 ##	Program search ordering is based on timed tests, fastest to slowest.
 ##
-##	!!! NOTE: Still needs to figure out how to look for IP address that has default gateway
-##	!!! attached to related interface, otherwise this returns list of IPv6's if there are many
+##	!!! NOTE: Still needs to figure out how to look for IP address that
+##	!!!       have a default gateway attached to related interface, 
+##	!!!       otherwise this returns a list of IPv6's if there are many.
 ##
 getLocalIPv6()
 {
+
+
+
+	## GREP REGGEX EXPRESSION TO RETRIEVE IP STRINGS
+	##
+	## The following string is intuitive and easy to read, but only parses
+	## strings that look like IPs without cheking their value. For instance,
+	## it does NOT check value ranges of IPv6
+	##
 	## grep explanation:
 	## -oP				only match and perl reggex
 	## \s*inet6\s+			any-spaces "inet6" at-least-1-space
@@ -63,15 +73,23 @@ getLocalIPv6()
 	## \K				everything until here, ommit
 	## (){1,8}			repeat block at least 1 time, up to 8
 	## ([0-9abcdef]){0,4}:*		up to 4 chars from [] followed by :
+	##	
+	#local grep_reggex='\s*inet6\s+(addr:?\s*)?\K(([0-9abcdef]){0,4}:*){1,8}'
+	##
+	## The following string, on the other hand, is easier to read and
+	## understand, but is MUCH safer, as it ensure that the IP
+	## fulfills some criteria.
+	local grep_reggex='^\s*inet6\s+(addr:?\s*)?\K((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?'
+
 
 	if   ( which ip > /dev/null 2>&1 ); then
 		local result=$($(which ip) -family inet6 addr show |\
-		grep -oP '\s*inet6\s+(addr:?\s*)?\K(([0-9abcdef]){0,4}:*){1,8}'|\
+		grep -oP "$grep_reggex" |\
 		sed '/::1/d;:a;N;$!ba;s/\n/,/g')
 
 	elif ( which ifconfig > /dev/null 2>&1 ); then
 		local result=$($(which ifconfig) |\
-		grep -oP '\s*inet6\s+(addr:?\s*)?\K(([0-9abcdef]){0,4}:*){1,8}'|\
+		grep -oP "$grep_reggex" |\
 		sed '/::1/d;:a;N;$!ba;s/\n/,/g')
 
 	else
@@ -351,11 +369,19 @@ printInfoUser()
 ##
 ##	Looks up and returns local IPv4-address.
 ##	Tries first program found.
-##	!!! NOTE: Still needs to figure out how to look for IP address that has default gateway
-##	!!! attached to related interface, otherwise this returns list of IPv4's if there are many
+##	!!! NOTE: Still needs to figure out how to look for IP address that 
+##	!!!       have a default gateway attached to related interface,
+##	!!!       otherwise this returns list of IPv4's if there are many
 ##
 printInfoLocalIPv4()
 {
+	## GREP REGGEX EXPRESSION TO RETRIEVE IP STRINGS
+	##
+	## The following string is intuitive and easy to read, but only parses
+	## strings that look like IPs without cheking their value. For instance,
+	## it does NOT check whether the IP bytes are [0-255], rather it
+	## accepts values from [0-999] as valid.
+	##
 	## grep explanation:
 	## -oP				only match and perl reggex
 	## \s*inet\s+			any-spaces "inet6" at-least-1-space
@@ -363,15 +389,23 @@ printInfoLocalIPv4()
 	## \K				everything until here, ommit
 	## (){4}			repeat block at least 1 time, up to 8
 	## ([0-9]){1,4}:*		1 to 3 integers [0-9] followed by "."
+	##	
+	#local grep_reggex='^\s*inet\s+(addr:?\s*)?\K(([0-9]){1,3}\.*){4}'
+	##
+	## The following string, on the other hand, is easier to read and
+	## understand, but is MUCH safer, as it ensure that the IP
+	## fulfills some criteria.
+	local grep_reggex='^\s*inet\s+(addr:?\s*)?\K(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))'
+
 
 	if   ( which ip > /dev/null 2>&1 ); then
 		local ip=$($(which ip) -family inet addr show |\
-		           grep -oP '^\s*inet\s+(addr:?\s*)?\K(([0-9]){1,3}\.*){4}' |\
+		           grep -oP "$grep_reggex" |\
 		           sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
 
 	elif ( which ifconfig > /dev/null 2>&1 ); then
 		local ip=$($(which ifconfig) |\
-		           grep -oP '^\s*inet\s+(addr:?\s*)?\K(([0-9]){1,3}\.*){4}'|\
+		           grep -oP "$grep_reggex"|\
 		           sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
 	else
 		local result="Error"
