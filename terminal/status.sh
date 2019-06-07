@@ -187,7 +187,7 @@ printBar()
 	local max=$2
 	local size=$3
 	local crit_percent=$4
-
+	local percent=$(($current*100/$max))
 
 
 	## COMPUTE VARIABLES
@@ -195,12 +195,13 @@ printBar()
 	if [ $num_bars -gt $size ]; then
 		num_bars=$size
 	fi
-	local crit_num_bars=$(($size * $crit_percent / 100))
+	
+
+	## SET COLORS
 	local bar_color=$fc_ok
-	if [ $num_bars -gt $crit_num_bars ]; then
+	if [ $percent -gt $crit_percent ]; then
 		local bar_color=$fc_crit
 	fi
-
 
 
 	## PRINT BAR
@@ -276,6 +277,7 @@ printMonitor()
 
 	printf "${fc_info}%-${pad}s" "$label"
 	printBar $current $max $bar_length $crit_percent
+
 
 	if $print_as_percentage; then
 		per=$(($current*100/$max))
