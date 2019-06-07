@@ -81,8 +81,6 @@
 ##  FUNCTION
 ##==============================================================================
 
-
-
 ##------------------------------------------------------------------------------
 ##
 ##	loadConfigFile
@@ -90,7 +88,7 @@
 ##	It will iterate through the configuration file searching for lines
 ##	containing key-parameter pairs. If there is a variable in the scripts
 ##	scope with the same name as the key, it will write to it the value
-##	of the configuration parameter. 
+##	of the configuration parameter.
 ##
 ##	Arguments:
 ##	1. Path to configuration file
@@ -105,7 +103,8 @@ loadConfigFile() {
 		while IFS="" read -r p || [ -n "$p" ]
 		do
 			## REMOVE COMMENTS FROM LINE
-			local trimmed_line=$(printf %b "$p" | sed '/^$/d;/^\#/d;/\#.*$/d;/\n/d;')
+			local trimmed_line=$(printf %b "$p" | sed '/^$/d;/^\#/d;s/\#.*$//g;/\n/d;')
+
 
 			## CONVERT LINE INTO SCRIPT PARAMETERS
 			set -- $trimmed_line
@@ -122,6 +121,7 @@ loadConfigFile() {
 				                     sed "s/$config_key_name\s*//" |\
 				                     sed "s/^\"//;s/\"$//")
 
+
 				## REASSING CONFIG PARAMETER TO KEY
 				## ONLY IF ALREADY DECLARED AND NOT EMPTY
 				## This is meant to avoid loading config parameters
@@ -135,8 +135,6 @@ loadConfigFile() {
 		done < $config_file
 	fi
 }
-
-
 
 
 

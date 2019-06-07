@@ -187,7 +187,7 @@ printBar()
 	local max=$2
 	local size=$3
 	local crit_percent=$4
-
+	local percent=$(($current*100/$max))
 
 
 	## COMPUTE VARIABLES
@@ -195,12 +195,13 @@ printBar()
 	if [ $num_bars -gt $size ]; then
 		num_bars=$size
 	fi
-	local crit_num_bars=$(($size * $crit_percent / 100))
+	
+
+	## SET COLORS
 	local bar_color=$fc_ok
-	if [ $num_bars -gt $crit_num_bars ]; then
+	if [ $percent -gt $crit_percent ]; then
 		local bar_color=$fc_crit
 	fi
-
 
 
 	## PRINT BAR
@@ -231,6 +232,7 @@ printBar()
 ##	   are appended for padding.
 ##	4. UNITS: a string that is attached to the end of the fraction,
 ##	   meant to include optional units (e.g. MB) for display purposes.
+##	   if "none", no units are displayed.
 ##
 printFraction()
 {
@@ -238,6 +240,8 @@ printFraction()
 	local b=$2
 	local padding=$3
 	local units=$4
+
+	if [ $units == "none" ]; then local units=""; fi
 
 	printf " ${fc_highlight}%${padding}s" $a
 	printf "${fc_info}/"
@@ -276,6 +280,7 @@ printMonitor()
 
 	printf "${fc_info}%-${pad}s" "$label"
 	printBar $current $max $bar_length $crit_percent
+
 
 	if $print_as_percentage; then
 		per=$(($current*100/$max))
@@ -480,15 +485,14 @@ printInfoSystemctl()
 printMonitorCPU()
 {
 	local message="Sys load avg"
-	local units=" "
+	local units="none"
 	local current=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
 	local max=$(nproc --all)
 	local percent=$(awk '{printf "%3.0f\n",$1*100/'"$max"'}' /proc/loadavg)
+	local cpu_as_percentage=false
 
 	printMonitor $current $max $crit_cpu_percent \
 	             $cpu_as_percentage $units $message
-
-	cpu_is_crit=true
 }
 
 
@@ -500,7 +504,6 @@ printMonitorRAM()
 	local mem_info=$('free' -m | head -n 2 | tail -n 1)
 	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
 	local max=$(echo "$mem_info" | awk '{mem=($2)} END {printf mem}')
-	local percent=$(($current*100/$max))
 
 	printMonitor $current $max $crit_ram_percent \
 	             $ram_as_percentage $units $message
@@ -515,7 +518,6 @@ printMonitorSwap()
 	local swap_info=$('free' -m | tail -n 1)
 	local current=$(echo "$swap_info" | awk '{SWAP=($3)} END {printf SWAP}')
 	local max=$(echo "$swap_info" | awk '{SWAP=($2)} END {printf SWAP}')
-	local percent=$(($current*100/$max))
 
 	if [ "$max" -eq "0" ]; then
 		printf "${fc_info}${message}${fc_highlight}N/A{fc_none}"
@@ -533,7 +535,6 @@ printMonitorHDD()
 	local units="GB"
 	local current=$(df -B1G / | grep "/" | awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G / | grep "/" | awk '{key=($2)} END {printf key}')
-	local percent=$(($current*100/$max))
 
 	printMonitor $current $max $crit_hdd_percent \
 	             $hdd_as_percentage $units $message
@@ -547,7 +548,6 @@ printMonitorHome()
 	local units="GB"
 	local current=$(df -B1G ~ | grep "/" | awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G ~ | grep "/" | awk '{key=($2)} END {printf key}')
-	local percent=$(($current*100/$max))
 
 	printMonitor $current $max $crit_home_percent \
 	             $home_as_percentage $units $message
@@ -649,6 +649,7 @@ printLastLogins()
 printSystemctl()
 {
 	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
+
 	if [ "$systcl_num_failed" -ne "0" ]; then
 		local failed=$(systemctl --failed | grep ".service")
 		printf "${fc_crit}SYSTEMCTL FAILED SERVICES:\n"
@@ -659,7 +660,7 @@ printSystemctl()
 
 
 
-printTop()
+printTopCPU()
 {
 	local current=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
 	local max=$(nproc --all)
@@ -667,13 +668,36 @@ printTop()
 
 	if [ $percent -gt $crit_cpu_percent ]; then
 		local top=$('nice' 'top' -b -w 80 -d 1 | head -n 11 | sed 's/%/%%/g')
-		local load=$(echo "${top}" | head -n 3 | tail -n 1)
+		local load=$(echo "${top}" | head -n 3 | tail -n 1 | tr '', ' ')
 		local head=$(echo "${top}" | head -n 7 | tail -n 1)
 		local proc=$(echo "${top}" | tail -n 4 | grep -v "top")
 
-		printf "${fc_crit}SYSTEM LOAD:${fc_info}  ${load:9:36}${fc_highlight}\n"
+		printf "${fc_crit}SYSTEM LOAD:${fc_info}  ${load:9:36}\n"
 		printf "${fc_crit}$head${fc_none}\n"
 		printf "${fc_info}${proc}${fc_none}\n\n"
+	fi
+}
+
+
+
+printTopRAM()
+{
+	local mem_info=$('free' -m | head -n 2 | tail -n 1)
+	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
+	local max=$(echo "$mem_info" | awk '{mem=($2)} END {printf mem}')
+	local percent=$(($current*100/$max))
+	
+	if [ $percent -gt $crit_ram_percent ]; then
+		local available=$(echo $mem_info | awk '{print $NF}')
+		local procs=$(ps --cols=80 -eo pmem,size,pid,cmd --sort=-%mem |\
+			      head -n 4 | tail -n 3 |\
+			      awk '{$2=int($2/1024)"MB";}
+		                   {printf("%5s%8s%8s\t%s\n", $1, $2, $3, $4)}')
+
+		printf "${fc_crit}MEMORY:\t "
+		printf "${fc_info}Only ${available} MB of RAM available!!\n"
+		printf "${fc_crit}    %%\t SIZE\t  PID\tCOMMANDD\n"
+		printf "${fc_info}${procs}${fc_none}\n\n"
 	fi
 }
 
@@ -734,8 +758,8 @@ local bar_length=13
 local crit_cpu_percent=50
 local crit_ram_percent=75
 local crit_swap_percent=25
-local crit_hdd_percent=80
-local crit_home_percent=80
+local crit_hdd_percent=85
+local crit_home_percent=85
 local bar_num_digits=5
 local info_label_width=16
 local cpu_as_percentage=true
@@ -751,11 +775,10 @@ local date_format="%Y.%m.%d - %T"
 ## LOAD USER CONFIGURATION
 local user_config_file="$HOME/.config/scripts/status.config"
 local sys_config_file="/etc/andresgongora/scripts/status.config"
-if [ -f $sys_config_file ]; then
-	loadConfigFile $sys_config_file
-fi
-if [ -f $user_config_file ]; then
+if   [ -f $user_config_file ]; then
 	loadConfigFile $user_config_file
+elif [ -f $sys_config_file ]; then
+	loadConfigFile $sys_config_file
 fi
 
 
@@ -777,7 +800,8 @@ clear
 printHeader
 printLastLogins
 printSystemctl
-printTop
+printTopCPU
+printTopRAM
 
 
 
