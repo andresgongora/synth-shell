@@ -751,11 +751,10 @@ local date_format="%Y.%m.%d - %T"
 ## LOAD USER CONFIGURATION
 local user_config_file="$HOME/.config/scripts/status.config"
 local sys_config_file="/etc/andresgongora/scripts/status.config"
-if [ -f $sys_config_file ]; then
-	loadConfigFile $sys_config_file
-fi
-if [ -f $user_config_file ]; then
+if   [ -f $user_config_file ]; then
 	loadConfigFile $user_config_file
+elif [ -f $sys_config_file ]; then
+	loadConfigFile $sys_config_file
 fi
 
 
