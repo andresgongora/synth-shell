@@ -209,13 +209,12 @@ fi
 
 
 case "$1" in
-	uninstall)
-		uninstallAll
-		;;
-
+	uninstall)	uninstallAll;;
+	"")		installAll ;;
+	install)	installAll ;;
 	*)
-		installAll
-		;;
+		echo $"Usage: $0 {install|uninstall}"
+            	exit 1
 esac
 
 

@@ -10,6 +10,7 @@ slowly grow as needed.
 
 
 
+
 <!--------------------------------------+-------------------------------------->
 #                                    Variables
 <!--------------------------------------+-------------------------------------->
@@ -47,6 +48,7 @@ local my_super_string="Hello world!"
 
 
 
+
 <!--------------------------------------+-------------------------------------->
 #                                    Functions
 <!--------------------------------------+-------------------------------------->
@@ -75,6 +77,7 @@ hasEnoughMemory()
 
 
 
+
 <!--------------------------------------+-------------------------------------->
 #                                  Tabs vs spaces
 <!--------------------------------------+-------------------------------------->
@@ -95,7 +98,33 @@ getData()
 }
 ```
 
-**Why??** - Because some of us just want to see the world burn
+**Why??** - Because some of us just want to see the world burn.
+
+
+
+
+
+
+<!--------------------------------------+-------------------------------------->
+#                     	           Code structure
+<!--------------------------------------+-------------------------------------->
+
+### Line length
+Limit lines to 80 characters whenever possible (code + characters). 
+Use backslash '\' to continue code on a second line.
+
+
+### New lines to separate code
+If adding new lines to separate chunks of code, use either 1, 2, 3 or 6 lines.
+
+* 1 line if the code is very related
+* 2 lines if the code in inside the same function, and the function is short
+* 3 lines if the code in inside the same function, and the function is  
+    complex. In this case, a "header-comment" must be placed above each chunk  
+    explaining what it does.
+* 6 lines To separate bigger code sections, like to separate the sections that  
+    contain functions with similar functionality or intention.
+
 
 
 
