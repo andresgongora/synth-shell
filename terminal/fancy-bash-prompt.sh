@@ -32,6 +32,9 @@
 ##
 ##	FUNCTIONS
 ##
+##	* git_branch()
+##	  This function takes your current working branch of git
+##
 ##	* bash_prompt_command()
 ##	  This function takes your current working directory and stores a shortened
 ##	  version in the variable "NEW_PWD".
@@ -107,6 +110,14 @@ bash_prompt_command() {
 
 
 ##==============================================================================
+##  GETTING what branch is it on, currently
+git_branch() {
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
+
+
+##==============================================================================
 bash_prompt() {
 
 	## INCLUDE EXTERNAL DEPENDENCIES
@@ -140,6 +151,10 @@ bash_prompt() {
 	local background_pwd="white"
 	local texteffect_pwd="bold"
 
+    local font_color_branch="white"
+    local background_branch="magenta"
+    local texteffect_branch="bold"
+
 	local font_color_input="cyan"
 	local background_input="none"
 	local texteffect_input="bold"
@@ -167,10 +182,12 @@ bash_prompt() {
 	local ps1_user_format="\[$(getFormatCode    -c $font_color_user  -b $background_user  -e $texteffect_user)\]"
 	local ps1_host_format="\[$(getFormatCode    -c $font_color_host  -b $background_host  -e $texteffect_host)\]"
 	local ps1_pwd_format="\[$(getFormatCode     -c $font_color_pwd   -b $background_pwd   -e $texteffect_pwd)\]"
+	local ps1_branch_format="\[$(getFormatCode  -c $font_color_branch -b $background_branch -e $texteffect_branch)\]"
 	local ps1_input_format="\[$(getFormatCode   -c $font_color_input -b $background_input -e $texteffect_input)\]"
 	local separator_1_format="\[$(getFormatCode -c $background_user  -b $background_host)\]"
 	local separator_2_format="\[$(getFormatCode -c $background_host  -b $background_pwd)\]"
-	local separator_3_format="\[$(getFormatCode -c $background_pwd)\]"
+	local separator_3_format="\[$(getFormatCode -c $background_pwd  -b $background_branch)\]"
+	local separator_4_format="\[$(getFormatCode -c $background_branch)\]"
 
 
 
@@ -178,6 +195,7 @@ bash_prompt() {
 	local ps1_user="${ps1_user_format} \u "
 	local ps1_host="${ps1_host_format} \h "
 	local ps1_pwd="${ps1_pwd_format} \${NEW_PWD} "
+	local ps1_branch="${ps1_branch_format}\$(git_branch) "
 	local ps1_input="${ps1_input_format} "
 
 
@@ -185,7 +203,8 @@ bash_prompt() {
 	## GENERATE SEPARATORS
 	local separator_1="${separator_1_format}${separator_char}"
 	local separator_2="${separator_2_format}${separator_char}"
-	local separator_3="${separator_3_format}${separator_char}$no_color"
+	local separator_3="${separator_3_format}${separator_char}"
+	local separator_4="${separator_4_format}${separator_char}$no_color"
 
 
 
@@ -213,7 +232,7 @@ bash_prompt() {
 
 
 	## BASH PROMT - Generate promt and remove format from the rest
-	PS1="$titlebar${vertical_padding}${ps1_user}${separator_1}${ps1_host}${separator_2}${ps1_pwd}${separator_3}${ps1_input}"
+	PS1="$titlebar${vertical_padding}${ps1_user}${separator_1}${ps1_host}${separator_2}${ps1_pwd}${separator_3}${ps1_branch}${separator_4}${ps1_input}"
 
 
 
