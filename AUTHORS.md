@@ -28,6 +28,12 @@ If you feel someone is missing, please fork and pull-request.
 	www.olmari.fi  
 	Major improvements to `status.sh`
 
+	
+*	**Fiko Borizqy**	 
+	<fiko@dr.com>  
+	fiko.in  
+	Minor improvements to `fancy-bash-promt.sh`
+
 
 
 
