@@ -71,7 +71,7 @@
 ##	FUNCTIONS
 ##==============================================================================
 
-##
+##------------------------------------------------------------------------------
 ##	ARRANGE $PWD AND STORE IT IN $NEW_PWD
 ##	* The home directory (HOME) is replaced with a ~
 ##	* The last pwdmaxlen characters of the PWD are displayed
@@ -82,7 +82,8 @@
 ##	Original source: WOLFMAN'S color bash promt
 ##	https://wiki.chakralinux.org/index.php?title=Color_Bash_Prompt#Wolfman.27s
 ##
-bash_prompt_command() {
+bash_prompt_command()
+{
 	# How many characters of the $PWD should be kept
 	local pwdmaxlen=25
 
@@ -109,16 +110,32 @@ bash_prompt_command() {
 
 
 
-##==============================================================================
-##  GETTING what branch is it on, currently
-git_branch() {
-    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+
+
+
+##------------------------------------------------------------------------------
+##	getGitBranch
+##	Returns current git branch for current directory, if and only if,
+##	the current directory is part of a git repository, and git is installed.
+##	Returns an empty string otherwise.
+##  
+getGitBranch()
+{
+	if ( which git > /dev/null 2>&1 ); then
+		git branch 2> /dev/null | sed -n '/^[^*]/d;s/*\s*\(.*\)/\1/p'
+	else
+		echo ""
+	fi
 }
 
 
 
+
+
+
 ##==============================================================================
-bash_prompt() {
+bash_prompt()
+{
 
 	## INCLUDE EXTERNAL DEPENDENCIES
 	## Only if the functions are not available
@@ -151,9 +168,9 @@ bash_prompt() {
 	local background_pwd="white"
 	local texteffect_pwd="bold"
 
-    local font_color_branch="white"
-    local background_branch="magenta"
-    local texteffect_branch="bold"
+	local font_color_git="white"
+	local background_git="dark-gray"
+	local texteffect_git="bold"
 
 	local font_color_input="cyan"
 	local background_input="none"
@@ -179,15 +196,18 @@ bash_prompt() {
 	## The sequences will confuse the bash promt. To tell the terminal that they are non-printint
 	## characters, we must surround them by \[ and \]
 	local no_color="\[$(getFormatCode -e reset)\]"
-	local ps1_user_format="\[$(getFormatCode    -c $font_color_user  -b $background_user  -e $texteffect_user)\]"
-	local ps1_host_format="\[$(getFormatCode    -c $font_color_host  -b $background_host  -e $texteffect_host)\]"
-	local ps1_pwd_format="\[$(getFormatCode     -c $font_color_pwd   -b $background_pwd   -e $texteffect_pwd)\]"
-	local ps1_branch_format="\[$(getFormatCode  -c $font_color_branch -b $background_branch -e $texteffect_branch)\]"
-	local ps1_input_format="\[$(getFormatCode   -c $font_color_input -b $background_input -e $texteffect_input)\]"
-	local separator_1_format="\[$(getFormatCode -c $background_user  -b $background_host)\]"
-	local separator_2_format="\[$(getFormatCode -c $background_host  -b $background_pwd)\]"
-	local separator_3_format="\[$(getFormatCode -c $background_pwd  -b $background_branch)\]"
-	local separator_4_format="\[$(getFormatCode -c $background_branch)\]"
+	local ps1_user_format="\[$(getFormatCode        -c $font_color_user  -b $background_user  -e $texteffect_user)\]"
+	local ps1_host_format="\[$(getFormatCode        -c $font_color_host  -b $background_host  -e $texteffect_host)\]"
+	local ps1_pwd_format="\[$(getFormatCode         -c $font_color_pwd   -b $background_pwd   -e $texteffect_pwd)\]"
+	local ps1_git_format="\[$(getFormatCode         -c $font_color_git   -b $background_git   -e $texteffect_git)\]"
+	local ps1_input_format="\[$(getFormatCode       -c $font_color_input -b $background_input -e $texteffect_input)\]"
+	
+	local separator_1_format="\[$(getFormatCode     -c $background_user  -b $background_host)\]"
+	local separator_2_format="\[$(getFormatCode     -c $background_host  -b $background_pwd)\]"
+	local separator_3_format="\[$(getFormatCode     -c $background_pwd)\]"
+	
+	local separator_3_git_format="\[$(getFormatCode -c $background_pwd   -b $background_git)\]"
+	local separator_4_git_format="\[$(getFormatCode -c $background_git)\]"
 
 
 
@@ -195,17 +215,27 @@ bash_prompt() {
 	local ps1_user="${ps1_user_format} \u "
 	local ps1_host="${ps1_host_format} \h "
 	local ps1_pwd="${ps1_pwd_format} \${NEW_PWD} "
-	local ps1_branch="${ps1_branch_format}\$(git_branch) "
+	local ps1_git="${ps1_git_format} \$(getGitBranch) "
 	local ps1_input="${ps1_input_format} "
 
 
 
 	## GENERATE SEPARATORS
-	local separator_1="${separator_1_format}${separator_char}"
-	local separator_2="${separator_2_format}${separator_char}"
-	local separator_3="${separator_3_format}${separator_char}"
-	local separator_4="${separator_4_format}${separator_char}$no_color"
-
+	## The exact number and color of the separators depends on
+	## whenther the current directory is part of a git repo
+	if [ -z "$(getGitBranch)" ];
+	then
+		echo "empty"
+		local separator_1="${separator_1_format}${separator_char}"
+		local separator_2="${separator_2_format}${separator_char}"
+		local separator_3="${separator_3_format}${separator_char}"
+	else
+		echo "not empty"
+		local separator_1="${separator_1_format}${separator_char}"
+		local separator_2="${separator_2_format}${separator_char}"
+		local separator_3="${separator_3_git_format}${separator_char}"
+		local separator_4="${separator_4_git_format}${separator_char}"
+	fi
 
 
 	## Add extra new line on top of prompt
@@ -232,8 +262,12 @@ bash_prompt() {
 
 
 	## BASH PROMT - Generate promt and remove format from the rest
-	PS1="$titlebar${vertical_padding}${ps1_user}${separator_1}${ps1_host}${separator_2}${ps1_pwd}${separator_3}${ps1_branch}${separator_4}${ps1_input}"
-
+	if [ -z "$(getGitBranch)" ];
+	then
+	 	PS1="$titlebar${vertical_padding}${ps1_user}${separator_1}${ps1_host}${separator_2}${ps1_pwd}${separator_3}${ps1_input}"	
+	else
+		PS1="$titlebar${vertical_padding}${ps1_user}${separator_1}${ps1_host}${separator_2}${ps1_pwd}${separator_3}${ps1_git}${separator_4}${ps1_input}"
+	fi
 
 
 	## For terminal line coloring, leaving the rest standard
