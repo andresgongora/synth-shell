@@ -29,10 +29,10 @@ If you feel someone is missing, please fork and pull-request.
 	Major improvements to `status.sh`
 
 	
-*	**Fiko Borizqy**	 
+*	**Fiko Borizqy**  
 	<fiko@dr.com>  
 	fiko.in  
-	Minor improvements to `fancy-bash-promt.sh`
+	Add git branch information to `fancy-bash-promt.sh`
 
 
 
