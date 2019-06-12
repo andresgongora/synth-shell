@@ -119,7 +119,17 @@ getAbridgedPWD()
 ##
 bash_prompt_command()
 {
-	NEW_PWD=$(getAbridgedPWD)
+	## LOAD EXTERNAL DEPENENCIES
+	## Only if needed
+	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+	if [ "$(type -t shortenPath)" != 'function' ];
+	then
+		source "$dir/../common/shorten_path.sh"
+	fi
+
+
+	SHORT_PWD=$(shortenPath $PWD 20)
 }
 
 
@@ -215,11 +225,9 @@ bash_prompt()
 	local ps1_pwd_format="\[$(getFormatCode         -c $font_color_pwd   -b $background_pwd   -e $texteffect_pwd)\]"
 	local ps1_git_format="\[$(getFormatCode         -c $font_color_git   -b $background_git   -e $texteffect_git)\]"
 	local ps1_input_format="\[$(getFormatCode       -c $font_color_input -b $background_input -e $texteffect_input)\]"
-	
 	local separator_1_format="\[$(getFormatCode     -c $background_user  -b $background_host)\]"
 	local separator_2_format="\[$(getFormatCode     -c $background_host  -b $background_pwd)\]"
 	local separator_3_format="\[$(getFormatCode     -c $background_pwd)\]"
-	
 	local separator_3_git_format="\[$(getFormatCode -c $background_pwd   -b $background_git)\]"
 	local separator_4_git_format="\[$(getFormatCode -c $background_git)\]"
 
@@ -228,7 +236,7 @@ bash_prompt()
 	## GENERATE USER/HOST/PWD TEXT
 	local ps1_user="${ps1_user_format} \u "
 	local ps1_host="${ps1_host_format} \h "
-	local ps1_pwd="${ps1_pwd_format} \${NEW_PWD} "
+	local ps1_pwd="${ps1_pwd_format} \${SHORT_PWD} "
 	local ps1_git="${ps1_git_format} \$(getGitBranch) "
 	local ps1_input="${ps1_input_format} "
 
@@ -237,8 +245,7 @@ bash_prompt()
 	## GENERATE SEPARATORS
 	## The exact number and color of the separators depends on
 	## whenther the current directory is part of a git repo
-	if [ -z "$(getGitBranch)" ];
-	then
+	if [ -z "$(getGitBranch)" ]; then 
 		echo "empty"
 		local separator_1="${separator_1_format}${separator_char}"
 		local separator_2="${separator_2_format}${separator_char}"
