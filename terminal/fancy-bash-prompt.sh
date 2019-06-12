@@ -71,56 +71,14 @@
 ##	FUNCTIONS
 ##==============================================================================
 
-##------------------------------------------------------------------------------
-##	ARRANGE $PWD AND STORE IT IN $NEW_PWD
-##	* The home directory (HOME) is replaced with a ~
-##	* The last pwdmaxlen characters of the PWD are displayed
-##	* Leading partial directory names are striped off
-##		/home/me/stuff -> ~/stuff (if USER=me)
-##		/usr/share/big_dir_name -> ../share/big_dir_name (if pwdmaxlen=20)
-##
-##	Original source: WOLFMAN'S color bash promt
-##	https://wiki.chakralinux.org/index.php?title=Color_Bash_Prompt#Wolfman.27s
-##
-getAbridgedPWD()
-{
-	# How many characters of the $PWD should be kept
-	local pwdmaxlen=25
-
-	# Indicate that there has been dir truncation
-	local trunc_symbol=".."
-
-	# Store local dir
-	local dir=${PWD##*/}
-
-	# Which length to use
-	local pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
-
-	local new_pwd=${PWD/#$HOME/\~}
-
-	local pwdoffset=$(( ${#new_pwd} - pwdmaxlen ))
-
-	# Generate name
-	if [ ${pwdoffset} -gt "0" ]
-	then
-		local new_pwd=${new_pwd:$pwdoffset:$pwdmaxlen}
-		local new_pwd=${trunc_symbol}/${new_pwd#*/}
-	fi
-
-	echo $new_pwd
-}
-
-
-
-
-
 
 ##------------------------------------------------------------------------------
 ##
 bash_prompt_command()
 {
 	## LOAD EXTERNAL DEPENENCIES
-	## Only if needed
+	## Only if the functions are not available
+	## If not, search in `common` folder
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 	if [ "$(type -t shortenPath)" != 'function' ];
@@ -129,6 +87,8 @@ bash_prompt_command()
 	fi
 
 
+
+	## SHORTEN AND STORE PWD IN GLOBAL VARIABLE
 	SHORT_PWD=$(shortenPath $PWD 20)
 }
 
@@ -157,10 +117,10 @@ getGitBranch()
 
 
 
-##==============================================================================
+##------------------------------------------------------------------------------
+##
 bash_prompt()
 {
-
 	## INCLUDE EXTERNAL DEPENDENCIES
 	## Only if the functions are not available
 	## If not, search in `common` folder
@@ -201,7 +161,12 @@ bash_prompt()
 	local texteffect_input="bold"
 
 	local separator_char=$'\uE0B0'
+
 	local enable_vertical_padding=true
+	local show_user=true
+	local show_host=true
+	local show_pwd=true
+	local show_git=true
 
 
 
@@ -259,6 +224,7 @@ bash_prompt()
 	fi
 
 
+
 	## Add extra new line on top of prompt
 	if $enable_vertical_padding; then
 		local vertical_padding="\n"
@@ -291,10 +257,13 @@ bash_prompt()
 	fi
 
 
+
 	## For terminal line coloring, leaving the rest standard
 	none="$(tput sgr0)"
 	trap 'echo -ne "${none}"' DEBUG
 }
+
+
 
 
 
