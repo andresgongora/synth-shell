@@ -649,7 +649,7 @@ printSystemctl()
 	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
 
 	if [ "$systcl_num_failed" -ne "0" ]; then
-		local failed=$(systemctl --failed | grep ".service")
+		local failed=$(systemctl --failed | awk '/UNIT/,/^$/')
 		printf "${fc_crit}SYSTEMCTL FAILED SERVICES:\n"
 		printf "${fc_info}${failed}${fc_none}\n\n"
 
@@ -809,46 +809,6 @@ printTopRAM
 }
 (status)
 unset status
-
-
-
-
-multiline()
-{
-	local row=$1
-	local col=$2
-	local text=${@:3}
-
-	echo $row
-	echo $col
-
-	## COUNT NUMBER OF ROWS AND COLS SPANNED BY TEXT
-	## sed 's/\x1b\[.*m//g' to remove formatting sequences (\e=\033=\x1b)
-	text_cols=$(echo -e "$text" | sed 's/\x1b\[.*m//g' | wc -L )
-	text_rows=$(echo -e "$text" | wc -l )
-
-	col_spacer="\\\\e[${col}C"
-	row_home="\\e[${text_rows}A"
-	local text=$(echo "$text" | sed "s/^/$col_spacer/g;s/\\\\n/\\\\n$col_spacer/g")
-
-
-
-	printf "$text\n${row_home}!"
-
-	#echo $text_rows
-	#echo $text_cols
-
-
-
-}
-
-
-multiline 3 10 "Hola\nmundo\nadios\n\t\e[0;31mblablabla"
-
-
-
-
-
 
 
 
