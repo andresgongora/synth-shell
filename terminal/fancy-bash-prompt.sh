@@ -82,7 +82,7 @@
 ##	Original source: WOLFMAN'S color bash promt
 ##	https://wiki.chakralinux.org/index.php?title=Color_Bash_Prompt#Wolfman.27s
 ##
-bash_prompt_command()
+getAbridgedPWD()
 {
 	# How many characters of the $PWD should be kept
 	local pwdmaxlen=25
@@ -94,18 +94,32 @@ bash_prompt_command()
 	local dir=${PWD##*/}
 
 	# Which length to use
-	pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
+	local pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
 
-	NEW_PWD=${PWD/#$HOME/\~}
+	local new_pwd=${PWD/#$HOME/\~}
 
-	local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
+	local pwdoffset=$(( ${#new_pwd} - pwdmaxlen ))
 
 	# Generate name
 	if [ ${pwdoffset} -gt "0" ]
 	then
-		NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
-		NEW_PWD=${trunc_symbol}/${NEW_PWD#*/}
+		local new_pwd=${new_pwd:$pwdoffset:$pwdmaxlen}
+		local new_pwd=${trunc_symbol}/${new_pwd#*/}
 	fi
+
+	echo $new_pwd
+}
+
+
+
+
+
+
+##------------------------------------------------------------------------------
+##
+bash_prompt_command()
+{
+	NEW_PWD=$(getAbridgedPWD)
 }
 
 
