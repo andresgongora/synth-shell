@@ -111,15 +111,6 @@ prompt_command_hook()
 		source "$dir/../common/shorten_path.sh"
 	fi
 
-	## Updating PS1 by looking at .git directory
-	if [ -d .git ]; then
-		PS1=$PS1_BRANCH
-	else
-		PS1=$PS1_NOBRANCH
-	fi
-}
-
-
 
 	## GET PARAMETERS
 	local user=$USER
@@ -137,6 +128,15 @@ prompt_command_hook()
 		FBP_GIT=""
 	else
 		FBP_GIT=" $git_branch "
+	fi
+
+
+
+	## CHOOSE PS1 IF INSIDE GIT REPO
+	if [ -z "$(getGitBranch)" ]; then
+		PS1=$FBP_PS1
+	else
+		PS1=$FBP_PS1_GIT
 	fi
 }
 
@@ -215,17 +215,15 @@ prompt_command_hook()
 	local ps1_input_format="\[$(getFormatCode       -c $font_color_input -b $background_input -e $texteffect_input)\]"
 	local ps1_input="${ps1_input_format} "
 
-	if $show_git; then
-		local ps1_user=$(printSegment "\${FBP_HOST}" $font_color_user $background_user $background_host $texteffect_user)
-		local ps1_host=$(printSegment "\${FBP_USER}" $font_color_host $background_host $background_pwd $texteffect_host)
-		local ps1_pwd=$(printSegment "\${FBP_PWD}" $font_color_pwd $background_pwd $background_git $texteffect_pwd)
-		local ps1_git=$(printSegment "\${FBP_GIT}" $font_color_git $background_git $background_input $texteffect_git)
-	else
-		local ps1_user=$(printSegment "\${FBP_HOST}" $font_color_user $background_user $background_host $texteffect_user)
-		local ps1_host=$(printSegment "\${FBP_USER}" $font_color_host $background_host $background_pwd $texteffect_host)
-		local ps1_pwd=$(printSegment "\${FBP_PWD}" $font_color_pwd $background_pwd $background_input $texteffect_pwd)
-		local ps1_git=""
-	fi
+	local ps1_user_git=$(printSegment "\${FBP_HOST}" $font_color_user $background_user $background_host $texteffect_user)
+	local ps1_host_git=$(printSegment "\${FBP_USER}" $font_color_host $background_host $background_pwd $texteffect_host)
+	local ps1_pwd_git=$(printSegment "\${FBP_PWD}" $font_color_pwd $background_pwd $background_git $texteffect_pwd)
+	local ps1_git_git=$(printSegment "\${FBP_GIT}" $font_color_git $background_git $background_input $texteffect_git)
+	local ps1_user=$(printSegment "\${FBP_HOST}" $font_color_user $background_user $background_host $texteffect_user)
+	local ps1_host=$(printSegment "\${FBP_USER}" $font_color_host $background_host $background_pwd $texteffect_host)
+	local ps1_pwd=$(printSegment "\${FBP_PWD}" $font_color_pwd $background_pwd $background_input $texteffect_pwd)
+	local ps1_git=""
+
 
 
 
@@ -253,14 +251,9 @@ prompt_command_hook()
 
 
 	## BASH PROMT - Generate promt and remove format from the rest
-	PS1_NOBRANCH="$titlebar${vertical_padding}${ps1_user}${ps1_host}${ps1_pwd}${ps1_input}"
-	PS1_BRANCH="$titlebar${vertical_padding}${ps1_user}${ps1_host}${ps1_pwd}${ps1_git}${ps1_input}"
+	FBP_PS1="$titlebar${vertical_padding}${ps1_user}${ps1_host}${ps1_pwd}${ps1_git}${ps1_input}"
+	FBP_PS1_GIT="$titlebar${vertical_padding}${ps1_user_git}${ps1_host_git}${ps1_pwd_git}${ps1_git_git}${ps1_input}"
 
-
-	## CALL prompt_command_hook TO UPDATE PS1
-	prompt_command_hook
-
-==== BASE ====
 
 
 	## For terminal line coloring, leaving the rest standard
@@ -274,7 +267,10 @@ prompt_command_hook()
 	## The contents of this variable are executed as a regular Bash command
 	## just before Bash displays a prompt.
 	## We want it to call our own command to truncate PWD and store it in NEW_PWD
+	## 
+	## Also, call the hook once now to update current prompt
 	PROMPT_COMMAND=prompt_command_hook
+	prompt_command_hook
 }
 fancy_bash_prompt
 unset fancy_bash_prompt
