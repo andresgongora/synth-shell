@@ -207,7 +207,6 @@ prompt_command_hook()
 	local ps1_input_format="\[$(getFormatCode       -c $font_color_input -b $background_input -e $texteffect_input)\]"
 	local ps1_input="${ps1_input_format} "
 
-
 	if $show_git; then
 		local ps1_user=$(printSegment "\${FBP_HOST}" $font_color_user $background_user $background_host $texteffect_user)
 		local ps1_host=$(printSegment "\${FBP_USER}" $font_color_host $background_host $background_pwd $texteffect_host)
