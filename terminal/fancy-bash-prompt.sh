@@ -105,6 +105,13 @@ bash_prompt_command() {
 		NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
 		NEW_PWD=${trunc_symbol}/${NEW_PWD#*/}
 	fi
+
+	## Updating PS1 by looking at .git directory
+	if [ -d .git ]; then
+		PS1=$PS1_BRANCH
+	else
+		PS1=$PS1_NOBRANCH
+	fi
 }
 
 
@@ -112,7 +119,7 @@ bash_prompt_command() {
 ##==============================================================================
 ##  GETTING what branch is it on, currently
 git_branch() {
-    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+	git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
 
 
@@ -151,9 +158,9 @@ bash_prompt() {
 	local background_pwd="white"
 	local texteffect_pwd="bold"
 
-    local font_color_branch="white"
-    local background_branch="magenta"
-    local texteffect_branch="bold"
+	local font_color_branch="white"
+	local background_branch="magenta"
+	local texteffect_branch="bold"
 
 	local font_color_input="cyan"
 	local background_input="none"
@@ -187,6 +194,7 @@ bash_prompt() {
 	local separator_1_format="\[$(getFormatCode -c $background_user  -b $background_host)\]"
 	local separator_2_format="\[$(getFormatCode -c $background_host  -b $background_pwd)\]"
 	local separator_3_format="\[$(getFormatCode -c $background_pwd  -b $background_branch)\]"
+	local separator_3_format_nobranch="\[$(getFormatCode -c $background_pwd)\]"
 	local separator_4_format="\[$(getFormatCode -c $background_branch)\]"
 
 
@@ -204,6 +212,7 @@ bash_prompt() {
 	local separator_1="${separator_1_format}${separator_char}"
 	local separator_2="${separator_2_format}${separator_char}"
 	local separator_3="${separator_3_format}${separator_char}"
+	local separator_3_nobranch="${separator_3_format_nobranch}${separator_char}"
 	local separator_4="${separator_4_format}${separator_char}$no_color"
 
 
@@ -231,8 +240,17 @@ bash_prompt() {
 
 
 
-	## BASH PROMT - Generate promt and remove format from the rest
-	PS1="$titlebar${vertical_padding}${ps1_user}${separator_1}${ps1_host}${separator_2}${ps1_pwd}${separator_3}${ps1_branch}${separator_4}${ps1_input}"
+	# 2 types of BASH prompt, one BASH PROMPT with current branch name on it
+	PS1_BRANCH="$titlebar${vertical_padding}${ps1_user}${separator_1}${ps1_host}${separator_2}${ps1_pwd}${separator_3}${ps1_branch}${separator_4}${ps1_input}"
+	# one BASH PROMPT without current branch name on it
+	PS1_NOBRANCH="$titlebar${vertical_padding}${ps1_user}${separator_1}${ps1_host}${separator_2}${ps1_pwd}${separator_3_nobranch}${ps1_input}"
+
+	## Detect .git directory first, then decide BASH PROMPT
+	if [ -d .git ]; then
+		PS1=$PS1_BRANCH
+	else
+		PS1=$PS1_NOBRANCH
+	fi
 
 
 
