@@ -111,6 +111,14 @@ prompt_command_hook()
 		source "$dir/../common/shorten_path.sh"
 	fi
 
+	## Updating PS1 by looking at .git directory
+	if [ -d .git ]; then
+		PS1=$PS1_BRANCH
+	else
+		PS1=$PS1_NOBRANCH
+	fi
+}
+
 
 
 	## GET PARAMETERS
@@ -245,9 +253,15 @@ prompt_command_hook()
 
 
 	## BASH PROMT - Generate promt and remove format from the rest
-	PS1="$titlebar${vertical_padding}${ps1_user}${ps1_host}${ps1_pwd}${ps1_git}${ps1_input}"
+	PS1_NOBRANCH="$titlebar${vertical_padding}${ps1_user}${ps1_host}${ps1_pwd}${ps1_input}"
+	PS1_BRANCH="$titlebar${vertical_padding}${ps1_user}${ps1_host}${ps1_pwd}${ps1_git}${ps1_input}"
 
-	bash_prompt_command
+
+	## CALL prompt_command_hook TO UPDATE PS1
+	prompt_command_hook
+
+==== BASE ====
+
 
 	## For terminal line coloring, leaving the rest standard
 	none="$(tput sgr0)"
