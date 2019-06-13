@@ -255,28 +255,14 @@ prompt_command_hook()
 	trap 'echo -ne "${none}"' DEBUG
 
 
-	##	Bash provides an environment variable called PROMPT_COMMAND.
-	##	The contents of this variable are executed as a regular Bash command
-	##	just before Bash displays a prompt.
-	##	We want it to call our own command to truncate PWD and store it in NEW_PWD
+
+	## ADD HOOK TO UPDATE PS1 AFTER EACH COMMAND
+	## Bash provides an environment variable called PROMPT_COMMAND.
+	## The contents of this variable are executed as a regular Bash command
+	## just before Bash displays a prompt.
+	## We want it to call our own command to truncate PWD and store it in NEW_PWD
 	PROMPT_COMMAND=prompt_command_hook
 }
-
-
-
-
-
-
-##==============================================================================
-##	MAIN
-##==============================================================================
-
-
-
-
-##	Call bash_promnt only once, then unset it (not needed any more)
-##	It will set $PS1 with colors and relative to $NEW_PWD,
-##	which gets updated by $PROMT_COMMAND on behalf of the terminal
 fancy_bash_prompt
 unset fancy_bash_prompt
 
