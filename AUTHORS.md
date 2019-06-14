@@ -26,12 +26,12 @@ If you feel someone is missing, please fork and pull-request.
 *	**Sami Olmari**	 
 	<sami@olmari.fi>  
 	www.olmari.fi  
-	Major improvements to `status.sh`
+	2019 - Major improvements to `status.sh`
 
 	
 *	**Fiko Borizqy**  
 	<fiko@dr.com>  
-	Incorporate git-related information to `fancy-bash-promt.sh`
+	2019 - Incorporate git-related information to `fancy-bash-promt.sh`
 
 
 
