@@ -55,12 +55,8 @@ fancy_bash_prompt()
 ##
 getGitBranch()
 {
-	if ! $FBP_SHOW_GIT; then
-		echo ""
-
-	elif ( which git > /dev/null 2>&1 ); then
+	if ( which git > /dev/null 2>&1 ); then
 		git branch 2> /dev/null | sed -n '/^[^*]/d;s/*\s*\(.*\)/\1/p'
-
 	else
 		echo ""
 	fi
@@ -142,10 +138,10 @@ prompt_command_hook()
 
 
 	## CHOOSE PS1 FORMAT IF INSIDE GIT REPO
-	if [ -z "$(getGitBranch)" ]; then
-		PS1=$FBP_PS1
-	else
+	if [ ! -z "$(getGitBranch)" ] && $FBP_SHOW_GIT; then
 		PS1=$FBP_PS1_GIT
+	else
+		PS1=$FBP_PS1
 	fi
 }
 
@@ -197,12 +193,8 @@ prompt_command_hook()
 	local texteffect_input="bold"
 
 	local separator_char=$'\uE0B0'
-
 	local enable_vertical_padding=true
-	#local show_user=true
-	#local show_host=true
-	#local show_pwd=true
-	local show_git=true
+	local show_git=false
 
 
 

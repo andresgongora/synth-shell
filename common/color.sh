@@ -398,7 +398,7 @@ formatText()
 removeColorCodes()
 {
 	## TODO
-	#printf "$1" | sed 's/\x1b\[[0-9;]*m//g'
+	printf "$1" | sed 's/\x1b\[[0-9;]*m//g'
 }
 
 
