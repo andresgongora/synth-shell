@@ -121,6 +121,8 @@ installScript()
 		echo "" >> ${script}
 		cat "${dir}/../common/color.sh" >> "$script"
 		echo "" >> ${script}
+		cat "${dir}/../common/shorten_path.sh" >> "$script"
+		echo "" >> ${script}
 
 		cat "$source_script" >> "$script"
 

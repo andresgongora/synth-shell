@@ -649,7 +649,7 @@ printSystemctl()
 	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
 
 	if [ "$systcl_num_failed" -ne "0" ]; then
-		local failed=$(systemctl --failed | grep ".service")
+		local failed=$(systemctl --failed | awk '/UNIT/,/^$/')
 		printf "${fc_crit}SYSTEMCTL FAILED SERVICES:\n"
 		printf "${fc_info}${failed}${fc_none}\n\n"
 
