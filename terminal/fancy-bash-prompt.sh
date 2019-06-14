@@ -55,8 +55,12 @@ fancy_bash_prompt()
 ##
 getGitBranch()
 {
-	if ( which git > /dev/null 2>&1 ); then
+	if ! $FBP_SHOW_GIT; then
+		echo ""
+
+	elif ( which git > /dev/null 2>&1 ); then
 		git branch 2> /dev/null | sed -n '/^[^*]/d;s/*\s*\(.*\)/\1/p'
+
 	else
 		echo ""
 	fi
@@ -110,6 +114,11 @@ prompt_command_hook()
 	then
 		source "$dir/../common/shorten_path.sh"
 	fi
+	if [ "$(type -t removeColorCodes)" != 'function' ];
+	then
+		source "$dir/../common/color.sh"
+	fi
+
 
 
 	## GET PARAMETERS
@@ -179,7 +188,7 @@ prompt_command_hook()
 	local background_pwd="white"
 	local texteffect_pwd="bold"
 
-	local font_color_git="208" #208=orange
+	local font_color_git="light-gray"
 	local background_git="dark-gray"
 	local texteffect_git="bold"
 
@@ -190,9 +199,9 @@ prompt_command_hook()
 	local separator_char=$'\uE0B0'
 
 	local enable_vertical_padding=true
-	local show_user=true
-	local show_host=true
-	local show_pwd=true
+	#local show_user=true
+	#local show_host=true
+	#local show_pwd=true
 	local show_git=true
 
 
@@ -215,15 +224,20 @@ prompt_command_hook()
 	local ps1_input_format="\[$(getFormatCode       -c $font_color_input -b $background_input -e $texteffect_input)\]"
 	local ps1_input="${ps1_input_format} "
 
-	local ps1_user_git=$(printSegment "\${FBP_HOST}" $font_color_user $background_user $background_host $texteffect_user)
-	local ps1_host_git=$(printSegment "\${FBP_USER}" $font_color_host $background_host $background_pwd $texteffect_host)
+	local ps1_user_git=$(printSegment "\${FBP_USER}" $font_color_user $background_user $background_host $texteffect_user)
+	local ps1_host_git=$(printSegment "\${FBP_HOST}" $font_color_host $background_host $background_pwd $texteffect_host)
 	local ps1_pwd_git=$(printSegment "\${FBP_PWD}" $font_color_pwd $background_pwd $background_git $texteffect_pwd)
 	local ps1_git_git=$(printSegment "\${FBP_GIT}" $font_color_git $background_git $background_input $texteffect_git)
-	local ps1_user=$(printSegment "\${FBP_HOST}" $font_color_user $background_user $background_host $texteffect_user)
-	local ps1_host=$(printSegment "\${FBP_USER}" $font_color_host $background_host $background_pwd $texteffect_host)
+
+	local ps1_user=$(printSegment "\${FBP_USER}" $font_color_user $background_user $background_host $texteffect_user)
+	local ps1_host=$(printSegment "\${FBP_HOST}" $font_color_host $background_host $background_pwd $texteffect_host)
 	local ps1_pwd=$(printSegment "\${FBP_PWD}" $font_color_pwd $background_pwd $background_input $texteffect_pwd)
 	local ps1_git=""
 
+
+
+	## ENABLE GIT ACCORDING TO USER CONFIG
+	FBP_SHOW_GIT=$show_git
 
 
 
@@ -241,7 +255,7 @@ prompt_command_hook()
 	## Must be set in PS1
 	case $TERM in
 	xterm*|rxvt*)
-		local titlebar='\[\033]0;\u:${NEW_PWD}\007\]'
+		local titlebar='\[\033]0;${USER}:${NEW_PWD}\007\]'
 		;;
 	*)
 		local titlebar=""
@@ -271,6 +285,9 @@ prompt_command_hook()
 	## Also, call the hook once now to update current prompt
 	PROMPT_COMMAND=prompt_command_hook
 	prompt_command_hook
+
+
+
 }
 fancy_bash_prompt
 unset fancy_bash_prompt

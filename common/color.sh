@@ -184,6 +184,9 @@ get8bitCode()
 
 
 
+
+
+
 getColorCode()
 {
 	COLOR=$1
@@ -205,6 +208,9 @@ getColorCode()
 
 
 
+
+
+
 getBackgroundCode()
 {
 	COLOR=$1
@@ -223,6 +229,10 @@ getBackgroundCode()
 		echo $COLORCODE
 	fi
 }
+
+
+
+
 
 
 getEffectCode()
@@ -269,6 +279,8 @@ getEffectCode()
 
 
 
+
+
 getFormattingSequence()
 {
 	START='\e[0;'
@@ -281,9 +293,6 @@ getFormattingSequence()
 ##==============================================================================
 ##	AUX
 ##==============================================================================
-
-
-
 
 applyCodeToText()
 {
@@ -299,7 +308,6 @@ applyCodeToText()
 ##==============================================================================
 ##	MAIN FUNCTIONS
 ##==============================================================================
-
 
 getFormatCode()
 {
@@ -359,6 +367,8 @@ getFormatCode()
 
 
 
+
+
 formatText()
 {
 	local RESET=$(getFormattingSequence $(getEffectCode none))
@@ -381,6 +391,15 @@ formatText()
 }
 
 
+
+
+
+
+removeColorCodes()
+{
+	## TODO
+	#printf "$1" | sed 's/\x1b\[[0-9;]*m//g'
+}
 
 
 

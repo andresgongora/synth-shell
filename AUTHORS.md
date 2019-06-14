@@ -31,8 +31,7 @@ If you feel someone is missing, please fork and pull-request.
 	
 *	**Fiko Borizqy**  
 	<fiko@dr.com>  
-	fiko.in  
-	Add git branch information to `fancy-bash-promt.sh`
+	Incorporate git-related information to `fancy-bash-promt.sh`
 
 
 
