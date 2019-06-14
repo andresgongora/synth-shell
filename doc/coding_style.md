@@ -112,6 +112,15 @@ getData()
 ### Line length
 Limit lines to 80 characters whenever possible (code + characters). 
 Use backslash '\' to continue code on a second line.
+This is because of the following reasons:
+* Traditionally, temrinals were 80 chars wide. This no longer holds true, but  
+  is as good as any other line-length limit in a similar range.
+* When working on a single monitor, its useful to visualize two files side  
+  by side. With more than 80 characres per line, it becomes difficul unless  
+  the scriin is very wide
+* When solving conflicts when mergin two files, the same applies; only that  
+  this time its useful to visualize 3 files side by side.
+
 
 
 ### New lines to separate code
