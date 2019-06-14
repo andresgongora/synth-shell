@@ -273,10 +273,7 @@ prompt_command_hook()
 	## The contents of this variable are executed as a regular Bash command
 	## just before Bash displays a prompt.
 	## We want it to call our own command to truncate PWD and store it in NEW_PWD
-	##
-	## Also, call the hook once now to update current prompt
 	PROMPT_COMMAND=prompt_command_hook
-	prompt_command_hook
 
 
 
