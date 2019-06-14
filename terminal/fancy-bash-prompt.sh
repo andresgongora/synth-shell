@@ -52,7 +52,7 @@ fancy_bash_prompt()
 ##	Returns current git branch for current directory, if and only if,
 ##	the current directory is part of a git repository, and git is installed.
 ##	Returns an empty string otherwise.
-##  
+##
 getGitBranch()
 {
 	if ( which git > /dev/null 2>&1 ); then
@@ -64,7 +64,7 @@ getGitBranch()
 
 
 
-	
+
 
 
 ##------------------------------------------------------------------------------
@@ -80,13 +80,13 @@ printSegment()
 	if [ -z "$separator_char" ]; then echo "separator_char is blank"; local separator_char="X"; fi
 
 
-	
+
 	## COMPUTE COLOR FORMAT CODES
 	local no_color="\[$(getFormatCode -e reset)\]"
 	local text_format="\[$(getFormatCode -c $font_color -b $background_color -e $font_effect)\]"
 	local separator_format="\[$(getFormatCode -c $background_color -b $next_background_color)\]"
 
-	
+
 
 	## GENERATE TEXT
 	printf "${text_format}${text}${separator_format}${separator_char}${no_color}"
@@ -119,9 +119,9 @@ prompt_command_hook()
 	local git_branch="$(shortenPath "$(getGitBranch)" 10)"
 
 
-	
+
 	## UPDATE BASH PROMPT ELEMENTS
-	FBP_USER=" $user " 
+	FBP_USER=" $user "
 	FBP_HOST=" $host "
 	FBP_PWD=" $path "
 	if [ -z "$git_branch" ]; then
@@ -132,7 +132,7 @@ prompt_command_hook()
 
 
 
-	## CHOOSE PS1 IF INSIDE GIT REPO
+	## CHOOSE PS1 FORMAT IF INSIDE GIT REPO
 	if [ -z "$(getGitBranch)" ]; then
 		PS1=$FBP_PS1
 	else
@@ -267,7 +267,7 @@ prompt_command_hook()
 	## The contents of this variable are executed as a regular Bash command
 	## just before Bash displays a prompt.
 	## We want it to call our own command to truncate PWD and store it in NEW_PWD
-	## 
+	##
 	## Also, call the hook once now to update current prompt
 	PROMPT_COMMAND=prompt_command_hook
 	prompt_command_hook
