@@ -107,6 +107,8 @@ loadConfigFile() {
 	## while not end of file, get line
 	while IFS="" read -r p || [ -n "$p" ]
 	do
+		#printf %b "$p\n"
+		
 		## REMOVE COMMENTS FROM LINE
 		## /^$/d                Delete empty lines
 		## /^[ \t]*\#/d         Delete lines that start as comment
@@ -120,13 +122,13 @@ loadConfigFile() {
 		                     s/^[ \t]*//g;
 		                     s/[ \t]*$//g')
 
-
+		
 
 		## CHECK IF MULTILINE
 		## - Search for valid termination
 		## - Signal multiline: tis is not used immediately, but
 		##   at the end of the while loop.
-		local line_end_trimmed=$(echo $line | sed -n 's/[ \t]*\\$//p')
+		local line_end_trimmed=$(echo "$line" | sed -n 's/[ \t]*\\$//p')
 		if [ -z "$line_end_trimmed" ]; then
 			local is_multiline_next=false
 		else
@@ -143,7 +145,7 @@ loadConfigFile() {
 		##   , as we only want to count them.
 		## - Get key (should be first element)
 		## - Get param (rest of line, when key deleted)
-		set -- $( echo $line | sed -e 's/\\//g;s/".*"/X/g' )
+		set -- $( echo "$line" | sed -e 's/\\//g;s/".*"/X/g' )
 		if [ "$#" -gt 1 ]; then
 
 			
