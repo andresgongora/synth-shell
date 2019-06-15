@@ -162,7 +162,7 @@ printInfo()
 	value=$2
 	pad=$info_label_width
 
-	printf "${fc_info}%-${pad}s${fc_highlight}${value}${fc_none}" "$label"
+	printf "${fc_info}%-${pad}s${fc_highlight}${value}${fc_none}\n" "$label"
 }
 
 
@@ -313,6 +313,8 @@ printInfoOS()
 
 
 
+##------------------------------------------------------------------------------
+##
 printInfoKernel()
 {
 	local kernel=$(uname -r)
@@ -321,6 +323,8 @@ printInfoKernel()
 
 
 
+##------------------------------------------------------------------------------
+##
 printInfoCPU()
 {
 	## Get first instance of "model name" in /proc/cpuinfo, pipe into 'sed'
@@ -345,6 +349,8 @@ printInfoCPU()
 
 
 
+##------------------------------------------------------------------------------
+##
 printInfoShell()
 {
 	local shell=$(readlink /proc/$$/exe)
@@ -353,6 +359,8 @@ printInfoShell()
 
 
 
+##------------------------------------------------------------------------------
+##
 printInfoDate()
 {
 	local sys_date=$(date +"$date_format")
@@ -361,6 +369,8 @@ printInfoDate()
 
 
 
+##------------------------------------------------------------------------------
+##
 printInfoUser()
 {
 	printInfo "User" "$USER@$HOSTNAME"
@@ -465,6 +475,8 @@ printInfoExternalIPv4()
 
 
 
+##------------------------------------------------------------------------------
+##
 printInfoSystemctl()
 {
 	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
@@ -482,6 +494,8 @@ printInfoSystemctl()
 
 
 
+##------------------------------------------------------------------------------
+##
 printMonitorCPU()
 {
 	local message="Sys load avg"
@@ -495,6 +509,8 @@ printMonitorCPU()
 
 
 
+##------------------------------------------------------------------------------
+##
 printMonitorRAM()
 {
 	local message="Memory"
@@ -509,6 +525,8 @@ printMonitorRAM()
 
 
 
+##------------------------------------------------------------------------------
+##
 printMonitorSwap()
 {
 	local message="Swap"
@@ -527,6 +545,8 @@ printMonitorSwap()
 
 
 
+##------------------------------------------------------------------------------
+##
 printMonitorHDD()
 {
 	local message="Storage /"
@@ -540,6 +560,8 @@ printMonitorHDD()
 
 
 
+##------------------------------------------------------------------------------
+##
 printMonitorHome()
 {
 	local message="Storage /home"
@@ -802,13 +824,8 @@ printTopCPU
 printTopRAM
 
 
+################################################################################
 
-## RUN SCRIPT
-## It's wrapped with "{}" to avoid environment pollution
-## It's also called in a subshell with "()" to REALLY avoid pollution
-}
-(status)
-unset status
 
 
 
@@ -843,16 +860,88 @@ multiline()
 }
 
 
-multiline 3 10 "Hola\nmundo\nadios\n\t\e[0;31mblablabla"
+#multiline 3 10 "Hola\nmundo\nadios\n\t\e[0;31mblablabla"
+
+
+
+logo=$(printf '%s'\
+	"        -oydNMMMMNdyo-        \n"\
+	"     -yNMMMMMMMMMMMMMMNy-     \n"\
+	"   .hMMMMMMmhsooshmMMMMMMh.   \n"\
+	"  :NMMMMmo.        .omMMMMN:  \n"\
+	" -NMMMMs    -+ss+-    sMMMMN- \n"\
+	" hMMMMs   -mMMMMMMm-   sMMMMh \n"\
+	"'MMMMM.  'NMMMMMMMMN'  .MMMMM'\n"\
+	"'MMMMM.  'NMMMMMMMMN'   yMMMM'\n"\
+	" hMMMMs   -mMMMMMMMMy.   -yMh \n"\
+	" -NMMMMs    -+ss+yMMMMy.   -. \n"\
+	"  :NMMMMmo.       .yMMMMy.    \n"\
+	"   .hMMMMMMmhsoo-   .yMMMy    \n"\
+	"     -yNMMMMMMMMMy-   .o-     \n"\
+	"        -oydNMMMMNd/          ")
+
+printf "\e[;H$logo"
+
+echo ""
+
+printf ""
 
 
 
 
 
+getTextShape()
+{
+	text=$1
+	local rows=$(echo -e "$text" | wc -l )
+	local columns=$(echo -e "$text" | sed 's/\x1b\[.*m//g' | wc -L )
+
+	printf "$rows $columns\n"
+}
+
+getTextShape "$logo"
 
 
+statusSwitch()
+{
+	case $1 in
+		OS)		printInfoOS;;
+		KERNEL)		printInfoKernel;;
+		CPU)		printInfoCPU;;
+		SHELL)		printInfoShell;;
+		DATE)		printInfoDate;;
+		USER)		printInfoUser;;
+		LOCALIPV4)	printInfoLocalIPv4;;
+		EXTERNALIPV4)	printInfoExternalIPv4;;
+		SERVICES)	printInfoSystemctl;;
+		SYSLOADAVG)	printMonitorCPU;;
+		MEMORY)		printMonitorRAM;;
+		SWAP)		printMonitorSwap;;
+		HDDROOT)	printMonitorHDD;;
+		HDDHOME)	printMonitorHome;;
+
+		*)		printInfo "Unknown" "?";;
+	esac
+}
 
 
+print_info="OS KERNEL CPU SHELL DATE USER LOCALIPV4 EXTERNALIPV4 SERVICES SYSLOADAVG MEMORY SWAP HDDROOT HDDHOME"
 
+local status_info=""
+for key in $print_info; do
+	local status_info="${status_info}\n$(statusSwitch $key)"
+done
+
+printf "${status_info}\n"
+
+getTextShape "$status_info"
+
+
+## RUN SCRIPT
+## It's wrapped with "{}" to avoid environment pollution
+## It's also called in a subshell with "()" to REALLY avoid pollution
+}
+(status)
+unset status
 
 ### EOF ###
