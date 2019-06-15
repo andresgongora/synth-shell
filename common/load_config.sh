@@ -74,6 +74,9 @@
 ##	  starting with #) which will be trimmed before loading the data.
 ##
 ##
+##
+##	TODO: Explain multilines
+##
 
 
 
@@ -100,15 +103,14 @@ loadConfigFile() {
 	if [ ! -f $config_file ]; then
 		exit
 	fi
-	
+
 
 
 	## ITERATE THROUGH LINES IN CONFIGURATION FILE
 	## while not end of file, get line
 	while IFS="" read -r p || [ -n "$p" ]
 	do
-		#printf %b "$p\n"
-		
+
 		## REMOVE COMMENTS FROM LINE
 		## /^$/d                Delete empty lines
 		## /^[ \t]*\#/d         Delete lines that start as comment
@@ -122,7 +124,6 @@ loadConfigFile() {
 		                     s/^[ \t]*//g;
 		                     s/[ \t]*$//g')
 
-		
 
 		## CHECK IF MULTILINE
 		## - Search for valid termination
@@ -135,21 +136,17 @@ loadConfigFile() {
 			local is_multiline_next=true
 			local line=$line_end_trimmed
 		fi
-		
 
 
 		## LOAD CONFIG IF AT LEAST 2 PARAMETERS
 		## - Convert line into script parameters to test
-		##   how many elements it contains. 
+		##   how many elements it contains.
 		##   Notice that anything between quotes is converted to 'X'
 		##   , as we only want to count them.
 		## - Get key (should be first element)
 		## - Get param (rest of line, when key deleted)
 		set -- $( echo "$line" | sed -e 's/\\//g;s/".*"/X/g' )
 		if [ "$#" -gt 1 ]; then
-
-			
-
 
 			## GET KEY-PARAMETER PAIR
 			## - Get key as first parameter
@@ -165,7 +162,7 @@ loadConfigFile() {
 			## RE-ASSIGN CONFIG PARAMETER TO KEY
 			## ONLY IF ALREADY DECLARED AND NOT EMPTY
 			## This is meant to avoid loading config
-			## parameters from the config file that 
+			## parameters from the config file that
 			## are not even used by the caller
 			eval config_key_current_value=\$$config_key_name
 			if [ ! -z "$config_key_current_value" ]; then
@@ -173,7 +170,6 @@ loadConfigFile() {
 				## LOAD CONFIG PARAMETER
 				export "${config_key_name}"="$config_param"
 			fi
-		
 
 
 		## IF CONFIGURATION IS MULTILINE
@@ -196,7 +192,6 @@ loadConfigFile() {
 			fi
 
 
-
 			## GET PARAMETERS
 			local config_param_old=$config_param
 			local config_param=$(echo "$line" |\
@@ -212,10 +207,8 @@ loadConfigFile() {
 		fi
 
 
-		
 		## UPDATE MULTILINE INFORMATION FOR NEXT ITERATION
 		local is_multiline=$is_multiline_next
-
 
 
 	## END OF WHILE LOOP
