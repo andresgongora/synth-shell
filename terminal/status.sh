@@ -650,15 +650,20 @@ printHeader()
 	local logo_cols=$(getTextNumCols "$logo")
 	local info_cols=$(getTextNumCols "$info")
 
-	if [ $(( $logo_cols + $info_cols )) -gt $term_cols ]; then
-		local logo=""
-		#if [ $info_cols -gt $term_cols ]; then
-			#local info=""
-		#fi
-	fi 
+	if [ $(( $logo_cols + $info_cols )) -lt $term_cols ]; then
+		if $print_logo_right ; then
+			printTwoElementsSideBySide "$info" "$logo" "$print_cols_max"
+		else
+			printTwoElementsSideBySide "$logo" "$info" "$print_cols_max"
+		fi
 
-
-	printTwoElementsSideBySide "$logo" "$info" "$print_cols_max"
+	elif [ $info_cols -lt $term_cols ]; then
+		if $print_logo_right ; then
+			printTwoElementsSideBySide "$info" "" "$print_cols_max"
+		else
+			printTwoElementsSideBySide "" "$info" "$print_cols_max"
+		fi
+	fi
 }
 
 
