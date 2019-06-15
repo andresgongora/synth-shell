@@ -635,21 +635,18 @@ printStatusInfo()
 ##
 printHeader()
 {
-	
-	#print_logo_right
-
 	## GET ELEMENTS TO PRINT
 	local logo=$(printf "$fc_logo$logo$fc_none")
 	local info=$(printStatusInfo)
 
 
-
-
-	## PRINT ONLY WHAT FITS IN THE TERMINAL
+	## GET ELEMENT SIZES
 	local term_cols=$(getTerminalNumCols)
 	local logo_cols=$(getTextNumCols "$logo")
 	local info_cols=$(getTextNumCols "$info")
 
+
+	## PRINT ONLY WHAT FITS IN THE TERMINAL
 	if [ $(( $logo_cols + $info_cols )) -lt $term_cols ]; then
 		if $print_logo_right ; then
 			printTwoElementsSideBySide "$info" "$logo" "$print_cols_max"
