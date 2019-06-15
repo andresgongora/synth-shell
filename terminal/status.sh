@@ -815,6 +815,23 @@ local logo=$(printf '%s'\
 	"     -yNMMMMMMMMMy-   .o-     \n"\
 	"        -oydNMMMMNd/          ")
 
+local print_info=$(printf '%s'\
+	"OS"\
+	"KERNEL"\
+	"CPU"\
+	"SHELL"\
+	"DATE"\
+	"USER"\
+	"LOCALIPV4"\
+	"EXTERNALIPV4"\
+	"SERVICES"\
+	"SYSLOADAVG%"\
+	"MEMORY"\
+	"SWAP"\
+	"HDDROOT"\
+	"HDDHOME"\
+	""
+
 local format_info="-c white"
 local format_highlight="-c blue  -e bold"
 local format_crit="-c 208   -e bold"
@@ -836,7 +853,7 @@ local info_label_width=16
 local print_cols_max=100
 local print_logo_right=false
 local date_format="%Y.%m.%d - %T"
-local print_info="OS KERNEL CPU SHELL DATE USER LOCALIPV4 EXTERNALIPV4 SERVICES SYSLOADAVG% MEMORY% SWAP% HDDROOT% HDDHOME%"
+local print_info="OS KERNEL CPU SHELL DATE USER LOCALIPV4 EXTERNALIPV4 SERVICES SYSLOADAVG% MEMORY SWAP HDDROOT HDDHOME"
 
 
 
