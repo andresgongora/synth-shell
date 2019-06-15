@@ -647,20 +647,14 @@ printHeader()
 	local logo_rows=$(getTextNumRows "$logo")
 	local info_rows=$(getTextNumRows "$info")
 
-	
-	echo "$term_cols"
-	echo "$info_cols"
-	echo "$logo_cols"
-	echo "$info_rows"
-	echo "$logo_rows"
 
-
+	## COMPUTE OPTIMAL HORIZONTAL PADDING
 	local free_cols=$(( $term_cols - $logo_cols - $info_cols ))
 	local logo_pad_cols=$(( $free_cols/3 ))
 	local info_pad_cols=$(( $logo_cols + 2*($free_cols/3) ))
 
 
-
+	## COMPUTE OPTIMAL VERTICAL PADDING
 
 	echo "$free_cols"
 	echo "$logo_pad_cols"
@@ -824,9 +818,8 @@ local hdd_as_percentage=false
 local home_as_percentage=false
 
 local date_format="%Y.%m.%d - %T"
-local print_info="OS KERNEL CPU SHELL DATE USER LOCALIPV4 EXTERNALIPV4 SERVICES SYSLOADAVG MEMORY SWAP HDDROOT HDDHOME"
-
-
+#local print_info="OS KERNEL CPU SHELL DATE USER LOCALIPV4 EXTERNALIPV4 SERVICES SYSLOADAVG MEMORY SWAP HDDROOT HDDHOME"
+local print_info="OS KERNEL CPU SHELL DATE USER LOCALIPV4 EXTERNALIPV4 SERVICES SYSLOADAVG"
 
 ## LOAD USER CONFIGURATION
 local user_config_file="$HOME/.config/scripts/status.config"
