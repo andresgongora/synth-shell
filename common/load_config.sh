@@ -105,7 +105,6 @@ loadConfigFile() {
 	fi
 
 
-
 	## ITERATE THROUGH LINES IN CONFIGURATION FILE
 	## while not end of file, get line
 	while IFS="" read -r p || [ -n "$p" ]
@@ -146,7 +145,7 @@ loadConfigFile() {
 		## - Get key (should be first element)
 		## - Get param (rest of line, when key deleted)
 		set -- $( echo "$line" | sed -e 's/\\//g;s/".*"/X/g' )
-		if [ "$#" -gt 1 ]; then
+		if [ ! -z "$line" ] && [ "$#" -gt 1 ]; then
 
 			## GET KEY-PARAMETER PAIR
 			## - Get key as first parameter
