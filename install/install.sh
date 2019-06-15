@@ -123,6 +123,8 @@ installScript()
 		echo "" >> ${script}
 		cat "${dir}/../common/shorten_path.sh" >> "$script"
 		echo "" >> ${script}
+		cat "${dir}/../common/print_utils.sh" >> "$script"
+		echo "" >> ${script}
 
 		cat "$source_script" >> "$script"
 
