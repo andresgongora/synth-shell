@@ -503,8 +503,11 @@ printMonitorCPU()
 	local current=$(awk '{avg_1m=($1)} END {printf "%3.2f", avg_1m}' /proc/loadavg)
 	local max=$(nproc --all)
 
+	local as_percentage=$1
+	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
+
 	printMonitor $current $max $crit_cpu_percent \
-	             $cpu_as_percentage $units $message
+	             $as_percentage $units $message
 }
 
 
@@ -519,8 +522,11 @@ printMonitorRAM()
 	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
 	local max=$(echo "$mem_info" | awk '{mem=($2)} END {printf mem}')
 
+	local as_percentage=$1
+	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
+
 	printMonitor $current $max $crit_ram_percent \
-	             $ram_as_percentage $units $message
+	             $as_percentage $units $message
 }
 
 
@@ -529,16 +535,14 @@ printMonitorRAM()
 ##
 printMonitorSwap()
 {
-	local as_percentage=$1
-	if [ -z "$as_percentage" ]; then
-		local as_percentage=false
-	fi
-
 	local message="Swap"
 	local units="MB"
 	local swap_info=$('free' -m | tail -n 1)
 	local current=$(echo "$swap_info" | awk '{SWAP=($3)} END {printf SWAP}')
 	local max=$(echo "$swap_info" | awk '{SWAP=($2)} END {printf SWAP}')
+
+	local as_percentage=$1
+	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
 
 	if [ "$max" -eq "0" ]; then
 		printf "${fc_info}${message}${fc_highlight}N/A{fc_none}"
@@ -559,8 +563,11 @@ printMonitorHDD()
 	local current=$(df -B1G / | grep "/" | awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G / | grep "/" | awk '{key=($2)} END {printf key}')
 
+	local as_percentage=$1
+	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
+
 	printMonitor $current $max $crit_hdd_percent \
-	             $hdd_as_percentage $units $message
+	             $as_percentage $units $message
 }
 
 
@@ -574,8 +581,11 @@ printMonitorHome()
 	local current=$(df -B1G ~ | grep "/" | awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G ~ | grep "/" | awk '{key=($2)} END {printf key}')
 
+	local as_percentage=$1
+	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
+
 	printMonitor $current $max $crit_home_percent \
-	             $home_as_percentage $units $message
+	             $as_percentage $units $message
 }
 
 
@@ -595,6 +605,8 @@ printStatusInfo()
 	statusSwitch()
 	{
 		case $1 in
+		## INFO
+		##	NAME		FUNCTION	
 			OS)		printInfoOS;;
 			KERNEL)		printInfoKernel;;
 			CPU)		printInfoCPU;;
@@ -604,12 +616,19 @@ printStatusInfo()
 			LOCALIPV4)	printInfoLocalIPv4;;
 			EXTERNALIPV4)	printInfoExternalIPv4;;
 			SERVICES)	printInfoSystemctl;;
+
+		## USAGE MONITORS (BARS)
+		##	NAME		FUNCTION		AS %
 			SYSLOADAVG)	printMonitorCPU;;
+			SYSLOADAVG%)	printMonitorCPU		true;;
 			MEMORY)		printMonitorRAM;;
+			MEMORY%)	printMonitorRAM		true;;
 			SWAP)		printMonitorSwap;;
-			SWAP%)		printMonitorSwap true;;
+			SWAP%)		printMonitorSwap 	true;;
 			HDDROOT)	printMonitorHDD;;
+			HDDROOT%)	printMonitorHDD 	true;;
 			HDDHOME)	printMonitorHome;;
+			HDDHOME%)	printMonitorHome 	true;;
 
 			*)		printInfo "Unknown" "?";;
 		esac
@@ -812,15 +831,12 @@ local crit_hdd_percent=85
 local crit_home_percent=85
 local bar_num_digits=5
 local info_label_width=16
-local cpu_as_percentage=true
-local ram_as_percentage=false
-local hdd_as_percentage=false
-local home_as_percentage=false
+
 
 local print_cols_max=100
 local print_logo_right=false
 local date_format="%Y.%m.%d - %T"
-local print_info="OS KERNEL CPU SHELL DATE USER LOCALIPV4 EXTERNALIPV4 SERVICES SYSLOADAVG MEMORY SWAP% HDDROOT HDDHOME"
+local print_info="OS KERNEL CPU SHELL DATE USER LOCALIPV4 EXTERNALIPV4 SERVICES SYSLOADAVG% MEMORY% SWAP% HDDROOT% HDDHOME%"
 
 
 
