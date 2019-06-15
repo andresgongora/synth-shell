@@ -283,7 +283,7 @@ printMonitor()
 
 
 	if $print_as_percentage; then
-		percent=$(bc <<< "$current*100/$max"
+		percent=$(bc <<< "$current*100/$max")
 		printf "${fc_highlight}%${bar_num_digits}s${fc_info} %%%%${fc_none}" $percent
 	else
 		printFraction $current $max $bar_num_digits $units
