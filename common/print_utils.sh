@@ -37,16 +37,49 @@
 
 ##------------------------------------------------------------------------------
 ##
-getTextShape()
+getTerminalNumRows()
+{
+	tput lines
+}
+
+
+
+##------------------------------------------------------------------------------
+##
+getTerminalNumCols()
+{
+	tput cols
+}
+
+
+
+##------------------------------------------------------------------------------
+##
+getTextNumRows()
 {
 	## COUNT ROWS
 	local rows=$(echo -e "$1" | wc -l )
+	echo "$rows"
+}
 
+
+
+##------------------------------------------------------------------------------
+##
+getTextNumCols()
+{
 	## COUNT COLUMNS - Remove color sequences before counting
 	## 's/\x1b\[[0-9;]*m//g' to remove formatting sequences (\e=\033=\x1b)
 	local columns=$(echo -e "$1" | sed 's/\x1b\[[0-9;]*m//g' | wc -L )
+	echo "$columns"
+}
 
-	echo "$rows $columns"
+
+##------------------------------------------------------------------------------
+##
+getTextShape()
+{
+	echo "$(getTextNumRows) $(getTextNumCols)"
 }
 
 

@@ -624,15 +624,54 @@ printStatusInfo()
 
 
 
+
+
+
+##==============================================================================
+##	PRINT
+##==============================================================================
+
 ##------------------------------------------------------------------------------
 ##
 printHeader()
 {
-	local status_info=$(printStatusInfo)
+	## GET ELEMENTS TO PRINT
+	local logo=$(printf "$fc_logo$logo$fc_none")
+	local info=$(printStatusInfo)
+
+
+	## GET ELEMENT SHAPES
+	local term_cols=$(getTerminalNumCols)
+	local logo_cols=$(getTextNumCols "$logo")
+	local info_cols=$(getTextNumCols "$info")
+	local logo_rows=$(getTextNumRows "$logo")
+	local info_rows=$(getTextNumRows "$info")
+
+	
+	echo "$term_cols"
+	echo "$info_cols"
+	echo "$logo_cols"
+	echo "$info_rows"
+	echo "$logo_rows"
+
+
+	local free_cols=$(( $term_cols - $logo_cols - $info_cols ))
+	local logo_pad_cols=$(( $free_cols/3 ))
+	local info_pad_cols=$(( $logo_cols + 2*($free_cols/3) ))
+
+
+
+
+	echo "$free_cols"
+	echo "$logo_pad_cols"
+	echo "$info_pad_cols"
+
+	
+
 	printf "\e[s"
-	printWithOffset 0 0 "${fc_logo}$logo${fc_none}"
+	printWithOffset 0 $logo_pad_cols "$logo"
 	printf "\e[u"
-	printWithOffset 0 40 "$status_info"
+	printWithOffset 0 $info_pad_cols "$info"
 }
 
 
@@ -815,31 +854,11 @@ local fc_none=$(getFormatCode -e reset)
 ## PRINT STATUS ELEMENTS
 clear
 printHeader
-#printLastLogins
-#printSystemctl
-#printTopCPU
-#printTopRAM
+printLastLogins
+printSystemctl
+printTopCPU
+printTopRAM
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#getTextShape "$status_info"
-#getTextShape "$logo"
 
 
 ## RUN SCRIPT
