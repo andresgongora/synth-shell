@@ -194,7 +194,7 @@ printWithOffset()
 	
 	## PRINT TEXT WITHOUT LINE WRAP
 	disableTerminalLineWrap
-	printf "${text}\n"
+	echo -e "${text}"
 	enableTerminalLineWrap
 }
 

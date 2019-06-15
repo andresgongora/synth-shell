@@ -529,6 +529,11 @@ printMonitorRAM()
 ##
 printMonitorSwap()
 {
+	local as_percentage=$1
+	if [ -z "$as_percentage" ]; then
+		local as_percentage=false
+	fi
+
 	local message="Swap"
 	local units="MB"
 	local swap_info=$('free' -m | tail -n 1)
@@ -539,7 +544,7 @@ printMonitorSwap()
 		printf "${fc_info}${message}${fc_highlight}N/A{fc_none}"
 	else
 		printMonitor $current $max $crit_swap_percent \
-		             $swap_as_percentage $units $message
+		             $as_percentage $units $message
 	fi
 }
 
@@ -579,7 +584,7 @@ printMonitorHome()
 
 
 ##==============================================================================
-##	STATUS COMPOSITION
+##	STATUS INFO COMPOSITION
 ##==============================================================================
 
 ##------------------------------------------------------------------------------
@@ -602,6 +607,7 @@ printStatusInfo()
 			SYSLOADAVG)	printMonitorCPU;;
 			MEMORY)		printMonitorRAM;;
 			SWAP)		printMonitorSwap;;
+			SWAP%)		printMonitorSwap true;;
 			HDDROOT)	printMonitorHDD;;
 			HDDHOME)	printMonitorHome;;
 
@@ -806,16 +812,15 @@ local crit_hdd_percent=85
 local crit_home_percent=85
 local bar_num_digits=5
 local info_label_width=16
-local cpu_as_percentage=false
+local cpu_as_percentage=true
 local ram_as_percentage=false
-local swap_as_percentage=false
 local hdd_as_percentage=false
 local home_as_percentage=false
 
 local print_cols_max=100
 local print_logo_right=false
 local date_format="%Y.%m.%d - %T"
-local print_info="OS KERNEL CPU SHELL DATE USER LOCALIPV4 EXTERNALIPV4 SERVICES SYSLOADAVG MEMORY SWAP HDDROOT HDDHOME"
+local print_info="OS KERNEL CPU SHELL DATE USER LOCALIPV4 EXTERNALIPV4 SERVICES SYSLOADAVG MEMORY SWAP% HDDROOT HDDHOME"
 
 
 
