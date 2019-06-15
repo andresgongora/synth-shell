@@ -799,38 +799,37 @@ fi
 ## DEFAULT CONFIGURATION
 ## WARNING! Do not edit directly, use configuration files instead
 
-local logo=$(printf '%s'\
-	"        -oydNMMMMNdyo-        \n"\
-	"     -yNMMMMMMMMMMMMMMNy-     \n"\
-	"   .hMMMMMMmhsooshmMMMMMMh.   \n"\
-	"  :NMMMMmo.        .omMMMMN:  \n"\
-	" -NMMMMs    -+ss+-    sMMMMN- \n"\
-	" hMMMMs   -mMMMMMMm-   sMMMMh \n"\
-	"'MMMMM.  'NMMMMMMMMN'  .MMMMM'\n"\
-	"'MMMMM.  'NMMMMMMMMN'   yMMMM'\n"\
-	" hMMMMs   -mMMMMMMMMy.   -yMh \n"\
-	" -NMMMMs    -+ss+yMMMMy.   -. \n"\
-	"  :NMMMMmo.       .yMMMMy.    \n"\
-	"   .hMMMMMMmhsoo-   .yMMMy    \n"\
-	"     -yNMMMMMMMMMy-   .o-     \n"\
-	"        -oydNMMMMNd/          ")
+local logo="
+        -oydNMMMMNdyo-
+     -yNMMMMMMMMMMMMMMNy-
+   .hMMMMMMmhsooshmMMMMMMh.
+  :NMMMMmo.        .omMMMMN:
+ -NMMMMs    -+ss+-    sMMMMN-
+ hMMMMs   -mMMMMMMm-   sMMMMh
+'MMMMM.  'NMMMMMMMMN'  .MMMMM
+'MMMMM.  'NMMMMMMMMN'   yMMMM'
+ hMMMMs   -mMMMMMMMMy.   -yMh
+ -NMMMMs    -+ss+yMMMMy.   -.
+  :NMMMMmo.       .yMMMMy.
+   .hMMMMMMmhsoo-   .yMMMy
+     -yNMMMMMMMMMy-   .o-
+        -oydNMMMMNd/          \n"
 
-local print_info=$(printf '%s'\
-	"OS"\
-	"KERNEL"\
-	"CPU"\
-	"SHELL"\
-	"DATE"\
-	"USER"\
-	"LOCALIPV4"\
-	"EXTERNALIPV4"\
-	"SERVICES"\
-	"SYSLOADAVG%"\
-	"MEMORY"\
-	"SWAP"\
-	"HDDROOT"\
-	"HDDHOME"\
-	""
+local print_info="
+	OS
+	KERNEL
+	CPU
+	SHELL
+	DATE
+	USER
+	LOCALIPV4
+	EXTERNALIPV4
+	SERVICES
+	SYSLOADAVG%
+	MEMORY
+	SWAP
+	HDDROOT
+	HDDHOME"
 
 local format_info="-c white"
 local format_highlight="-c blue  -e bold"
@@ -840,20 +839,19 @@ local format_ok="-c blue  -e bold"
 local format_error="-c 208   -e bold -e blink"
 local format_logo="-c blue -e bold"
 
-local bar_length=13
 local crit_cpu_percent=40
 local crit_ram_percent=75
 local crit_swap_percent=25
 local crit_hdd_percent=85
 local crit_home_percent=85
+
+local bar_length=13
 local bar_num_digits=5
 local info_label_width=16
-
 
 local print_cols_max=100
 local print_logo_right=false
 local date_format="%Y.%m.%d - %T"
-local print_info="OS KERNEL CPU SHELL DATE USER LOCALIPV4 EXTERNALIPV4 SERVICES SYSLOADAVG% MEMORY SWAP HDDROOT HDDHOME"
 
 
 
@@ -882,7 +880,6 @@ local fc_none=$(getFormatCode -e reset)
 
 ## PRINT STATUS ELEMENTS
 clear
-printf "\n"
 printHeader
 printLastLogins
 printSystemctl
