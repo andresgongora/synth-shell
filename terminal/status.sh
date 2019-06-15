@@ -635,52 +635,30 @@ printStatusInfo()
 ##
 printHeader()
 {
-	## GET ELEMENTS TO PRINT
-	local element_1=$(printf "$fc_logo$logo$fc_none")
-	local element_2=$(printStatusInfo)
-
-
-
-	## GET ELEMENT SHAPES
-	local term_cols=$(getTerminalNumCols)
-	local term_cols=$(( ( $term_cols > $print_cols_max ) ?\
-		$print_cols_max : $term_cols ))
-
-	local e_1_cols=$(getTextNumCols "$element_1")
-	local e_1_rows=$(getTextNumRows "$element_1")
-	local e_2_cols=$(getTextNumCols "$element_2")
-	local e_2_rows=$(getTextNumRows "$element_2")
-
-
-
-	## COMPUTE OPTIMAL HORIZONTAL PADDING
-	local free_cols=$(( $term_cols - $e_1_cols - $e_2_cols ))
-	local h_pad=$(( $free_cols/3 ))
-	local e_1_h_pad=$h_pad
-	local e_2_h_pad=$(( $e_1_cols + 2*$h_pad ))
-
-
-
-	## COMPUTE OPTIMAL VERTICAL PADDING
-	local e_1_v_pad=$(( ( $e_1_rows > $e_2_rows ) ?\
-		0 : (( ($e_2_rows - $e_1_rows)/2 )) ))
-	local e_2_v_pad=$(( ( $e_2_rows > $e_1_rows ) ?\
-		0 : (( ($e_1_rows - $e_2_rows)/2 )) ))
 	
+	#print_logo_right
 
-
-	## PRINT ELEMENTS
-	saveCursorPosition
-	printWithOffset $e_1_v_pad $e_1_h_pad "$element_1"
-	moveCursorToSavedPosition
-	printWithOffset $e_2_v_pad $e_2_h_pad "$element_2"
-	moveCursorToSavedPosition
+	## GET ELEMENTS TO PRINT
+	local logo=$(printf "$fc_logo$logo$fc_none")
+	local info=$(printStatusInfo)
 
 
 
-	## LEAVE CURSOR AT "SAFE" POSITION
-	local max_rows=$(( ( $e_1_rows > $e_2_rows ) ? $e_1_rows : $e_2_rows ))
-	moveCursorDown "$max_rows"
+
+	## PRINT ONLY WHAT FITS IN THE TERMINAL
+	local term_cols=$(getTerminalNumCols)
+	local logo_cols=$(getTextNumCols "$logo")
+	local info_cols=$(getTextNumCols "$info")
+
+	if [ $(( $logo_cols + $info_cols )) -gt $term_cols ]; then
+		local logo=""
+		#if [ $info_cols -gt $term_cols ]; then
+			#local info=""
+		#fi
+	fi 
+
+
+	printTwoElementsSideBySide "$logo" "$info" "$print_cols_max"
 }
 
 
@@ -833,6 +811,7 @@ local hdd_as_percentage=false
 local home_as_percentage=false
 
 local print_cols_max=100
+local print_logo_right=false
 local date_format="%Y.%m.%d - %T"
 local print_info="OS KERNEL CPU SHELL DATE USER LOCALIPV4 EXTERNALIPV4 SERVICES SYSLOADAVG MEMORY SWAP HDDROOT HDDHOME"
 

@@ -200,7 +200,57 @@ printWithOffset()
 
 
 
+##------------------------------------------------------------------------------
+##
+printTwoElementsSideBySide()
+{
+	## GET ELEMENTS TO PRINT
+	local element_1=$1
+	local element_2=$2
+	local print_cols_max=$3
 
+
+	## GET PRINTABLE AREA SIZE
+	local term_cols=$(getTerminalNumCols)
+	if [ ! -z "$print_cols_max" ]; then
+		local term_cols=$(( ( $term_cols > $print_cols_max ) ?\
+			$print_cols_max : $term_cols ))
+	fi
+
+
+	## GET ELEMENT SHAPES
+	local e_1_cols=$(getTextNumCols "$element_1")
+	local e_1_rows=$(getTextNumRows "$element_1")
+	local e_2_cols=$(getTextNumCols "$element_2")
+	local e_2_rows=$(getTextNumRows "$element_2")
+
+
+	## COMPUTE OPTIMAL HORIZONTAL PADDING
+	local free_cols=$(( $term_cols - $e_1_cols - $e_2_cols ))
+	local h_pad=$(( $free_cols/3 ))
+	local e_1_h_pad=$h_pad
+	local e_2_h_pad=$(( $e_1_cols + 2*$h_pad ))
+
+
+	## COMPUTE OPTIMAL VERTICAL PADDING
+	local e_1_v_pad=$(( ( $e_1_rows > $e_2_rows ) ?\
+		0 : (( ($e_2_rows - $e_1_rows)/2 )) ))
+	local e_2_v_pad=$(( ( $e_2_rows > $e_1_rows ) ?\
+		0 : (( ($e_1_rows - $e_2_rows)/2 )) ))
+	
+
+	## PRINT ELEMENTS
+	saveCursorPosition
+	printWithOffset $e_1_v_pad $e_1_h_pad "$element_1"
+	moveCursorToSavedPosition
+	printWithOffset $e_2_v_pad $e_2_h_pad "$element_2"
+	moveCursorToSavedPosition
+
+
+	## LEAVE CURSOR AT "SAFE" POSITION
+	local max_rows=$(( ( $e_1_rows > $e_2_rows ) ? $e_1_rows : $e_2_rows ))
+	moveCursorDown "$max_rows"
+}
 
 
 
