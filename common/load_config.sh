@@ -74,6 +74,9 @@
 ##	  starting with #) which will be trimmed before loading the data.
 ##
 ##
+##
+##	TODO: Explain multilines
+##
 
 
 
@@ -95,45 +98,120 @@
 ##
 loadConfigFile() {
 
-	## CHECK IF CONFIGURATION FILE EXISTS
+	## CHECK IF CONFIGURATION FILE EXISTS, EXIT IF NOT
 	local config_file=$1
-	if [ -f $config_file ]; then
-
-		## ITERATE THROUGH LINES IN CONFIGURATION FILE
-		while IFS="" read -r p || [ -n "$p" ]
-		do
-			## REMOVE COMMENTS FROM LINE
-			local trimmed_line=$(printf %b "$p" | sed '/^$/d;/^\#/d;s/\#.*$//g;/\n/d;')
-
-
-			## CONVERT LINE INTO SCRIPT PARAMETERS
-			set -- $trimmed_line
-
-
-			## LOAD CONFIG IF AT LEAST 2 PARAMETERS
-			## Config-key-name and desired config value
-			if [ "$#" -gt 1 ]; then
-
-				## ASSING HUMAN READABLE NAMES
-				local config_key_name=$1
-				eval config_key_current_value=\$$config_key_name
-				local config_param=$(echo "$trimmed_line" |\
-				                     sed "s/$config_key_name\s*//" |\
-				                     sed "s/^\"//;s/\"$//")
-
-
-				## REASSING CONFIG PARAMETER TO KEY
-				## ONLY IF ALREADY DECLARED AND NOT EMPTY
-				## This is meant to avoid loading config parameters
-				## from the config file that are not even used by the caller
-				if [ ! -z "$config_key_current_value" ]; then
-
-					## LOAD CONFIG PARAMETER
-					export "${config_key_name}"="$config_param"
-				fi
-			fi
-		done < $config_file
+	if [ ! -f $config_file ]; then
+		exit
 	fi
+
+
+	## ITERATE THROUGH LINES IN CONFIGURATION FILE
+	## while not end of file, get line
+	while IFS="" read -r p || [ -n "$p" ]
+	do
+
+		## REMOVE COMMENTS FROM LINE
+		## /^$/d                Delete empty lines
+		## /^[ \t]*\#/d         Delete lines that start as comment
+		## s/[ \t][ \t]*\#.*//g Delete trailing comments
+		## s/^[ \t]*//g         Delete preceding spaces and tabs
+		## s/[ \t]*$//g         Delete trailing spaces and tabs
+		local line=$(echo "$p" |\
+		             sed -e '/^$/d;
+		                     /^[ \t]*\#/d;
+		                     s/[ \t][ \t]*\#.*//g;
+		                     s/^[ \t]*//g;
+		                     s/[ \t]*$//g')
+
+
+		## CHECK IF MULTILINE
+		## - Search for valid termination
+		## - Signal multiline: tis is not used immediately, but
+		##   at the end of the while loop.
+		local line_end_trimmed=$(echo "$line" | sed -n 's/[ \t]*\\$//p')
+		if [ -z "$line_end_trimmed" ]; then
+			local is_multiline_next=false
+		else
+			local is_multiline_next=true
+			local line=$line_end_trimmed
+		fi
+
+
+		## LOAD CONFIG IF AT LEAST 2 PARAMETERS
+		## - Convert line into script parameters to test
+		##   how many elements it contains.
+		##   Notice that anything between quotes is converted to 'X'
+		##   , as we only want to count them.
+		## - Get key (should be first element)
+		## - Get param (rest of line, when key deleted)
+		set -- $( echo "$line" | sed -e 's/\\//g;s/".*"/X/g' )
+		if [ ! -z "$line" ] && [ "$#" -gt 1 ]; then
+
+			## GET KEY-PARAMETER PAIR
+			## - Get key as first parameter
+			## - Evaluate current value of key
+			##   - Delete key name from line
+			##   - Remove other auxiliar/optional characters
+			local config_key_name=$1
+			local config_param=$(echo "$line" |\
+			                     sed -e "s/$config_key_name\s*//g" |\
+			                     sed -e "s/^\"//g;s/\"$//g")
+
+
+			## RE-ASSIGN CONFIG PARAMETER TO KEY
+			## ONLY IF ALREADY DECLARED AND NOT EMPTY
+			## This is meant to avoid loading config
+			## parameters from the config file that
+			## are not even used by the caller
+			eval config_key_current_value=\$$config_key_name
+			if [ ! -z "$config_key_current_value" ]; then
+
+				## LOAD CONFIG PARAMETER
+				export "${config_key_name}"="$config_param"
+			fi
+
+
+		## IF CONFIGURATION IS MULTILINE
+		## - Get param continuation from current line
+		## - Check if there is another extra line
+		## - Append new param to old param
+		elif [ "$#" -eq 1 ] && $is_multiline ; then
+
+			## CHECK IF MULTILINE
+			## - Search for valid termination
+			## - Signal multiline
+			local line_end_trimmed=$(echo $line |\
+			                         sed -n 's/[ \t]*\\$//p')
+			if [ -z "$line_end_trimmed" ]; then
+				local multi_line=false
+			else
+				echo ":) $line_end_trimmed"
+				local multi_line=true
+				local line=$line_end_trimmed
+			fi
+
+
+			## GET PARAMETERS
+			local config_param_old=$config_param
+			local config_param=$(echo "$line" |\
+			                     sed "s/^\"//g;s/\"$//g")
+
+
+			## APPEND TO VARIABLE
+			## Only if variable exists
+			eval config_key_current_value=\$$config_key_name
+			if [ ! -z "$config_key_current_value" ]; then
+				export "${config_key_name}"="$config_key_current_value$config_param"
+			fi
+		fi
+
+
+		## UPDATE MULTILINE INFORMATION FOR NEXT ITERATION
+		local is_multiline=$is_multiline_next
+
+
+	## END OF WHILE LOOP
+	done < $config_file
 }
 
 
