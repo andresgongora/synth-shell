@@ -932,7 +932,7 @@ for key in $print_info; do
 	local status_info="${status_info}\n$(statusSwitch $key)"
 done
 
-printf "${status_info}\n"
+printf "${status_info}"
 
 getTextShape "$status_info"
 
