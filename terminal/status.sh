@@ -52,7 +52,7 @@ status()
 ##	Program search ordering is based on timed tests, fastest to slowest.
 ##
 ##	!!! NOTE: Still needs to figure out how to look for IP address that
-##	!!!       have a default gateway attached to related interface, 
+##	!!!       have a default gateway attached to related interface,
 ##	!!!       otherwise this returns a list of IPv6's if there are many.
 ##
 getLocalIPv6()
@@ -73,7 +73,7 @@ getLocalIPv6()
 	## \K				everything until here, ommit
 	## (){1,8}			repeat block at least 1 time, up to 8
 	## ([0-9abcdef]){0,4}:*		up to 4 chars from [] followed by :
-	##	
+	##
 	#local grep_reggex='\s*inet6\s+(addr:?\s*)?\K(([0-9abcdef]){0,4}:*){1,8}'
 	##
 	## The following string, on the other hand, is easier to read and
@@ -97,7 +97,7 @@ getLocalIPv6()
 	fi
 
 
-	## Returns "N/A" if actual query result is empty, 
+	## Returns "N/A" if actual query result is empty,
 	## and returns "Error" if no programs found
 	[ $result ] && printf $result || printf "N/A"
 }
@@ -135,7 +135,7 @@ getExternalIPv6()
 	fi
 
 
-	## Returns "N/A" if actual query result is empty, 
+	## Returns "N/A" if actual query result is empty,
 	## and returns "Error" if no programs found
 	[ $result ] && printf $result || printf "N/A"
 }
@@ -195,7 +195,7 @@ printBar()
 	if [ $num_bars -gt $size ]; then
 		num_bars=$size
 	fi
-	
+
 
 	## SET COLORS
 	local bar_color=$fc_ok
@@ -261,7 +261,7 @@ printFraction()
 ##	2. MAX: max resource utilization (e.g. HDD size)
 ##	3. CRIT_PERCENT: point at which to warn the user (e.g. 80 for 80%)
 ##	4. PRINT_AS_PERCENTAGE: whether to print a simple percentage after
-##	   the utilization bar (true), or to print a fraction (false). 
+##	   the utilization bar (true), or to print a fraction (false).
 ##	5. UNITS: units of the resource, for display purposes only. This are
 ##	   not shown if PRINT_AS_PERCENTAGE=true, but must be set nonetheless.
 ##	6. LABEL: A description of the resource that will be printed in front
@@ -283,7 +283,7 @@ printMonitor()
 
 
 	if $print_as_percentage; then
-		percent=$(bc <<< "$current*100/$max")	
+		percent=$(bc <<< "$current*100/$max"
 		printf "${fc_highlight}%${bar_num_digits}s${fc_info} %%%%${fc_none}" $percent
 	else
 		printFraction $current $max $bar_num_digits $units
@@ -384,7 +384,7 @@ printInfoUser()
 ##
 ##	Looks up and returns local IPv4-address.
 ##	Tries first program found.
-##	!!! NOTE: Still needs to figure out how to look for IP address that 
+##	!!! NOTE: Still needs to figure out how to look for IP address that
 ##	!!!       have a default gateway attached to related interface,
 ##	!!!       otherwise this returns list of IPv4's if there are many
 ##
@@ -404,7 +404,7 @@ printInfoLocalIPv4()
 	## \K				everything until here, ommit
 	## (){4}			repeat block at least 1 time, up to 8
 	## ([0-9]){1,4}:*		1 to 3 integers [0-9] followed by "."
-	##	
+	##
 	#local grep_reggex='^\s*inet\s+(addr:?\s*)?\K(([0-9]){1,3}\.*){4}'
 	##
 	## The following string, on the other hand, is easier to read and
@@ -427,7 +427,7 @@ printInfoLocalIPv4()
 	fi
 
 
-	## Returns "N/A" if actual query result is empty, 
+	## Returns "N/A" if actual query result is empty,
 	## and returns "Error" if no programs found
 	[ $ip ] || local ip="N/A"
 	printInfo "Local IPv4" "$ip"
@@ -467,7 +467,7 @@ printInfoExternalIPv4()
 	fi
 
 
-	## Returns "N/A" if actual query result is empty, 
+	## Returns "N/A" if actual query result is empty,
 	## and returns "Error" if no programs found
 	[ $ip ] || local ip="N/A"
 	printInfo "External IPv4" "$ip"
@@ -606,7 +606,7 @@ printStatusInfo()
 	{
 		case $1 in
 		## INFO
-		##	NAME		FUNCTION	
+		##	NAME		FUNCTION
 			OS)		printInfoOS;;
 			KERNEL)		printInfoKernel;;
 			CPU)		printInfoCPU;;
@@ -694,7 +694,7 @@ printHeader()
 ##
 printLastLogins()
 {
-	## DO NOTHING FOR NOW -> This is disabled  intentionally for now. 
+	## DO NOTHING FOR NOW -> This is disabled  intentionally for now.
 	## Printing logins should only be done under different conditions
 	## 1. User configurable set to always on
 	## 2. If the IP/terminal is very diffefrent from usual
@@ -753,7 +753,7 @@ printTopRAM()
 	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
 	local max=$(echo "$mem_info" | awk '{mem=($2)} END {printf mem}')
 	local percent=$(($current*100/$max))
-	
+
 	if [ $percent -gt $crit_ram_percent ]; then
 		local available=$(echo $mem_info | awk '{print $NF}')
 		local procs=$(ps --cols=80 -eo pmem,size,pid,cmd --sort=-%mem |\
