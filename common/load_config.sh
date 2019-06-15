@@ -100,10 +100,12 @@ loadConfigFile() {
 	if [ -f $config_file ]; then
 
 		## ITERATE THROUGH LINES IN CONFIGURATION FILE
+		## while not end of file, get line
 		while IFS="" read -r p || [ -n "$p" ]
 		do
 			## REMOVE COMMENTS FROM LINE
-			local trimmed_line=$(printf %b "$p" | sed '/^$/d;/^\#/d;s/\#.*$//g;/\n/d;')
+			local trimmed_line=$(printf %b "$p" |\
+				sed '/^$/d;/^\#/d;s/\#.*$//g;/\n/d;')
 
 
 			## CONVERT LINE INTO SCRIPT PARAMETERS
@@ -122,10 +124,11 @@ loadConfigFile() {
 				                     sed "s/^\"//;s/\"$//")
 
 
-				## REASSING CONFIG PARAMETER TO KEY
+				## RE-ASSIGN CONFIG PARAMETER TO KEY
 				## ONLY IF ALREADY DECLARED AND NOT EMPTY
-				## This is meant to avoid loading config parameters
-				## from the config file that are not even used by the caller
+				## This is meant to avoid loading config
+				## parameters from the config file that 
+				## are not even used by the caller
 				if [ ! -z "$config_key_current_value" ]; then
 
 					## LOAD CONFIG PARAMETER

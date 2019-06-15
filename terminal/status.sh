@@ -818,6 +818,7 @@ local date_format="%Y.%m.%d - %T"
 local print_info="OS KERNEL CPU SHELL DATE USER LOCALIPV4 EXTERNALIPV4 SERVICES SYSLOADAVG MEMORY SWAP HDDROOT HDDHOME"
 
 
+
 ## LOAD USER CONFIGURATION
 local user_config_file="$HOME/.config/scripts/status.config"
 local sys_config_file="/etc/andresgongora/scripts/status.config"
@@ -849,7 +850,6 @@ printLastLogins
 printSystemctl
 printTopCPU
 printTopRAM
-printf "\n"
 
 
 
