@@ -105,7 +105,7 @@ loadConfigFile() {
 		do
 			## REMOVE COMMENTS FROM LINE
 			local trimmed_line=$(printf %b "$p" |\
-				sed '/^$/d;/^\#/d;s/\#.*$//g;/\n/d;')
+				sed '/^$/d;/^\#/d;s/[\s\t]*\#.*$//g;/\n/d;')
 
 
 			## CONVERT LINE INTO SCRIPT PARAMETERS
