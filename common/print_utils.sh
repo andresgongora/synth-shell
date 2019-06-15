@@ -30,6 +30,93 @@
 
 
 
+##==============================================================================
+##	TERMINAL CURSOR
+##==============================================================================
+
+enableTerminalLineWrap()
+{
+	printf '\e[?7h'
+}
+
+
+disableTerminalLineWrap()
+{
+	printf '\e[?7l'
+}
+
+
+saveCursorPosition()
+{
+	printf "\e[s"
+}
+
+
+moveCursorToSavedPosition()
+{
+	printf "\e[u"
+}
+
+
+moveCursorToRowCol()
+{
+	local row=$1
+	local col=$2
+	printf "\e[${row};${col}H"
+}
+
+
+moveCursorHome()
+{
+	printf "\e[;H"
+}
+
+
+moveCursorUp()
+{
+	local inc=$1
+	if   [ -z "$inc" ]; then
+		printf "\e[1A"
+	elif [ $inc -gt 0 ]; then
+		printf "\e[${inc}A"
+	fi
+}
+
+
+moveCursorDown()
+{
+	local inc=$1
+	if   [ -z "$inc" ]; then
+		printf "\e[1B"
+	elif [ $inc -gt 0 ]; then
+		printf "\e[${inc}B"
+	fi
+}
+
+
+moveCursorLeft()
+{
+	local inc=$1
+	if   [ -z "$inc" ]; then
+		printf "\e[1C"
+	elif [ $inc -gt 0 ]; then
+		printf "\e[${inc}C"
+	fi
+}
+
+
+moveCursorRight()
+{
+	local inc=$1
+	if   [ -z "$inc" ]; then
+		printf "\e[1D"
+	elif [ $inc -gt 0 ]; then
+		printf "\e[${inc}D"
+	fi
+}
+
+
+
 
 ##==============================================================================
 ##	FUNCTIONS
@@ -94,9 +181,7 @@ printWithOffset()
 
 
 	## MOVE CURSOR TO TARGET ROW
-	if [ $row -gt 0 ]; then
-		printf "\e[${row}B"
-	fi 
+	moveCursorDown "$row"
 
 
 	## EDIT TEXT TO PRINT IN CORRECT COLUMN
@@ -108,7 +193,17 @@ printWithOffset()
 
 	
 	## PRINT TEXT WITHOUT LINE WRAP
-	printf "\e[?7l${text}\e[?7h\n"
+	disableTerminalLineWrap
+	printf "${text}\n"
+	enableTerminalLineWrap
 }
+
+
+
+
+
+
+
+
 
 

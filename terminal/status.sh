@@ -662,10 +662,17 @@ printHeader()
 
 	
 
-	printf "\e[s"
+	saveCursorPosition
 	printWithOffset 0 $logo_pad_cols "$logo"
-	printf "\e[u"
+	moveCursorToSavedPosition
 	printWithOffset 0 $info_pad_cols "$info"
+	moveCursorToSavedPosition
+
+
+	## LEAVE CURSOR AT "SAFE" POSITION
+	local max_rows=$(( ( $logo_rows > $info_rows ) ? $logo_rows : $info_rows ))
+	moveCursorDown "$max_rows"
+
 }
 
 
