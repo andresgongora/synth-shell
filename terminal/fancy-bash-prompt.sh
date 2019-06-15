@@ -77,7 +77,7 @@ printSegment()
 	local background_color=$3
 	local next_background_color=$4
 	local font_effect=$5
-	if [ -z "$separator_char" ]; then echo "separator_char is blank"; local separator_char="X"; fi
+	local separator_char=$'\uE0B0'
 
 
 
@@ -192,9 +192,9 @@ prompt_command_hook()
 	local background_input="none"
 	local texteffect_input="bold"
 
-	local separator_char=$'\uE0B0'
 	local enable_vertical_padding=true
-	local show_git=false
+	# If you want to hide current git branch name, set it's value to "false"
+	local show_git=true
 
 
 

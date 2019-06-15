@@ -192,17 +192,9 @@ installAll()
 	esac
 
 
-	printf 'Install fancy-bash-prompt.sh? [y]/n: '
 
-	exec 6<&0
-	exec 0<$(tty)
-	read -n 1 action
-	exec 0<&6 6<&-
-
-	case "$action" in
-		""|y|Y )	installScript install "fancy-bash-prompt" ;;
-		*)		echo ""
-	esac
+	# installing fancy-bash-promt
+	installScript install "fancy-bash-prompt"
 }
 
 
