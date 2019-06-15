@@ -582,75 +582,63 @@ printMonitorHome()
 ##	STATUS COMPOSITION
 ##==============================================================================
 
-printHeader()
+##------------------------------------------------------------------------------
+##
+printStatusInfo()
 {
-	## GENERATE PROPER AMOUNT OF PAD
-	i=0
-	while [ $i -lt $bar_num_digits ]; do
-		PAD="${PAD} "
-		i=$[$i+1]
+	## HELPER FUNCTION
+	statusSwitch()
+	{
+		case $1 in
+			OS)		printInfoOS;;
+			KERNEL)		printInfoKernel;;
+			CPU)		printInfoCPU;;
+			SHELL)		printInfoShell;;
+			DATE)		printInfoDate;;
+			USER)		printInfoUser;;
+			LOCALIPV4)	printInfoLocalIPv4;;
+			EXTERNALIPV4)	printInfoExternalIPv4;;
+			SERVICES)	printInfoSystemctl;;
+			SYSLOADAVG)	printMonitorCPU;;
+			MEMORY)		printMonitorRAM;;
+			SWAP)		printMonitorSwap;;
+			HDDROOT)	printMonitorHDD;;
+			HDDHOME)	printMonitorHome;;
+
+			*)		printInfo "Unknown" "?";;
+		esac
+	}
+
+
+	## ASSEMBLE INFO PANE
+	local status_info=""
+	for key in $print_info; do
+		if [ -z "$status_info" ]; then
+			local status_info="$(statusSwitch $key)"
+		else
+			local status_info="${status_info}\n$(statusSwitch $key)"
+		fi
 	done
-
-
-
-	## LOGO
-	local formatted_logo_01="${logo_padding}${fc_logo}${logo_01}${fc_none}"
-	local formatted_logo_02="${logo_padding}${fc_logo}${logo_02}${fc_none}"
-	local formatted_logo_03="${logo_padding}${fc_logo}${logo_03}${fc_none}"
-	local formatted_logo_04="${logo_padding}${fc_logo}${logo_04}${fc_none}"
-	local formatted_logo_05="${logo_padding}${fc_logo}${logo_05}${fc_none}"
-	local formatted_logo_06="${logo_padding}${fc_logo}${logo_06}${fc_none}"
-	local formatted_logo_07="${logo_padding}${fc_logo}${logo_07}${fc_none}"
-	local formatted_logo_08="${logo_padding}${fc_logo}${logo_08}${fc_none}"
-	local formatted_logo_09="${logo_padding}${fc_logo}${logo_09}${fc_none}"
-	local formatted_logo_10="${logo_padding}${fc_logo}${logo_10}${fc_none}"
-	local formatted_logo_11="${logo_padding}${fc_logo}${logo_11}${fc_none}"
-	local formatted_logo_12="${logo_padding}${fc_logo}${logo_12}${fc_none}"
-	local formatted_logo_13="${logo_padding}${fc_logo}${logo_13}${fc_none}"
-	local formatted_logo_14="${logo_padding}${fc_logo}${logo_14}${fc_none}"
-
-
-
-	## STATUS INFO
-	local formatted_status_01="$(printInfoOS)"
-	local formatted_status_02="$(printInfoKernel)"
-	local formatted_status_03="$(printInfoCPU)"
-	local formatted_status_04="$(printInfoShell)"
-	local formatted_status_05="$(printInfoDate)"
-	local formatted_status_06="$(printInfoUser)"
-	local formatted_status_07="$(printInfoLocalIPv4)"
-	local formatted_status_08="$(printInfoExternalIPv4)"
-	local formatted_status_09="$(printInfoSystemctl)"
-	local formatted_status_10="$(printMonitorCPU)"
-	local formatted_status_11="$(printMonitorRAM)"
-	local formatted_status_12="$(printMonitorSwap)"
-	local formatted_status_13="$(printMonitorHDD)"
-	local formatted_status_14="$(printMonitorHome)"
-
-
-
-	## PRINT HEADER WITH OVERALL STATUS REPORT
-	printf '\e[?7l'	# Disable line wrap -> Crop instead
-	printf "\n"
-	printf "${formatted_logo_01}\t${formatted_status_01}\n"
-	printf "${formatted_logo_02}\t${formatted_status_02}\n"
-	printf "${formatted_logo_03}\t${formatted_status_03}\n"
-	printf "${formatted_logo_04}\t${formatted_status_04}\n"
-	printf "${formatted_logo_05}\t${formatted_status_05}\n"
-	printf "${formatted_logo_06}\t${formatted_status_06}\n"
-	printf "${formatted_logo_07}\t${formatted_status_07}\n"
-	printf "${formatted_logo_08}\t${formatted_status_08}\n"
-	printf "${formatted_logo_09}\t${formatted_status_09}\n"
-	printf "${formatted_logo_10}\t${formatted_status_10}\n"
-	printf "${formatted_logo_11}\t${formatted_status_11}\n"
-	printf "${formatted_logo_12}\t${formatted_status_12}\n"
-	printf "${formatted_logo_13}\t${formatted_status_13}\n"
-	printf "${formatted_logo_14}\t${formatted_status_14}\n\n"
-	printf '\e[?7h'	# Re-enable line wrap
+	printf "${status_info}\n"
 }
 
 
 
+##------------------------------------------------------------------------------
+##
+printHeader()
+{
+	local status_info=$(printStatusInfo)
+	printf "\e[s"
+	printWithOffset 0 0 "${fc_logo}$logo${fc_none}"
+	printf "\e[u"
+	printWithOffset 0 40 "$status_info"
+}
+
+
+
+##------------------------------------------------------------------------------
+##
 printLastLogins()
 {
 	## DO NOTHING FOR NOW -> This is disabled  intentionally for now. 
@@ -666,6 +654,8 @@ printLastLogins()
 
 
 
+##------------------------------------------------------------------------------
+##
 printSystemctl()
 {
 	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
@@ -680,6 +670,8 @@ printSystemctl()
 
 
 
+##------------------------------------------------------------------------------
+##
 printTopCPU()
 {
 	local current=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
@@ -700,6 +692,8 @@ printTopCPU()
 
 
 
+##------------------------------------------------------------------------------
+##
 printTopRAM()
 {
 	local mem_info=$('free' -m | head -n 2 | tail -n 1)
@@ -739,10 +733,12 @@ if [ "$(type -t loadConfigFile)" != 'function' ];
 then
 	source "$dir/../common/load_config.sh"
 fi
-
-if [ "$(type -t getFormatCode)" != 'function' ];
-then
+if [ "$(type -t getFormatCode)" != 'function' ]; then
 	source "$dir/../common/color.sh"
+fi
+if [ "$(type -t printWithOffset)" != 'function' ];
+then
+	source "$dir/../common/print_utils.sh"
 fi
 
 
@@ -750,21 +746,21 @@ fi
 ## DEFAULT CONFIGURATION
 ## WARNING! Do not edit directly, use configuration files instead
 
-local logo_01="        -oydNMMMMNdyo-        "
-local logo_02="     -yNMMMMMMMMMMMMMMNy-     "
-local logo_03="   .hMMMMMMmhsooshmMMMMMMh.   "
-local logo_04="  :NMMMMmo.        .omMMMMN:  "
-local logo_05=" -NMMMMs    -+ss+-    sMMMMN- "
-local logo_06=" hMMMMs   -mMMMMMMm-   sMMMMh "
-local logo_07="'MMMMM.  'NMMMMMMMMN'  .MMMMM'"
-local logo_08="'MMMMM.  'NMMMMMMMMN'   yMMMM'"
-local logo_09=" hMMMMs   -mMMMMMMMMy.   -yMh "
-local logo_10=" -NMMMMs    -+ss+yMMMMy.   -. "
-local logo_11="  :NMMMMmo.       .yMMMMy.    "
-local logo_12="   .hMMMMMMmhsoo-   .yMMMy    "
-local logo_13="     -yNMMMMMMMMMy-   .o-     "
-local logo_14="        -oydNMMMMNd/          "
-local logo_padding=""
+local logo=$(printf '%s'\
+	"        -oydNMMMMNdyo-        \n"\
+	"     -yNMMMMMMMMMMMMMMNy-     \n"\
+	"   .hMMMMMMmhsooshmMMMMMMh.   \n"\
+	"  :NMMMMmo.        .omMMMMN:  \n"\
+	" -NMMMMs    -+ss+-    sMMMMN- \n"\
+	" hMMMMs   -mMMMMMMm-   sMMMMh \n"\
+	"'MMMMM.  'NMMMMMMMMN'  .MMMMM'\n"\
+	"'MMMMM.  'NMMMMMMMMN'   yMMMM'\n"\
+	" hMMMMs   -mMMMMMMMMy.   -yMh \n"\
+	" -NMMMMs    -+ss+yMMMMy.   -. \n"\
+	"  :NMMMMmo.       .yMMMMy.    \n"\
+	"   .hMMMMMMmhsoo-   .yMMMy    \n"\
+	"     -yNMMMMMMMMMy-   .o-     \n"\
+	"        -oydNMMMMNd/          ")
 
 local format_info="-c white"
 local format_highlight="-c blue  -e bold"
@@ -789,6 +785,7 @@ local hdd_as_percentage=false
 local home_as_percentage=false
 
 local date_format="%Y.%m.%d - %T"
+local print_info="OS KERNEL CPU SHELL DATE USER LOCALIPV4 EXTERNALIPV4 SERVICES SYSLOADAVG MEMORY SWAP HDDROOT HDDHOME"
 
 
 
@@ -818,123 +815,31 @@ local fc_none=$(getFormatCode -e reset)
 ## PRINT STATUS ELEMENTS
 clear
 printHeader
-printLastLogins
-printSystemctl
-printTopCPU
-printTopRAM
-
-
-################################################################################
+#printLastLogins
+#printSystemctl
+#printTopCPU
+#printTopRAM
 
 
 
 
 
-multiline()
-{
-	local row=$1
-	local col=$2
-	local text=${@:3}
-
-	echo $row
-	echo $col
-
-	## COUNT NUMBER OF ROWS AND COLS SPANNED BY TEXT
-	## sed 's/\x1b\[.*m//g' to remove formatting sequences (\e=\033=\x1b)
-	text_cols=$(echo -e "$text" | sed 's/\x1b\[.*m//g' | wc -L )
-	text_rows=$(echo -e "$text" | wc -l )
-
-	col_spacer="\\\\e[${col}C"
-	row_home="\\e[${text_rows}A"
-	local text=$(echo "$text" | sed "s/^/$col_spacer/g;s/\\\\n/\\\\n$col_spacer/g")
-
-
-
-	printf "$text\n${row_home}!"
-
-	#echo $text_rows
-	#echo $text_cols
-
-
-
-}
-
-
-#multiline 3 10 "Hola\nmundo\nadios\n\t\e[0;31mblablabla"
-
-
-
-logo=$(printf '%s'\
-	"        -oydNMMMMNdyo-        \n"\
-	"     -yNMMMMMMMMMMMMMMNy-     \n"\
-	"   .hMMMMMMmhsooshmMMMMMMh.   \n"\
-	"  :NMMMMmo.        .omMMMMN:  \n"\
-	" -NMMMMs    -+ss+-    sMMMMN- \n"\
-	" hMMMMs   -mMMMMMMm-   sMMMMh \n"\
-	"'MMMMM.  'NMMMMMMMMN'  .MMMMM'\n"\
-	"'MMMMM.  'NMMMMMMMMN'   yMMMM'\n"\
-	" hMMMMs   -mMMMMMMMMy.   -yMh \n"\
-	" -NMMMMs    -+ss+yMMMMy.   -. \n"\
-	"  :NMMMMmo.       .yMMMMy.    \n"\
-	"   .hMMMMMMmhsoo-   .yMMMy    \n"\
-	"     -yNMMMMMMMMMy-   .o-     \n"\
-	"        -oydNMMMMNd/          ")
-
-printf "\e[;H$logo"
-
-echo ""
-
-printf ""
 
 
 
 
 
-getTextShape()
-{
-	text=$1
-	local rows=$(echo -e "$text" | wc -l )
-	local columns=$(echo -e "$text" | sed 's/\x1b\[.*m//g' | wc -L )
-
-	printf "$rows $columns\n"
-}
-
-getTextShape "$logo"
 
 
-statusSwitch()
-{
-	case $1 in
-		OS)		printInfoOS;;
-		KERNEL)		printInfoKernel;;
-		CPU)		printInfoCPU;;
-		SHELL)		printInfoShell;;
-		DATE)		printInfoDate;;
-		USER)		printInfoUser;;
-		LOCALIPV4)	printInfoLocalIPv4;;
-		EXTERNALIPV4)	printInfoExternalIPv4;;
-		SERVICES)	printInfoSystemctl;;
-		SYSLOADAVG)	printMonitorCPU;;
-		MEMORY)		printMonitorRAM;;
-		SWAP)		printMonitorSwap;;
-		HDDROOT)	printMonitorHDD;;
-		HDDHOME)	printMonitorHome;;
-
-		*)		printInfo "Unknown" "?";;
-	esac
-}
 
 
-print_info="OS KERNEL CPU SHELL DATE USER LOCALIPV4 EXTERNALIPV4 SERVICES SYSLOADAVG MEMORY SWAP HDDROOT HDDHOME"
 
-local status_info=""
-for key in $print_info; do
-	local status_info="${status_info}\n$(statusSwitch $key)"
-done
 
-printf "${status_info}"
 
-getTextShape "$status_info"
+
+
+#getTextShape "$status_info"
+#getTextShape "$logo"
 
 
 ## RUN SCRIPT
