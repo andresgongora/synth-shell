@@ -227,9 +227,22 @@ printTwoElementsSideBySide()
 
 	## COMPUTE OPTIMAL HORIZONTAL PADDING
 	local free_cols=$(( $term_cols - $e_1_cols - $e_2_cols ))
-	local h_pad=$(( $free_cols/3 ))
-	local e_1_h_pad=$h_pad
-	local e_2_h_pad=$(( $e_1_cols + 2*$h_pad ))
+	if [ $e_1_cols -gt 0 ] && [ $e_2_cols -gt 0 ]; then
+		local h_pad=$(( $free_cols/3 ))
+		local e_1_h_pad=$h_pad
+		local e_2_h_pad=$(( $e_1_cols + 2*$h_pad ))
+	elif  [ $e_1_cols -gt 0 ]; then
+		local h_pad=$(( $free_cols/2 ))
+		local e_1_h_pad=$h_pad
+		local e_2_h_pad=0
+	elif  [ $e_2_cols -gt 0 ]; then
+		local h_pad=$(( $free_cols/2 ))
+		local e_1_h_pad=0
+		local e_2_h_pad=$h_pad
+	else
+		local e_1_h_pad=0
+		local e_2_h_pad=0
+	fi
 
 
 	## COMPUTE OPTIMAL VERTICAL PADDING
