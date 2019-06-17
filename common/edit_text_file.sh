@@ -50,14 +50,17 @@ editTextFile()
 	text=${@:3}
 
 
-	## CHECK IF FILE EXISTS
+
+	## CHECK IF FILE EXISTS AND CAN BE WRITTEN
+	## - If file does not exist, create it
+	## - If file can not be written, exit	
 	if [ ! -f "$file" ]; then
-		echo "$file does not exists"
-		exit 0
+		touch "$file" || exit 1
 	elif [ ! -w "$file" ]; then
 		echo "$file can not be written"
 		exit 1
 	fi
+
 
 
 	## OPERATE ON FILE
