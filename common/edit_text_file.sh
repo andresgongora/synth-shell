@@ -52,9 +52,13 @@ editTextFile()
 
 
 	## CHECK IF FILE EXISTS AND CAN BE WRITTEN
+	## - A file must have been specified
 	## - If file does not exist, create it
 	## - If file can not be written, exit	
-	if [ ! -f "$file" ]; then
+	if [ -z "$file" ]; then
+		echo "No file specified"
+		exit 1
+	elif [ ! -f "$file" ]; then
 		touch "$file" || exit 1
 	elif [ ! -w "$file" ]; then
 		echo "$file can not be written"
@@ -65,18 +69,18 @@ editTextFile()
 
 	## OPERATE ON FILE
 	case $option in
-
+	
 	append)
-		flat_text=$(echo -e $text | sed ':a;N;$!ba;s/[]\/$*.^|[]/\\&/g;s/[\n\t]$//g;s/[\n\t]/\\\\\\&/g;')
+		flat_text=$(echo -e "$text\n" | sed ':a;N;$!ba;s/[]\/$*.^|[]/\\&/g;s/[\n\t]*$//g;s/[\n\t]/\\\\\\&/g')
 		found_text=$(sed -n ':a;N;$!ba;s/[\n\t]/\\&/g;/'"$flat_text"'/p' $file)
 		if [ -z "$found_text" ]; then
-			echo -e "$text\n" >> "$file"
+			echo -e "$text" >> "$file"
 		fi
 		;;
 
 
 	delete)
-		flat_text=$(echo -e $text | sed ':a;N;$!ba;s/[]\/$*.^|[]/\\&/g;s/[\n\t]$//g;s/[\n\t]/\\\\\\&/g;')
+		flat_text=$(echo -e "$text" | sed ':a;N;$!ba;s/[]\/$*.^|[]/\\&/g;s/[\n\t]$//g;s/[\n\t]/\\\\\\&/g')
 		flat_file=$(sed ':a;N;$!ba;s/[\n\t]/\\&/g;s/'"$flat_text"'//g;s/\\\n/\n/g;s/\\\t/\t/g' $file)
 		echo -e "$flat_file" > "$file"
 		;;
@@ -86,5 +90,8 @@ editTextFile()
 		;;
 	esac
 }
+
+##################
+
 
 
