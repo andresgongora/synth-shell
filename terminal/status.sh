@@ -782,10 +782,6 @@ printTopRAM()
 ## If not, search in `common` folder
 local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-if [ "$(type -t loadConfigFile)" != 'function' ];
-then
-	source "$dir/../common/load_config.sh"
-fi
 if [ "$(type -t getFormatCode)" != 'function' ]; then
 	source "$dir/../common/color.sh"
 fi
@@ -859,9 +855,9 @@ local date_format="%Y.%m.%d - %T"
 local user_config_file="$HOME/.config/scripts/status.config"
 local sys_config_file="/etc/andresgongora/scripts/status.config"
 if   [ -f $user_config_file ]; then
-	loadConfigFile $user_config_file
+	source $user_config_file
 elif [ -f $sys_config_file ]; then
-	loadConfigFile $sys_config_file
+	source $sys_config_file
 fi
 
 
