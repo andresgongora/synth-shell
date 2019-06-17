@@ -66,13 +66,15 @@ installScript()
 	local script="${INSTALL_DIR}/${script_name}.sh"
 	local source_script="${dir}/../terminal/${script_name}.sh"
 	local config_template_dir="${dir}/../config_templates"
-	source "$dir/../common/edit_text_file.sh"
+	local uninstaller="${INSTALL_DIR}/uninstall.sh"
+	local edit_text_file_script="$dir/../common/edit_text_file.sh"
+	source "$edit_text_file_script"
 
 
 
 	## TEXT FRAGMENTS
 	local hook=$(printf '%s'\
-	"\n\n"\
+	"\n"\
 	"##-----------------------------------------------------\n"\
 	"## ${script_name}\n"\
 	"## Added from https://github.com/andresgongora/scripts/\n"\
@@ -158,24 +160,21 @@ installScript()
 		## - Add actual script
 		## - Remove common functions from environment
 		cat "${dir}/../common/load_config.sh" |\
-		sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
+			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
 		cat "${dir}/../common/color.sh" |\
-		sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
+			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
 		cat "${dir}/../common/shorten_path.sh" |\
-		sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
+			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
 		cat "${dir}/../common/print_utils.sh" |\
-		sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
+			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
 		cat "$source_script" |\
-		sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
+			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
 		#echo "unset loadConfigFile" >> "$script"
 		#echo "unset getFormatCode" >> "$script"
 
 
 
 		## ADD HOOK TO /etc/bash.bashrc
-		if [ ! -f "$BASHRC" ]; then
-			touch "$BASHRC" || exit 1
-		fi
 		editTextFile "$BASHRC" append "$hook"
 
 
@@ -204,7 +203,21 @@ installScript()
 		cp -ur "$conf_example_dir" "${CONFIG_DIR}/"
 
 
+
+		## ADD QUICK-UNINSTALLER
+		editTextFile "$uninstaller" append "$script_header"
+		cat "$edit_text_file_script" |\
+			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$uninstaller"
+		editTextFile "$uninstaller" append "rm -rf ${CONFIG_DIR}"
+		echo "hook=\"$hook\"" >> "$uninstaller"
+		echo "editTextFile \"$BASHRC\" delete \"\$hook\"" >> "$uninstaller"
+		echo "unset hook" >> "$uninstaller"
+		chmod +x "$uninstaller"
+
+
 		;;
+
+
 
 	*)
 		echo $"Usage: $0 {install|uninstall}"

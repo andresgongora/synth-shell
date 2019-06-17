@@ -132,13 +132,22 @@ your manual intervention. Check the content of each script for details.
 <!--------------------------------------+-------------------------------------->
 
 Removing the script is very easy. If you installed it with the auto-installer,
-just run it again and select the appropriate options. 
+and assuming you installed the scripts for your user only,
+you can run te following uninstall script:
+```
+~/.config/scripts/uninstall.sh
+```
+
+
+If this does not work, you can run the main install script, which also offers
+an option to uninstall everything installed on your system.
 ```
 git clone --recursive https://github.com/andresgongora/scripts.git
 chmod +x scripts/install/install.sh
 scripts/install/install.sh uninstall
 rm -fr scripts
 ```
+
 
 If you installed them manually, all you ahve to do is edit your user's bashrc
 file, either by removing the call to the script all together, or just commenting
