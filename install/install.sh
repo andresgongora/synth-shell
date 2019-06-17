@@ -66,7 +66,9 @@ installScript()
 	local script="${INSTALL_DIR}/${script_name}.sh"
 	local source_script="${dir}/../terminal/${script_name}.sh"
 	local config_template_dir="${dir}/../config_templates"
-	source "$dir/../common/edit_text_file.sh"
+	local uninstaller="${INSTALL_DIR}/uninstall.sh"
+	local edit_text_files_script="$dir/../common/edit_text_file.sh"
+	source "$edit_text_files_script"
 
 
 
@@ -173,9 +175,6 @@ installScript()
 
 
 		## ADD HOOK TO /etc/bash.bashrc
-		if [ ! -f "$BASHRC" ]; then
-			touch "$BASHRC" || exit 1
-		fi
 		editTextFile "$BASHRC" append "$hook"
 
 
@@ -204,7 +203,22 @@ installScript()
 		cp -ur "$conf_example_dir" "${CONFIG_DIR}/"
 
 
+
+		## ADD QUICK-UNINSTALLER
+		echo "$script_header"
+		editTextFile "$uninstaller" append "$script_header"
+		editTextFile "$uninstaller" append "$(cat $edit_text_files_script)"
+		editTextFile "$uninstaller" append "rm $script"
+		editTextFile "$uninstaller" append "rm ${CONFIG_DIR}/$conf_example_dir"		
+		editTextFile "$uninstaller" append "editTextFile \"$BASHRC\" delete \"$hook\""
+
+
+
+
+
 		;;
+
+
 
 	*)
 		echo $"Usage: $0 {install|uninstall}"
