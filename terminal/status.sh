@@ -730,9 +730,10 @@ printTopCPU()
 	local current=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
 	local max=$(nproc --all)
 	local percent=$(awk '{printf "%3.0f\n",$1*100/'"$max"'}' /proc/loadavg)
-
+	local percent="101"
 	if [ $percent -gt $crit_cpu_percent ]; then
-		local top=$('nice' 'top' -b -w 80 -d 1 | head -n 11 | sed 's/%/%%/g')
+	
+		local top=$('nice' 'top' -b -d 0.1 | head -n 11 | sed 's/%/%%/g')
 		local load=$(echo "${top}" | head -n 3 | tail -n 1 | tr '', ' ')
 		local head=$(echo "${top}" | head -n 7 | tail -n 1)
 		local proc=$(echo "${top}" | tail -n 4 | grep -v "top")
