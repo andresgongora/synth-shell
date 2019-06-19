@@ -143,14 +143,6 @@ If adding new lines to separate chunks of code, use either 1, 2, 3 or 6 lines.
 #                         Built-in and system functions
 <!--------------------------------------+-------------------------------------->
 
-
-### Use printf (instead echo, etc)
-Printf is more versatile to use especially with more complex output lines, so
-do use only printf when needing to say something into terminal or variables.
-This ensures consistent code, consistent behaviour of text output, so therefore
-easier to debug if need ever arises to.
-
-
 ### System binary calls
 Please do not call any system binary using only it's name, wrap it in `'`, 
 or use `which`. 

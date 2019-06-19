@@ -661,7 +661,7 @@ printStatusInfo()
 printHeader()
 {
 	## GET ELEMENTS TO PRINT
-	local logo=$(printf "$fc_logo$logo$fc_none")
+	local logo=$(echo "$fc_logo$logo$fc_none")
 	local info=$(printStatusInfo)
 
 

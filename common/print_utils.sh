@@ -262,7 +262,7 @@ printTwoElementsSideBySide()
 
 	## LEAVE CURSOR AT "SAFE" POSITION
 	local max_rows=$(( ( $e_1_rows > $e_2_rows ) ? $e_1_rows : $e_2_rows ))
-	moveCursorDown "$max_rows"
+	moveCursorDown $(( $max_rows + 1 ))
 }
 
 
