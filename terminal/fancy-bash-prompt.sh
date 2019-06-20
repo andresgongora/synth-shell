@@ -29,32 +29,6 @@
 ##
 ##
 ##
-##
-##	FUNCTIONS
-##
-##	* bash_prompt_command()
-##	  This function takes your current working directory and stores a shortened
-##	  version in the variable "NEW_PWD".
-##
-##	* bash_prompt()
-##	  This function colorizes the bash promt. The exact color scheme can be
-##	  configured here. The structure of the function is as follows:
-##		1. A. Definition of available colors for 16 bits.
-##		1. B. Definition of some colors for 256 bits (add your own).
-##		2. Configuration >> EDIT YOUR PROMT HERE<<.
-##		4. Generation of color codes.
-##		5. Generation of window title (some terminal expect the first
-##		   part of $PS1 to be the window title)
-##		6. Formating of the bash promt ($PS1).
-##
-##	* Main script body:
-##	  It calls the adequate helper functions to colorize your promt and sets
-##	  a hook to regenerate your working directory "NEW_PWD" when you change it.
-##
-##
-##
-##
-##
 ##	REFFERENCES
 ##
 ##	* http://tldp.org/HOWTO/Bash-Prompt-HOWTO/index.html
@@ -63,62 +37,126 @@
 
 
 
+fancy_bash_prompt()
+{
+
+
 
 ##==============================================================================
 ##	FUNCTIONS
 ##==============================================================================
 
+
+##------------------------------------------------------------------------------
+##	getGitBranch
+##	Returns current git branch for current directory, if and only if,
+##	the current directory is part of a git repository, and git is installed.
+##	Returns an empty string otherwise.
 ##
-##	ARRANGE $PWD AND STORE IT IN $NEW_PWD
-##	* The home directory (HOME) is replaced with a ~
-##	* The last pwdmaxlen characters of the PWD are displayed
-##	* Leading partial directory names are striped off
-##		/home/me/stuff -> ~/stuff (if USER=me)
-##		/usr/share/big_dir_name -> ../share/big_dir_name (if pwdmaxlen=20)
-##
-##	Original source: WOLFMAN'S color bash promt
-##	https://wiki.chakralinux.org/index.php?title=Color_Bash_Prompt#Wolfman.27s
-##
-bash_prompt_command() {
-	# How many characters of the $PWD should be kept
-	local pwdmaxlen=25
-
-	# Indicate that there has been dir truncation
-	local trunc_symbol=".."
-
-	# Store local dir
-	local dir=${PWD##*/}
-
-	# Which length to use
-	pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
-
-	NEW_PWD=${PWD/#$HOME/\~}
-
-	local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
-
-	# Generate name
-	if [ ${pwdoffset} -gt "0" ]
-	then
-		NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
-		NEW_PWD=${trunc_symbol}/${NEW_PWD#*/}
+getGitBranch()
+{
+	if ( which git > /dev/null 2>&1 ); then
+		git branch 2> /dev/null | sed -n '/^[^*]/d;s/*\s*\(.*\)/\1/p'
+	else
+		echo ""
 	fi
 }
 
 
 
-##==============================================================================
-bash_prompt() {
+
+
+
+##------------------------------------------------------------------------------
+##
+printSegment()
+{
+	## GET PARAMETERS
+	local text=$1
+	local font_color=$2
+	local background_color=$3
+	local next_background_color=$4
+	local font_effect=$5
+	if [ -z "$separator_char" ]; then local separator_char='\uE0B0'; fi
+
+
+
+	## COMPUTE COLOR FORMAT CODES
+	local no_color="\[$(getFormatCode -e reset)\]"
+	local text_format="\[$(getFormatCode -c $font_color -b $background_color -e $font_effect)\]"
+	local separator_format="\[$(getFormatCode -c $background_color -b $next_background_color)\]"
+
+
+
+	## GENERATE TEXT
+	printf "${text_format}${text}${separator_format}${separator_char}${no_color}"
+}
+
+
+
+
+
+
+##------------------------------------------------------------------------------
+##
+prompt_command_hook()
+{
+	## LOAD EXTERNAL DEPENENCIES
+	## Only if the functions are not available
+	## If not, search in `common` folder
+	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+	if [ "$(type -t shortenPath)" != 'function' ];
+	then
+		source "$dir/../common/shorten_path.sh"
+	fi
+	if [ "$(type -t removeColorCodes)" != 'function' ];
+	then
+		source "$dir/../common/color.sh"
+	fi
+
+
+
+	## GET PARAMETERS
+	local user=$USER
+	local host=$HOSTNAME
+	local path="$(shortenPath "$PWD" 20)"
+	local git_branch="$(shortenPath "$(getGitBranch)" 10)"
+
+
+
+	## UPDATE BASH PROMPT ELEMENTS
+	FBP_USER=" $user "
+	FBP_HOST=" $host "
+	FBP_PWD=" $path "
+	if [ -z "$git_branch" ]; then
+		FBP_GIT=""
+	else
+		FBP_GIT=" $git_branch "
+	fi
+
+
+
+	## CHOOSE PS1 FORMAT IF INSIDE GIT REPO
+	if [ ! -z "$(getGitBranch)" ] && $FBP_SHOW_GIT; then
+		PS1=$FBP_PS1_GIT
+	else
+		PS1=$FBP_PS1
+	fi
+}
+
+
+
+
+
+
+##------------------------------------------------------------------------------
+##
 
 	## INCLUDE EXTERNAL DEPENDENCIES
 	## Only if the functions are not available
 	## If not, search in `common` folder
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
-	if [ "$(type -t loadConfigFile)" != 'function' ];
-	then
-		source "$dir/../common/load_config.sh"
-	fi
-
 	if [ "$(type -t getFormatCode)" != 'function' ];
 	then
 		source "$dir/../common/color.sh"
@@ -140,12 +178,17 @@ bash_prompt() {
 	local background_pwd="white"
 	local texteffect_pwd="bold"
 
+	local font_color_git="light-gray"
+	local background_git="dark-gray"
+	local texteffect_git="bold"
+
 	local font_color_input="cyan"
 	local background_input="none"
 	local texteffect_input="bold"
 
-	local separator_char=$'\uE0B0'
+	local separator_char='\uE0B0'
 	local enable_vertical_padding=true
+	local show_git=true
 
 
 
@@ -153,9 +196,9 @@ bash_prompt() {
 	local user_config_file="$HOME/.config/scripts/fancy-bash-prompt.config"
 	local sys_config_file="/etc/andresgongora/scripts/fancy-bash-prompt.config"
 	if   [ -f $user_config_file ]; then
-		loadConfigFile $user_config_file
+		source $user_config_file
 	elif [ -f $sys_config_file ]; then
-		loadConfigFile $sys_config_file
+		source $sys_config_file
 	fi
 
 
@@ -164,28 +207,23 @@ bash_prompt() {
 	## The sequences will confuse the bash promt. To tell the terminal that they are non-printint
 	## characters, we must surround them by \[ and \]
 	local no_color="\[$(getFormatCode -e reset)\]"
-	local ps1_user_format="\[$(getFormatCode    -c $font_color_user  -b $background_user  -e $texteffect_user)\]"
-	local ps1_host_format="\[$(getFormatCode    -c $font_color_host  -b $background_host  -e $texteffect_host)\]"
-	local ps1_pwd_format="\[$(getFormatCode     -c $font_color_pwd   -b $background_pwd   -e $texteffect_pwd)\]"
-	local ps1_input_format="\[$(getFormatCode   -c $font_color_input -b $background_input -e $texteffect_input)\]"
-	local separator_1_format="\[$(getFormatCode -c $background_user  -b $background_host)\]"
-	local separator_2_format="\[$(getFormatCode -c $background_host  -b $background_pwd)\]"
-	local separator_3_format="\[$(getFormatCode -c $background_pwd)\]"
-
-
-
-	## GENERATE USER/HOST/PWD TEXT
-	local ps1_user="${ps1_user_format} \u "
-	local ps1_host="${ps1_host_format} \h "
-	local ps1_pwd="${ps1_pwd_format} \${NEW_PWD} "
+	local ps1_input_format="\[$(getFormatCode       -c $font_color_input -b $background_input -e $texteffect_input)\]"
 	local ps1_input="${ps1_input_format} "
 
+	local ps1_user_git=$(printSegment "\${FBP_USER}" $font_color_user $background_user $background_host $texteffect_user)
+	local ps1_host_git=$(printSegment "\${FBP_HOST}" $font_color_host $background_host $background_pwd $texteffect_host)
+	local ps1_pwd_git=$(printSegment "\${FBP_PWD}" $font_color_pwd $background_pwd $background_git $texteffect_pwd)
+	local ps1_git_git=$(printSegment "\${FBP_GIT}" $font_color_git $background_git $background_input $texteffect_git)
+
+	local ps1_user=$(printSegment "\${FBP_USER}" $font_color_user $background_user $background_host $texteffect_user)
+	local ps1_host=$(printSegment "\${FBP_HOST}" $font_color_host $background_host $background_pwd $texteffect_host)
+	local ps1_pwd=$(printSegment "\${FBP_PWD}" $font_color_pwd $background_pwd $background_input $texteffect_pwd)
+	local ps1_git=""
 
 
-	## GENERATE SEPARATORS
-	local separator_1="${separator_1_format}${separator_char}"
-	local separator_2="${separator_2_format}${separator_char}"
-	local separator_3="${separator_3_format}${separator_char}$no_color"
+
+	## ENABLE GIT ACCORDING TO USER CONFIG
+	FBP_SHOW_GIT=$show_git
 
 
 
@@ -203,7 +241,7 @@ bash_prompt() {
 	## Must be set in PS1
 	case $TERM in
 	xterm*|rxvt*)
-		local titlebar='\[\033]0;\u:${NEW_PWD}\007\]'
+		local titlebar='\[\033]0;${USER}:${NEW_PWD}\007\]'
 		;;
 	*)
 		local titlebar=""
@@ -213,33 +251,29 @@ bash_prompt() {
 
 
 	## BASH PROMT - Generate promt and remove format from the rest
-	PS1="$titlebar${vertical_padding}${ps1_user}${separator_1}${ps1_host}${separator_2}${ps1_pwd}${separator_3}${ps1_input}"
+	FBP_PS1="$titlebar${vertical_padding}${ps1_user}${ps1_host}${ps1_pwd}${ps1_git}${ps1_input}"
+	FBP_PS1_GIT="$titlebar${vertical_padding}${ps1_user_git}${ps1_host_git}${ps1_pwd_git}${ps1_git_git}${ps1_input}"
 
 
 
 	## For terminal line coloring, leaving the rest standard
 	none="$(tput sgr0)"
 	trap 'echo -ne "${none}"' DEBUG
+
+
+
+	## ADD HOOK TO UPDATE PS1 AFTER EACH COMMAND
+	## Bash provides an environment variable called PROMPT_COMMAND.
+	## The contents of this variable are executed as a regular Bash command
+	## just before Bash displays a prompt.
+	## We want it to call our own command to truncate PWD and store it in NEW_PWD
+	PROMPT_COMMAND=prompt_command_hook
+
+
+
 }
-
-
-
-
-##==============================================================================
-##	MAIN
-##==============================================================================
-
-##	Bash provides an environment variable called PROMPT_COMMAND.
-##	The contents of this variable are executed as a regular Bash command
-##	just before Bash displays a prompt.
-##	We want it to call our own command to truncate PWD and store it in NEW_PWD
-PROMPT_COMMAND=bash_prompt_command
-
-##	Call bash_promnt only once, then unset it (not needed any more)
-##	It will set $PS1 with colors and relative to $NEW_PWD,
-##	which gets updated by $PROMT_COMMAND on behalf of the terminal
-bash_prompt
-unset bash_prompt
+fancy_bash_prompt
+unset fancy_bash_prompt
 
 
 

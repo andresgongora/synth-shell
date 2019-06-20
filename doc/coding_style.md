@@ -112,6 +112,15 @@ getData()
 ### Line length
 Limit lines to 80 characters whenever possible (code + characters). 
 Use backslash '\' to continue code on a second line.
+This is because of the following reasons:
+* Traditionally, temrinals were 80 chars wide. This no longer holds true, but  
+  is as good as any other line-length limit in a similar range.
+* When working on a single monitor, its useful to visualize two files side  
+  by side. With more than 80 characres per line, it becomes difficul unless  
+  the scriin is very wide
+* When solving conflicts when mergin two files, the same applies; only that  
+  this time its useful to visualize 3 files side by side.
+
 
 
 ### New lines to separate code
@@ -133,14 +142,6 @@ If adding new lines to separate chunks of code, use either 1, 2, 3 or 6 lines.
 <!--------------------------------------+-------------------------------------->
 #                         Built-in and system functions
 <!--------------------------------------+-------------------------------------->
-
-
-### Use printf (instead echo, etc)
-Printf is more versatile to use especially with more complex output lines, so
-do use only printf when needing to say something into terminal or variables.
-This ensures consistent code, consistent behaviour of text output, so therefore
-easier to debug if need ever arises to.
-
 
 ### System binary calls
 Please do not call any system binary using only it's name, wrap it in `'`, 

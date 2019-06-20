@@ -52,7 +52,7 @@ status()
 ##	Program search ordering is based on timed tests, fastest to slowest.
 ##
 ##	!!! NOTE: Still needs to figure out how to look for IP address that
-##	!!!       have a default gateway attached to related interface, 
+##	!!!       have a default gateway attached to related interface,
 ##	!!!       otherwise this returns a list of IPv6's if there are many.
 ##
 getLocalIPv6()
@@ -73,7 +73,7 @@ getLocalIPv6()
 	## \K				everything until here, ommit
 	## (){1,8}			repeat block at least 1 time, up to 8
 	## ([0-9abcdef]){0,4}:*		up to 4 chars from [] followed by :
-	##	
+	##
 	#local grep_reggex='\s*inet6\s+(addr:?\s*)?\K(([0-9abcdef]){0,4}:*){1,8}'
 	##
 	## The following string, on the other hand, is easier to read and
@@ -97,7 +97,7 @@ getLocalIPv6()
 	fi
 
 
-	## Returns "N/A" if actual query result is empty, 
+	## Returns "N/A" if actual query result is empty,
 	## and returns "Error" if no programs found
 	[ $result ] && printf $result || printf "N/A"
 }
@@ -135,7 +135,7 @@ getExternalIPv6()
 	fi
 
 
-	## Returns "N/A" if actual query result is empty, 
+	## Returns "N/A" if actual query result is empty,
 	## and returns "Error" if no programs found
 	[ $result ] && printf $result || printf "N/A"
 }
@@ -162,7 +162,7 @@ printInfo()
 	value=$2
 	pad=$info_label_width
 
-	printf "${fc_info}%-${pad}s${fc_highlight}${value}${fc_none}" "$label"
+	printf "${fc_info}%-${pad}s${fc_highlight}${value}${fc_none}\n" "$label"
 }
 
 
@@ -187,7 +187,7 @@ printBar()
 	local max=$2
 	local size=$3
 	local crit_percent=$4
-	local percent=$(bc <<< "$current/$max")
+	local percent=$(bc <<< "$current*100/$max")
 
 
 	## COMPUTE VARIABLES
@@ -195,7 +195,7 @@ printBar()
 	if [ $num_bars -gt $size ]; then
 		num_bars=$size
 	fi
-	
+
 
 	## SET COLORS
 	local bar_color=$fc_ok
@@ -261,7 +261,7 @@ printFraction()
 ##	2. MAX: max resource utilization (e.g. HDD size)
 ##	3. CRIT_PERCENT: point at which to warn the user (e.g. 80 for 80%)
 ##	4. PRINT_AS_PERCENTAGE: whether to print a simple percentage after
-##	   the utilization bar (true), or to print a fraction (false). 
+##	   the utilization bar (true), or to print a fraction (false).
 ##	5. UNITS: units of the resource, for display purposes only. This are
 ##	   not shown if PRINT_AS_PERCENTAGE=true, but must be set nonetheless.
 ##	6. LABEL: A description of the resource that will be printed in front
@@ -283,7 +283,7 @@ printMonitor()
 
 
 	if $print_as_percentage; then
-		percent=$(bc <<< "$current*100/$max")	
+		percent=$(bc <<< "$current*100/$max")
 		printf "${fc_highlight}%${bar_num_digits}s${fc_info} %%%%${fc_none}" $percent
 	else
 		printFraction $current $max $bar_num_digits $units
@@ -313,6 +313,8 @@ printInfoOS()
 
 
 
+##------------------------------------------------------------------------------
+##
 printInfoKernel()
 {
 	local kernel=$(uname -r)
@@ -321,6 +323,8 @@ printInfoKernel()
 
 
 
+##------------------------------------------------------------------------------
+##
 printInfoCPU()
 {
 	## Get first instance of "model name" in /proc/cpuinfo, pipe into 'sed'
@@ -345,6 +349,8 @@ printInfoCPU()
 
 
 
+##------------------------------------------------------------------------------
+##
 printInfoShell()
 {
 	local shell=$(readlink /proc/$$/exe)
@@ -353,6 +359,8 @@ printInfoShell()
 
 
 
+##------------------------------------------------------------------------------
+##
 printInfoDate()
 {
 	local sys_date=$(date +"$date_format")
@@ -361,6 +369,8 @@ printInfoDate()
 
 
 
+##------------------------------------------------------------------------------
+##
 printInfoUser()
 {
 	printInfo "User" "$USER@$HOSTNAME"
@@ -374,7 +384,7 @@ printInfoUser()
 ##
 ##	Looks up and returns local IPv4-address.
 ##	Tries first program found.
-##	!!! NOTE: Still needs to figure out how to look for IP address that 
+##	!!! NOTE: Still needs to figure out how to look for IP address that
 ##	!!!       have a default gateway attached to related interface,
 ##	!!!       otherwise this returns list of IPv4's if there are many
 ##
@@ -394,7 +404,7 @@ printInfoLocalIPv4()
 	## \K				everything until here, ommit
 	## (){4}			repeat block at least 1 time, up to 8
 	## ([0-9]){1,4}:*		1 to 3 integers [0-9] followed by "."
-	##	
+	##
 	#local grep_reggex='^\s*inet\s+(addr:?\s*)?\K(([0-9]){1,3}\.*){4}'
 	##
 	## The following string, on the other hand, is easier to read and
@@ -417,7 +427,7 @@ printInfoLocalIPv4()
 	fi
 
 
-	## Returns "N/A" if actual query result is empty, 
+	## Returns "N/A" if actual query result is empty,
 	## and returns "Error" if no programs found
 	[ $ip ] || local ip="N/A"
 	printInfo "Local IPv4" "$ip"
@@ -457,7 +467,7 @@ printInfoExternalIPv4()
 	fi
 
 
-	## Returns "N/A" if actual query result is empty, 
+	## Returns "N/A" if actual query result is empty,
 	## and returns "Error" if no programs found
 	[ $ip ] || local ip="N/A"
 	printInfo "External IPv4" "$ip"
@@ -465,6 +475,8 @@ printInfoExternalIPv4()
 
 
 
+##------------------------------------------------------------------------------
+##
 printInfoSystemctl()
 {
 	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
@@ -482,6 +494,8 @@ printInfoSystemctl()
 
 
 
+##------------------------------------------------------------------------------
+##
 printMonitorCPU()
 {
 	local message="Sys load avg"
@@ -489,12 +503,17 @@ printMonitorCPU()
 	local current=$(awk '{avg_1m=($1)} END {printf "%3.2f", avg_1m}' /proc/loadavg)
 	local max=$(nproc --all)
 
+	local as_percentage=$1
+	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
+
 	printMonitor $current $max $crit_cpu_percent \
-	             $cpu_as_percentage $units $message
+	             $as_percentage $units $message
 }
 
 
 
+##------------------------------------------------------------------------------
+##
 printMonitorRAM()
 {
 	local message="Memory"
@@ -503,12 +522,17 @@ printMonitorRAM()
 	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
 	local max=$(echo "$mem_info" | awk '{mem=($2)} END {printf mem}')
 
+	local as_percentage=$1
+	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
+
 	printMonitor $current $max $crit_ram_percent \
-	             $ram_as_percentage $units $message
+	             $as_percentage $units $message
 }
 
 
 
+##------------------------------------------------------------------------------
+##
 printMonitorSwap()
 {
 	local message="Swap"
@@ -517,16 +541,21 @@ printMonitorSwap()
 	local current=$(echo "$swap_info" | awk '{SWAP=($3)} END {printf SWAP}')
 	local max=$(echo "$swap_info" | awk '{SWAP=($2)} END {printf SWAP}')
 
+	local as_percentage=$1
+	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
+
 	if [ "$max" -eq "0" ]; then
 		printf "${fc_info}${message}${fc_highlight}N/A{fc_none}"
 	else
 		printMonitor $current $max $crit_swap_percent \
-		             $swap_as_percentage $units $message
+		             $as_percentage $units $message
 	fi
 }
 
 
 
+##------------------------------------------------------------------------------
+##
 printMonitorHDD()
 {
 	local message="Storage /"
@@ -534,12 +563,17 @@ printMonitorHDD()
 	local current=$(df -B1G / | grep "/" | awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G / | grep "/" | awk '{key=($2)} END {printf key}')
 
+	local as_percentage=$1
+	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
+
 	printMonitor $current $max $crit_hdd_percent \
-	             $hdd_as_percentage $units $message
+	             $as_percentage $units $message
 }
 
 
 
+##------------------------------------------------------------------------------
+##
 printMonitorHome()
 {
 	local message="Storage /home"
@@ -547,8 +581,11 @@ printMonitorHome()
 	local current=$(df -B1G ~ | grep "/" | awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G ~ | grep "/" | awk '{key=($2)} END {printf key}')
 
+	local as_percentage=$1
+	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
+
 	printMonitor $current $max $crit_home_percent \
-	             $home_as_percentage $units $message
+	             $as_percentage $units $message
 }
 
 
@@ -557,81 +594,107 @@ printMonitorHome()
 
 
 ##==============================================================================
-##	STATUS COMPOSITION
+##	STATUS INFO COMPOSITION
 ##==============================================================================
 
+##------------------------------------------------------------------------------
+##
+printStatusInfo()
+{
+	## HELPER FUNCTION
+	statusSwitch()
+	{
+		case $1 in
+		## INFO
+		##	NAME		FUNCTION
+			OS)		printInfoOS;;
+			KERNEL)		printInfoKernel;;
+			CPU)		printInfoCPU;;
+			SHELL)		printInfoShell;;
+			DATE)		printInfoDate;;
+			USER)		printInfoUser;;
+			LOCALIPV4)	printInfoLocalIPv4;;
+			EXTERNALIPV4)	printInfoExternalIPv4;;
+			SERVICES)	printInfoSystemctl;;
+
+		## USAGE MONITORS (BARS)
+		##	NAME		FUNCTION		AS %
+			SYSLOADAVG)	printMonitorCPU;;
+			SYSLOADAVG%)	printMonitorCPU		true;;
+			MEMORY)		printMonitorRAM;;
+			MEMORY%)	printMonitorRAM		true;;
+			SWAP)		printMonitorSwap;;
+			SWAP%)		printMonitorSwap 	true;;
+			HDDROOT)	printMonitorHDD;;
+			HDDROOT%)	printMonitorHDD 	true;;
+			HDDHOME)	printMonitorHome;;
+			HDDHOME%)	printMonitorHome 	true;;
+
+			*)		printInfo "Unknown" "?";;
+		esac
+	}
+
+
+	## ASSEMBLE INFO PANE
+	local status_info=""
+	for key in $print_info; do
+		if [ -z "$status_info" ]; then
+			local status_info="$(statusSwitch $key)"
+		else
+			local status_info="${status_info}\n$(statusSwitch $key)"
+		fi
+	done
+	printf "${status_info}\n"
+}
+
+
+
+
+
+
+##==============================================================================
+##	PRINT
+##==============================================================================
+
+##------------------------------------------------------------------------------
+##
 printHeader()
 {
-	## GENERATE PROPER AMOUNT OF PAD
-	i=0
-	while [ $i -lt $bar_num_digits ]; do
-		PAD="${PAD} "
-		i=$[$i+1]
-	done
+	## GET ELEMENTS TO PRINT
+	local logo=$(echo "$fc_logo$logo$fc_none")
+	local info=$(printStatusInfo)
 
 
-
-	## LOGO
-	local formatted_logo_01="${logo_padding}${fc_logo}${logo_01}${fc_none}"
-	local formatted_logo_02="${logo_padding}${fc_logo}${logo_02}${fc_none}"
-	local formatted_logo_03="${logo_padding}${fc_logo}${logo_03}${fc_none}"
-	local formatted_logo_04="${logo_padding}${fc_logo}${logo_04}${fc_none}"
-	local formatted_logo_05="${logo_padding}${fc_logo}${logo_05}${fc_none}"
-	local formatted_logo_06="${logo_padding}${fc_logo}${logo_06}${fc_none}"
-	local formatted_logo_07="${logo_padding}${fc_logo}${logo_07}${fc_none}"
-	local formatted_logo_08="${logo_padding}${fc_logo}${logo_08}${fc_none}"
-	local formatted_logo_09="${logo_padding}${fc_logo}${logo_09}${fc_none}"
-	local formatted_logo_10="${logo_padding}${fc_logo}${logo_10}${fc_none}"
-	local formatted_logo_11="${logo_padding}${fc_logo}${logo_11}${fc_none}"
-	local formatted_logo_12="${logo_padding}${fc_logo}${logo_12}${fc_none}"
-	local formatted_logo_13="${logo_padding}${fc_logo}${logo_13}${fc_none}"
-	local formatted_logo_14="${logo_padding}${fc_logo}${logo_14}${fc_none}"
+	## GET ELEMENT SIZES
+	local term_cols=$(getTerminalNumCols)
+	local logo_cols=$(getTextNumCols "$logo")
+	local info_cols=$(getTextNumCols "$info")
 
 
+	## PRINT ONLY WHAT FITS IN THE TERMINAL
+	if [ $(( $logo_cols + $info_cols )) -lt $term_cols ]; then
+		if $print_logo_right ; then
+			printTwoElementsSideBySide "$info" "$logo" "$print_cols_max"
+		else
+			printTwoElementsSideBySide "$logo" "$info" "$print_cols_max"
+		fi
 
-	## STATUS INFO
-	local formatted_status_01="$(printInfoOS)"
-	local formatted_status_02="$(printInfoKernel)"
-	local formatted_status_03="$(printInfoCPU)"
-	local formatted_status_04="$(printInfoShell)"
-	local formatted_status_05="$(printInfoDate)"
-	local formatted_status_06="$(printInfoUser)"
-	local formatted_status_07="$(printInfoLocalIPv4)"
-	local formatted_status_08="$(printInfoExternalIPv4)"
-	local formatted_status_09="$(printInfoSystemctl)"
-	local formatted_status_10="$(printMonitorCPU)"
-	local formatted_status_11="$(printMonitorRAM)"
-	local formatted_status_12="$(printMonitorSwap)"
-	local formatted_status_13="$(printMonitorHDD)"
-	local formatted_status_14="$(printMonitorHome)"
-
-
-
-	## PRINT HEADER WITH OVERALL STATUS REPORT
-	printf '\e[?7l'	# Disable line wrap -> Crop instead
-	printf "\n"
-	printf "${formatted_logo_01}\t${formatted_status_01}\n"
-	printf "${formatted_logo_02}\t${formatted_status_02}\n"
-	printf "${formatted_logo_03}\t${formatted_status_03}\n"
-	printf "${formatted_logo_04}\t${formatted_status_04}\n"
-	printf "${formatted_logo_05}\t${formatted_status_05}\n"
-	printf "${formatted_logo_06}\t${formatted_status_06}\n"
-	printf "${formatted_logo_07}\t${formatted_status_07}\n"
-	printf "${formatted_logo_08}\t${formatted_status_08}\n"
-	printf "${formatted_logo_09}\t${formatted_status_09}\n"
-	printf "${formatted_logo_10}\t${formatted_status_10}\n"
-	printf "${formatted_logo_11}\t${formatted_status_11}\n"
-	printf "${formatted_logo_12}\t${formatted_status_12}\n"
-	printf "${formatted_logo_13}\t${formatted_status_13}\n"
-	printf "${formatted_logo_14}\t${formatted_status_14}\n\n"
-	printf '\e[?7h'	# Re-enable line wrap
+	elif [ $info_cols -lt $term_cols ]; then
+		if $print_logo_right ; then
+			printTwoElementsSideBySide "$info" "" "$print_cols_max"
+		else
+			printTwoElementsSideBySide "" "$info" "$print_cols_max"
+		fi
+	fi
 }
 
 
 
+##------------------------------------------------------------------------------
+##
 printLastLogins()
 {
-	## DO NOTHING FOR NOW -> This is disabled  intentionally for now. 
+	## DO NOTHING FOR NOW -> This is disabled  intentionally for now.
 	## Printing logins should only be done under different conditions
 	## 1. User configurable set to always on
 	## 2. If the IP/terminal is very diffefrent from usual
@@ -644,12 +707,14 @@ printLastLogins()
 
 
 
+##------------------------------------------------------------------------------
+##
 printSystemctl()
 {
 	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
 
 	if [ "$systcl_num_failed" -ne "0" ]; then
-		local failed=$(systemctl --failed | grep ".service")
+		local failed=$(systemctl --failed | awk '/UNIT/,/^$/')
 		printf "${fc_crit}SYSTEMCTL FAILED SERVICES:\n"
 		printf "${fc_info}${failed}${fc_none}\n\n"
 
@@ -658,33 +723,58 @@ printSystemctl()
 
 
 
+##------------------------------------------------------------------------------
+##
 printTopCPU()
 {
 	local current=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
 	local max=$(nproc --all)
-	local percent=$(awk '{printf "%3.0f\n",$1*100/'"$max"'}' /proc/loadavg)
+	local percent=$(bc <<< "$current*100/$max")
 
 	if [ $percent -gt $crit_cpu_percent ]; then
-		local top=$('nice' 'top' -b -w 80 -d 1 | head -n 11 | sed 's/%/%%/g')
-		local load=$(echo "${top}" | head -n 3 | tail -n 1 | tr '', ' ')
-		local head=$(echo "${top}" | head -n 7 | tail -n 1)
-		local proc=$(echo "${top}" | tail -n 4 | grep -v "top")
+	
+		## CALL TOP IN BATCH MODE
+		## Check if "%Cpus(s)" is shown, otherwise, call "top -1"
+		## Escape all '%' characters
+		local top=$(nice 'top' -b -d 0.1 -n 1 )
+		local cpus=$(echo "$top" | grep "Cpu(s)" )
+		if [ -z "$cpus" ]; then
+			echo ":("
+			local top=$(nice 'top' -b -d 0.1 -1 -n 1 )
+			local cpus=$(echo "$top" | grep "Cpu(s)" )
+		fi
+		local top=$(echo "$top" | sed 's/\%/\%\%/g' )
 
-		printf "${fc_crit}SYSTEM LOAD:${fc_info}  ${load:9:36}\n"
-		printf "${fc_crit}$head${fc_none}\n"
-		printf "${fc_info}${proc}${fc_none}\n\n"
+
+		## EXTRACT ELEMENTS FROM TOP
+		## - load:    summary of cpu time spent for user/system/nice...
+		## - header:  the line just above the processes
+		## - procs:   the N most demanding procs in terms of CPU time
+		local load=$(echo "${cpus:9}" | tr '', ' ' )
+		local header=$(echo "$top" | grep "%CPU" )
+		local procs=$(echo "$top" |\
+		              sed  '/top - /,/%CPU/d' |\
+		              head -n "$top_show_num_procs" )
+
+
+		## PRINT WITH FORMAT
+		printf "${fc_crit}SYSTEM LOAD:${fc_info}  ${load}\n"
+		printf "${fc_crit}$header${fc_none}\n"
+		printf "${fc_info}${procs}${fc_none}\n\n"
 	fi
 }
 
 
 
+##------------------------------------------------------------------------------
+##
 printTopRAM()
 {
 	local mem_info=$('free' -m | head -n 2 | tail -n 1)
 	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
 	local max=$(echo "$mem_info" | awk '{mem=($2)} END {printf mem}')
-	local percent=$(($current*100/$max))
-	
+	local percent=$(bc <<< "$current*100/$max")
+
 	if [ $percent -gt $crit_ram_percent ]; then
 		local available=$(echo $mem_info | awk '{print $NF}')
 		local procs=$(ps --cols=80 -eo pmem,size,pid,cmd --sort=-%mem |\
@@ -713,14 +803,12 @@ printTopRAM()
 ## If not, search in `common` folder
 local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-if [ "$(type -t loadConfigFile)" != 'function' ];
-then
-	source "$dir/../common/load_config.sh"
-fi
-
-if [ "$(type -t getFormatCode)" != 'function' ];
-then
+if [ "$(type -t getFormatCode)" != 'function' ]; then
 	source "$dir/../common/color.sh"
+fi
+if [ "$(type -t printWithOffset)" != 'function' ];
+then
+	source "$dir/../common/print_utils.sh"
 fi
 
 
@@ -728,21 +816,38 @@ fi
 ## DEFAULT CONFIGURATION
 ## WARNING! Do not edit directly, use configuration files instead
 
-local logo_01="        -oydNMMMMNdyo-        "
-local logo_02="     -yNMMMMMMMMMMMMMMNy-     "
-local logo_03="   .hMMMMMMmhsooshmMMMMMMh.   "
-local logo_04="  :NMMMMmo.        .omMMMMN:  "
-local logo_05=" -NMMMMs    -+ss+-    sMMMMN- "
-local logo_06=" hMMMMs   -mMMMMMMm-   sMMMMh "
-local logo_07="'MMMMM.  'NMMMMMMMMN'  .MMMMM'"
-local logo_08="'MMMMM.  'NMMMMMMMMN'   yMMMM'"
-local logo_09=" hMMMMs   -mMMMMMMMMy.   -yMh "
-local logo_10=" -NMMMMs    -+ss+yMMMMy.   -. "
-local logo_11="  :NMMMMmo.       .yMMMMy.    "
-local logo_12="   .hMMMMMMmhsoo-   .yMMMy    "
-local logo_13="     -yNMMMMMMMMMy-   .o-     "
-local logo_14="        -oydNMMMMNd/          "
-local logo_padding=""
+local logo="
+        -oydNMMMMNdyo-
+     -yNMMMMMMMMMMMMMMNy-
+   .hMMMMMMmhsooshmMMMMMMh.
+  :NMMMMmo.        .omMMMMN:
+ -NMMMMs    -+ss+-    sMMMMN-
+ hMMMMs   -mMMMMMMm-   sMMMMh
+'MMMMM.  'NMMMMMMMMN'  .MMMMM
+'MMMMM.  'NMMMMMMMMN'   yMMMM'
+ hMMMMs   -mMMMMMMMMy.   -yMh
+ -NMMMMs    -+ss+yMMMMy.   -.
+  :NMMMMmo.       .yMMMMy.
+   .hMMMMMMmhsoo-   .yMMMy
+     -yNMMMMMMMMMy-   .o-
+        -oydNMMMMNd/
+"
+
+local print_info="
+	OS
+	KERNEL
+	CPU
+	SHELL
+	DATE
+	USER
+	LOCALIPV4
+	EXTERNALIPV4
+	SERVICES
+	SYSLOADAVG%
+	MEMORY
+	SWAP
+	HDDROOT
+	HDDHOME"
 
 local format_info="-c white"
 local format_highlight="-c blue  -e bold"
@@ -752,21 +857,20 @@ local format_ok="-c blue  -e bold"
 local format_error="-c 208   -e bold -e blink"
 local format_logo="-c blue -e bold"
 
-local bar_length=13
 local crit_cpu_percent=40
 local crit_ram_percent=75
 local crit_swap_percent=25
 local crit_hdd_percent=85
 local crit_home_percent=85
+
+local bar_length=13
 local bar_num_digits=5
 local info_label_width=16
-local cpu_as_percentage=false
-local ram_as_percentage=false
-local swap_as_percentage=false
-local hdd_as_percentage=false
-local home_as_percentage=false
 
+local print_cols_max=100
+local print_logo_right=false
 local date_format="%Y.%m.%d - %T"
+local top_show_num_procs=3
 
 
 
@@ -774,9 +878,9 @@ local date_format="%Y.%m.%d - %T"
 local user_config_file="$HOME/.config/scripts/status.config"
 local sys_config_file="/etc/andresgongora/scripts/status.config"
 if   [ -f $user_config_file ]; then
-	loadConfigFile $user_config_file
+	source $user_config_file
 elif [ -f $sys_config_file ]; then
-	loadConfigFile $sys_config_file
+	source $sys_config_file
 fi
 
 
@@ -809,10 +913,5 @@ printTopRAM
 }
 (status)
 unset status
-
-
-
-
-
 
 ### EOF ###

@@ -1,3 +1,4 @@
 ## Ignore developer's `test` and `config` files
 *.test
 test.sh
+*_conflict*
