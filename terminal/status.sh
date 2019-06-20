@@ -187,7 +187,7 @@ printBar()
 	local max=$2
 	local size=$3
 	local crit_percent=$4
-	local percent=$(bc <<< "$current/$max")
+	local percent=$(bc <<< "$current*100/$max")
 
 
 	## COMPUTE VARIABLES
@@ -729,18 +729,38 @@ printTopCPU()
 {
 	local current=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
 	local max=$(nproc --all)
-	local percent=$(awk '{printf "%3.0f\n",$1*100/'"$max"'}' /proc/loadavg)
-	local percent="101"
+	local percent=$(bc <<< "$current*100/$max")
+
 	if [ $percent -gt $crit_cpu_percent ]; then
 	
-		local top=$('nice' 'top' -b -d 0.1 | head -n 11 | sed 's/%/%%/g')
-		local load=$(echo "${top}" | head -n 3 | tail -n 1 | tr '', ' ')
-		local head=$(echo "${top}" | head -n 7 | tail -n 1)
-		local proc=$(echo "${top}" | tail -n 4 | grep -v "top")
+		## CALL TOP IN BATCH MODE
+		## Check if "%Cpus(s)" is shown, otherwise, call "top -1"
+		## Escape all '%' characters
+		local top=$(nice 'top' -b -d 0.1 -n 1 )
+		local cpus=$(echo "$top" | grep "Cpu(s)" )
+		if [ -z "$cpus" ]; then
+			echo ":("
+			local top=$(nice 'top' -b -d 0.1 -1 -n 1 )
+			local cpus=$(echo "$top" | grep "Cpu(s)" )
+		fi
+		local top=$(echo "$top" | sed 's/\%/\%\%/g' )
 
-		printf "${fc_crit}SYSTEM LOAD:${fc_info}  ${load:9:36}\n"
-		printf "${fc_crit}$head${fc_none}\n"
-		printf "${fc_info}${proc}${fc_none}\n\n"
+
+		## EXTRACT ELEMENTS FROM TOP
+		## - load:    summary of cpu time spent for user/system/nice...
+		## - header:  the line just above the processes
+		## - procs:   the N most demanding procs in terms of CPU time
+		local load=$(echo "${cpus:9}" | tr '', ' ' )
+		local header=$(echo "$top" | grep "%CPU" )
+		local procs=$(echo "$top" |\
+		              sed  '/top - /,/%CPU/d' |\
+		              head -n "$top_show_num_procs" )
+
+
+		## PRINT WITH FORMAT
+		printf "${fc_crit}SYSTEM LOAD:${fc_info}  ${load}\n"
+		printf "${fc_crit}$header${fc_none}\n"
+		printf "${fc_info}${procs}${fc_none}\n\n"
 	fi
 }
 
@@ -753,7 +773,7 @@ printTopRAM()
 	local mem_info=$('free' -m | head -n 2 | tail -n 1)
 	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
 	local max=$(echo "$mem_info" | awk '{mem=($2)} END {printf mem}')
-	local percent=$(($current*100/$max))
+	local percent=$(bc <<< "$current*100/$max")
 
 	if [ $percent -gt $crit_ram_percent ]; then
 		local available=$(echo $mem_info | awk '{print $NF}')
@@ -810,7 +830,8 @@ local logo="
   :NMMMMmo.       .yMMMMy.
    .hMMMMMMmhsoo-   .yMMMy
      -yNMMMMMMMMMy-   .o-
-        -oydNMMMMNd/          \n"
+        -oydNMMMMNd/
+"
 
 local print_info="
 	OS
@@ -849,6 +870,7 @@ local info_label_width=16
 local print_cols_max=100
 local print_logo_right=false
 local date_format="%Y.%m.%d - %T"
+local top_show_num_procs=3
 
 
 
