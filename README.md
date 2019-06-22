@@ -20,10 +20,10 @@ You can find more details and similar tools on
 
 
 <!--------------------------------------+-------------------------------------->
-#                                  Installation
+#                                     Setup
 <!--------------------------------------+-------------------------------------->
 
-### Automatic insallation (system wide)
+### Automatic setup (system wide)
 
 The recommended way to install synth-shell is to run the provided setup script.
 This will guide you step by step through the process and let you choose what
@@ -31,7 +31,6 @@ to install. It will also allow you to install the script for your user only,
 or system-wide (super user privileges required). To proceed, 
 [open and play this link in a separate tab](https://www.youtube.com/watch?v=k6ZMYWPQID0),
 and execute the following commands in your shell:
-
 ```
 git clone --recursive https://github.com/andresgongora/synth-shell.git
 chmod +x synth-shell/setup.sh
@@ -82,33 +81,14 @@ your manual intervention. Check the content of each script for details.
 
 
 
-<!--------------------------------------+-------------------------------------->
-#                                  Uninstallation
-<!--------------------------------------+-------------------------------------->
-
-Removing the script is very easy. If you installed it with the auto-installer,
-and assuming you installed the scripts for your user only,
-you can run te following uninstall script:
+### Uninstallation
+It's hard to say goodbye, but we had good times together, didn't we? :)
+Simply run the following commands and everything will be as before:
 ```
-~/.config/synth-shell/uninstall.sh
-```
-
-
-If this does not work, you can run the main install script, which also offers
-an option to uninstall everything installed on your system.
-```
-git clone --recursive https://github.com/andresgongora/scripts.git
-chmod +x synth-shell/install/install.sh
-synth-shell/install/install.sh uninstall
-rm -fr scripts
-```
-
-
-If you installed them manually, all you ahve to do is edit your user's bashrc
-file, either by removing the call to the script all together, or just commenting
-them out. You can do so from the terminal running nano.
-```
-nano ~/.bashrc
+git clone --recursive https://github.com/andresgongora/synth-shell.git
+chmod +x synth-shell/setup.sh
+synth-shell/setup.sh uninstall
+rm -fr synth-shell
 ```
 
 
