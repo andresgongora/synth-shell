@@ -18,30 +18,6 @@ You can find more details and similar tools on
 
 
 
-<!--------------------------------------+-------------------------------------->
-#                                    Overview
-<!--------------------------------------+-------------------------------------->
-
-### status.sh
-Provides a report of your system status at one glance everytime you open a
-new terminal. If it detects that any parameter (e.g. system load, memory, etc.)
-is over a critical threshold, it will provide a warning and additional
-information to identify the culprit. I also plot a configurable logo, so
-you may impress your crush from the library with your unique ASCII art.
-
-
-### fancy-bash-prompt.sh
-Adds colors and triangular separators to you bash prompt. The triangles are
-placed in an overlaping pattern to avoid accidental cuts if you were to touch
-them.
-
-
-![Example with status.sh and fancy-bash-prompt.sh](doc/screenshot.png)
-
-
-
-
-
 
 <!--------------------------------------+-------------------------------------->
 #                                     Setup
@@ -114,6 +90,31 @@ chmod +x synth-shell/setup.sh
 synth-shell/setup.sh uninstall
 rm -fr synth-shell
 ```
+
+
+
+
+
+
+<!--------------------------------------+-------------------------------------->
+#                                    Overview
+<!--------------------------------------+-------------------------------------->
+
+![Example with status.sh and fancy-bash-prompt.sh](doc/screenshot.png)
+
+
+### status.sh
+Provides a report of your system status at one glance everytime you open a
+new terminal. If it detects that any parameter (e.g. system load, memory, etc.)
+is over a critical threshold, it will provide a warning and additional
+information to identify the culprit. I also plot a configurable logo, so
+you may impress your crush from the library with your unique ASCII art.
+
+
+### fancy-bash-prompt.sh
+Adds colors and triangular separators to you bash prompt. The triangles are
+placed in an overlaping pattern to avoid accidental cuts if you were to touch
+them.
 
 
 
