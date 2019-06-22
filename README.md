@@ -44,10 +44,10 @@ rm -fr synth-shell
 If you want to use `fancy-bash-promt.sh` you also need power-line fonts.
 Depending on your distro you can install it as:
 ```
-#### ArchLinux
+## ArchLinux
 sudo pacman -S powerline-fonts
 
-#### Debian, Ubuntu
+## Debian, Ubuntu
 sudo apt install fonts-powerline
 ```
 
@@ -55,14 +55,10 @@ sudo apt install fonts-powerline
 ### Script configuration/customization
 You can configure your scripts by modifying the corresponding configurtion
 files. In addition to said files, you can also find configuration examples
-in the following folder.
-```
-## If you installed synth-shell for your user only
-~/.config/synth-shell/
+in the following folders depending on how you isntalled it:
 
-## If you isntalled it system-wide
-~/etc/synth-shell/
-```
+* Current user only: `~/.config/synth-shell/`
+* System wide: `~/etc/synth-shell/`
 
 
 
