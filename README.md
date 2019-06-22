@@ -63,13 +63,14 @@ in the following folder.
 
 ## If you isntalled it system-wide
 ~/etc/synth-shell/
+```
 
 
 
 ### Manual instalation of individual scripts
 If you want to skip the above steps, and are only intereset in a very
 specific script, you can easily use it by its own.
-However, some scripts might source other scripts from the `common` folder,
+However, some scripts might source other scripts from the `bash-tools` folder,
 as they provided shared functioanlities to all scripts. If you are interested
 in a single script from my collection, check whether it depends on a common
 script, and copy the content of it into the script you want.
