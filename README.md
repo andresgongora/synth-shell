@@ -16,6 +16,7 @@ You can find more details and similar tools on
 
 
 
+<br/><br/>
 
 
 
@@ -79,6 +80,7 @@ bash-tools, and copy the content of said dependency into the script you want.
 
 
 
+<br/><br/>
 
 
 
@@ -104,6 +106,7 @@ them.
 
 
 
+<br/><br/>
 
 
 
@@ -154,6 +157,7 @@ There are two branches in this repository:
 
 
 
+<br/><br/>
 
 
 
@@ -182,6 +186,7 @@ listening to [SynthWave](https://en.wikipedia.org/wiki/Synthwave).
 
 
 
+<br/><br/>
 
 
 
