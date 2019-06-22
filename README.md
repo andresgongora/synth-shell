@@ -1,3 +1,10 @@
+![synth-shell](doc/synth-shell.jpg)
+
+
+
+
+
+
 <!--------------------------------------+-------------------------------------->
 #                                  Introduction
 <!--------------------------------------+-------------------------------------->
@@ -230,9 +237,7 @@ I admit it, it's nothing fancy, but writing these scripts provided me with
 lots of joy.
 
 And about the name? That's quite easy. I spent most of my coding frenzy
-listening to [SynthWave](https://en.wikipedia.org/wiki/Synthwave)
-
-![synth-shell](doc/synth-shell.jpg)
+listening to [SynthWave](https://en.wikipedia.org/wiki/Synthwave).
 
 
 
