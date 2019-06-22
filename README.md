@@ -42,14 +42,11 @@ rm -fr synth-shell
 
 ### Dependencies
 If you want to use `fancy-bash-promt.sh` you also need power-line fonts.
-Depending on your distro you can install it as:
-```
-## ArchLinux
-sudo pacman -S powerline-fonts
+Depending on your distro you can install it as follows (the exact name of the package varies from distro to distro):
 
-## Debian, Ubuntu
-sudo apt install fonts-powerline
-```
+* ArchLinux: `sudo pacman -S powerline-fonts`
+* Debian/Ubuntu: `sudo apt install fonts-powerline`
+
 
 
 ### Script configuration/customization
