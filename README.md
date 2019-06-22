@@ -23,7 +23,7 @@ You can find more details and similar tools on
 #                                     Setup
 <!--------------------------------------+-------------------------------------->
 
-### Automatic setup (system wide)
+### Automatic setup
 
 The recommended way to install synth-shell is to run the provided setup script.
 This will guide you step by step through the process and let you choose what
