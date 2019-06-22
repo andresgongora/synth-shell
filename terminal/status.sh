@@ -189,7 +189,7 @@ printBar()
 	local size=$3
 	local bracket_color=$4
 	local bar_color=$5
-	
+
 
 	## COMPUTE VARIABLES
 	local num_bars=$(bc <<< "$size * $current / $max")
@@ -311,10 +311,10 @@ printMonitor()
 
 
 	## PRINT NUMERIC VALUE
-	if $print_as_percentage; then		
+	if $print_as_percentage; then
 		printf "${fc_txt_2}%${bar_num_digits}s${fc_txt_1} %%%%${fc_none}" $percent
 	else
-		printf " "		
+		printf " "
 		printFraction $current $max $bar_num_digits $units \
 		              $fc_txt_1 $fc_txt_2 $fc_txt_3
 	fi
@@ -533,11 +533,13 @@ printMonitorCPU()
 	local current=$(awk '{avg_1m=($1)} END {printf "%3.2f", avg_1m}' /proc/loadavg)
 	local max=$(nproc --all)
 
+
 	local as_percentage=$1
 	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
 
+
 	printMonitor $current $max $crit_cpu_percent \
-	             $as_percentage $units $message 
+	             $as_percentage $units $message
 }
 
 
@@ -552,8 +554,10 @@ printMonitorRAM()
 	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
 	local max=$(echo "$mem_info" | awk '{mem=($2)} END {printf mem}')
 
+
 	local as_percentage=$1
 	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
+
 
 	printMonitor $current $max $crit_ram_percent \
 	             $as_percentage $units $message
@@ -574,7 +578,7 @@ printMonitorSwap()
 	local swap_info=$('free' -m | tail -n 1)
 	local current=$(echo "$swap_info" | awk '{SWAP=($3)} END {printf SWAP}')
 	local max=$(echo "$swap_info" | awk '{SWAP=($2)} END {printf SWAP}')
-	
+
 
 	if [ "$max" -eq "0" ]; then
 		printf "${fc_info}${message}${fc_highlight}N/A{fc_none}"
@@ -598,7 +602,7 @@ printMonitorHDD()
 	local units="GB"
 	local current=$(df -B1G / | grep "/" | awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G / | grep "/" | awk '{key=($2)} END {printf key}')
-	
+
 
 	printMonitor $current $max $crit_hdd_percent \
 	             $as_percentage $units $message
@@ -779,7 +783,7 @@ printHogsCPU()
 	local percent=$(bc <<< "$current*100/$max")
 
 
-	if [ $percent -gt $crit_cpu_percent ]; then	
+	if [ $percent -gt $crit_cpu_percent ]; then
 		## CALL TOP IN BATCH MODE
 		## Check if "%Cpus(s)" is shown, otherwise, call "top -1"
 		## Escape all '%' characters
