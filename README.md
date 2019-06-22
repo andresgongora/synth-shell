@@ -1,14 +1,5 @@
 ![synth-shell](doc/synth-shell.jpg)
 
-
-
-
-
-
-<!--------------------------------------+-------------------------------------->
-#                                  Introduction
-<!--------------------------------------+-------------------------------------->
-
 **synth-bash** is a collection of small scripts meant to improve your terminal
 and overal productivity - small tweaks can go a long way.
 You can find more details and similar tools on
