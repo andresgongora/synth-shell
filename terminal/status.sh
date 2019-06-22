@@ -761,11 +761,23 @@ printSystemctl()
 
 ##------------------------------------------------------------------------------
 ##
-printTopCPU()
+printHogsCPU()
 {
+	## CHECK GLOBAL PARAMETERS
+	if [ -z $crit_cpu_percent   ]; then exit 1; fi
+	if [ -z $print_cpu_hogs_num ]; then exit 1; fi
+	if [ -z $print_cpu_hogs     ]; then exit 1; fi
+
+
+	## EXIT IF NOT ENABLED
+	if ! $print_cpu_hogs; then return; fi
+
+
+	## CHECK CPU LOAD
 	local current=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
 	local max=$(nproc --all)
 	local percent=$(bc <<< "$current*100/$max")
+
 
 	if [ $percent -gt $crit_cpu_percent ]; then	
 		## CALL TOP IN BATCH MODE
@@ -789,7 +801,7 @@ printTopCPU()
 		local header=$(echo "$top" | grep "%CPU" )
 		local procs=$(echo "$top" |\
 		              sed  '/top - /,/%CPU/d' |\
-		              head -n "$top_show_num_procs" )
+		              head -n "$print_cpu_hogs_num" )
 
 
 		## PRINT WITH FORMAT
@@ -803,14 +815,40 @@ printTopCPU()
 
 ##------------------------------------------------------------------------------
 ##
-printTopRAM()
+printHogsMemory()
 {
+	## CHECK GLOBAL PARAMETERS
+	if [ -z $crit_ram_percent  ]; then exit 1; fi
+	if [ -z $crit_swap_percent ]; then exit 1; fi
+	if [ -z $print_memory_hogs ]; then exit 1; fi
+
+
+	## EXIT IF NOT ENABLED
+	if ! $print_memory_hogs; then return; fi
+
+
+	## CHECK RAM
 	local mem_info=$('free' -m | head -n 2 | tail -n 1)
 	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
 	local max=$(echo "$mem_info" | awk '{mem=($2)} END {printf mem}')
 	local percent=$(bc <<< "$current*100/$max")
-
+	local ram_is_crit=false
 	if [ $percent -gt $crit_ram_percent ]; then
+		local ram_is_crit=true
+	fi
+
+
+	## CHECK SWAP
+	local swap_info=$('free' -m | tail -n 1)
+	local current=$(echo "$swap_info" | awk '{SWAP=($3)} END {printf SWAP}')
+	local max=$(echo "$swap_info" | awk '{SWAP=($2)} END {printf SWAP}')
+	local swap_is_crit=false
+	if [ $percent -gt $crit_swap_percent ]; then
+		local swap_is_crit=true
+	fi
+
+
+	if $ram_is_crit || $swap_is_crit ; then
 		local available=$(echo $mem_info | awk '{print $NF}')
 		local procs=$(ps --cols=80 -eo pmem,size,pid,cmd --sort=-%mem |\
 			      head -n 4 | tail -n 3 |\
@@ -905,7 +943,9 @@ local info_label_width=16
 local print_cols_max=100
 local print_logo_right=false
 local date_format="%Y.%m.%d - %T"
-local top_show_num_procs=3
+local print_cpu_hogs_num=3
+local print_cpu_hogs=true
+local print_memory_hogs=true
 
 
 
@@ -932,26 +972,13 @@ local fc_none=$(getFormatCode -e reset)
 
 
 
-## STATUS VARIABLES
-#CPU_IS_CRIT=false
-#RAM_IS_CRIT=false
-
-
-
 ## PRINT STATUS ELEMENTS
 clear
 printHeader
 printLastLogins
 printSystemctl
-printTopCPU
-printTopRAM
-
-echo $CPU_IS_CRIT
-echo $RAM_IS_CRIT
-
-## CLEANUP
-unset CPU_IS_CRIT
-unset RAM_IS_CRIT
+printHogsCPU
+printHogsMemory
 
 
 
