@@ -178,34 +178,32 @@ printInfo()
 ##	2. MAX:         ammount that means that the bar should be printed
 ##	                completely full.
 ##	3. SIZE:        length of the bar as number of characters.
-##	4. CRIT_PERCENT:between 0 and 100. Once the bar is over this percent, it
-##			changes color.
+##	4. COLOR:	Color for the brackets. May be empty for not color
+##	5. COLOR:	Color for the bars. May be empty for not color
 ##
 printBar()
 {
+	## VARIABLES
 	local current=$1
 	local max=$2
 	local size=$3
-	local crit_percent=$4
-	local percent=$(bc <<< "$current*100/$max")
+	local bracket_color=$4
+	local bar_color=$5
 
 
 	## COMPUTE VARIABLES
-	local num_bars=$(bc <<< "$size * $current / $max")  #$(($size * $current / $max))
+	local num_bars=$(bc <<< "$size * $current / $max")
 	if [ $num_bars -gt $size ]; then
 		num_bars=$size
 	fi
 
 
-	## SET COLORS
-	local bar_color=$fc_ok
-	if [ $percent -gt $crit_percent ]; then
-		local bar_color=$fc_crit
-	fi
-
-
 	## PRINT BAR
-	printf "${fc_deco}[${bar_color}"
+	## - Opening bracket
+	## - Full bars
+	## - Remaining empty space
+	## - Closing bracket
+	printf "${bracket_color}[${bar_color}"
 	i=0
 	while [ $i -lt $num_bars ]; do
 		printf "|"
@@ -215,7 +213,7 @@ printBar()
 		printf " "
 		i=$[$i+1]
 	done
-	printf "${fc_deco}]${fc_none}"
+	printf "${bracket_color}]${fc_none}"
 }
 
 
@@ -233,6 +231,7 @@ printBar()
 ##	4. UNITS: a string that is attached to the end of the fraction,
 ##	   meant to include optional units (e.g. MB) for display purposes.
 ##	   if "none", no units are displayed.
+##	5,6,7. COLORS
 ##
 printFraction()
 {
@@ -240,13 +239,16 @@ printFraction()
 	local b=$2
 	local padding=$3
 	local units=$4
+	local deco_color=$5
+	local num_color=$6
+	local units_color=$7
 
 	if [ $units == "none" ]; then local units=""; fi
 
-	printf " ${fc_highlight}%${padding}s" $a
-	printf "${fc_info}/"
-	printf "${fc_highlight}%-${padding}s" $b
-	printf " ${units}${fc_none}"
+	printf "${num_color}%${padding}s" $a
+	printf "${deco_color}/"
+	printf "${num_color}%-${padding}s" $b
+	printf "${units_color} ${units}${fc_none}"
 }
 
 
@@ -269,6 +271,15 @@ printFraction()
 ##
 printMonitor()
 {
+	## CHECK EXTERNAL CONFIGURATION
+	if [ -z $bar_num_digits ]; then exit 1; fi
+	if [ -z $fc_deco        ]; then exit 1; fi
+	if [ -z $fc_ok          ]; then exit 1; fi
+	if [ -z $fc_info        ]; then exit 1; fi
+	if [ -z $fc_crit        ]; then exit 1; fi
+
+
+	## VARIABLES
 	local current=$1
 	local max=$2
 	local crit_percent=$3
@@ -276,17 +287,36 @@ printMonitor()
 	local units=$5
 	local label=${@:6}
 	local pad=$info_label_width
+	local percent=$(bc <<< "$current*100/$max")
 
 
+	## SET COLORS DEPENDING ON LOAD
+	local fc_bar_1=$fc_deco
+	local fc_bar_2=$fc_ok
+	local fc_txt_1=$fc_info
+	local fc_txt_2=$fc_ok
+	local fc_txt_3=$fc_ok
+	if   [ $percent -gt 99 ]; then
+		local fc_bar_2=$fc_error
+		local fc_txt_2=$fc_crit
+	elif [ $percent -gt $crit_percent ]; then
+		local fc_bar_2=$fc_crit
+		local fc_txt_2=$fc_crit
+	fi
+
+
+	## PRINT BAR
 	printf "${fc_info}%-${pad}s" "$label"
-	printBar $current $max $bar_length $crit_percent
+	printBar $current $max $bar_length $fc_bar_1 $fc_bar_2
 
 
+	## PRINT NUMERIC VALUE
 	if $print_as_percentage; then
-		percent=$(bc <<< "$current*100/$max")
-		printf "${fc_highlight}%${bar_num_digits}s${fc_info} %%%%${fc_none}" $percent
+		printf "${fc_txt_2}%${bar_num_digits}s${fc_txt_1} %%%%${fc_none}" $percent
 	else
-		printFraction $current $max $bar_num_digits $units
+		printf " "
+		printFraction $current $max $bar_num_digits $units \
+		              $fc_txt_1 $fc_txt_2 $fc_txt_3
 	fi
 }
 
@@ -503,8 +533,10 @@ printMonitorCPU()
 	local current=$(awk '{avg_1m=($1)} END {printf "%3.2f", avg_1m}' /proc/loadavg)
 	local max=$(nproc --all)
 
+
 	local as_percentage=$1
 	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
+
 
 	printMonitor $current $max $crit_cpu_percent \
 	             $as_percentage $units $message
@@ -522,8 +554,10 @@ printMonitorRAM()
 	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
 	local max=$(echo "$mem_info" | awk '{mem=($2)} END {printf mem}')
 
+
 	local as_percentage=$1
 	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
+
 
 	printMonitor $current $max $crit_ram_percent \
 	             $as_percentage $units $message
@@ -535,14 +569,16 @@ printMonitorRAM()
 ##
 printMonitorSwap()
 {
+	local as_percentage=$1
+	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
+
+
 	local message="Swap"
 	local units="MB"
 	local swap_info=$('free' -m | tail -n 1)
 	local current=$(echo "$swap_info" | awk '{SWAP=($3)} END {printf SWAP}')
 	local max=$(echo "$swap_info" | awk '{SWAP=($2)} END {printf SWAP}')
 
-	local as_percentage=$1
-	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
 
 	if [ "$max" -eq "0" ]; then
 		printf "${fc_info}${message}${fc_highlight}N/A{fc_none}"
@@ -558,13 +594,15 @@ printMonitorSwap()
 ##
 printMonitorHDD()
 {
+	local as_percentage=$1
+	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
+
+
 	local message="Storage /"
 	local units="GB"
 	local current=$(df -B1G / | grep "/" | awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G / | grep "/" | awk '{key=($2)} END {printf key}')
 
-	local as_percentage=$1
-	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
 
 	printMonitor $current $max $crit_hdd_percent \
 	             $as_percentage $units $message
@@ -576,13 +614,15 @@ printMonitorHDD()
 ##
 printMonitorHome()
 {
+	local as_percentage=$1
+	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
+
+
 	local message="Storage /home"
 	local units="GB"
 	local current=$(df -B1G ~ | grep "/" | awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G ~ | grep "/" | awk '{key=($2)} END {printf key}')
 
-	local as_percentage=$1
-	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
 
 	printMonitor $current $max $crit_home_percent \
 	             $as_percentage $units $message
@@ -725,14 +765,25 @@ printSystemctl()
 
 ##------------------------------------------------------------------------------
 ##
-printTopCPU()
+printHogsCPU()
 {
+	## CHECK GLOBAL PARAMETERS
+	if [ -z $crit_cpu_percent   ]; then exit 1; fi
+	if [ -z $print_cpu_hogs_num ]; then exit 1; fi
+	if [ -z $print_cpu_hogs     ]; then exit 1; fi
+
+
+	## EXIT IF NOT ENABLED
+	if ! $print_cpu_hogs; then return; fi
+
+
+	## CHECK CPU LOAD
 	local current=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
 	local max=$(nproc --all)
 	local percent=$(bc <<< "$current*100/$max")
 
+
 	if [ $percent -gt $crit_cpu_percent ]; then
-	
 		## CALL TOP IN BATCH MODE
 		## Check if "%Cpus(s)" is shown, otherwise, call "top -1"
 		## Escape all '%' characters
@@ -750,11 +801,11 @@ printTopCPU()
 		## - load:    summary of cpu time spent for user/system/nice...
 		## - header:  the line just above the processes
 		## - procs:   the N most demanding procs in terms of CPU time
-		local load=$(echo "${cpus:9}" | tr '', ' ' )
+		local load=$(echo "${cpus:9:36}" | tr '', ' ' )
 		local header=$(echo "$top" | grep "%CPU" )
 		local procs=$(echo "$top" |\
 		              sed  '/top - /,/%CPU/d' |\
-		              head -n "$top_show_num_procs" )
+		              head -n "$print_cpu_hogs_num" )
 
 
 		## PRINT WITH FORMAT
@@ -768,14 +819,40 @@ printTopCPU()
 
 ##------------------------------------------------------------------------------
 ##
-printTopRAM()
+printHogsMemory()
 {
+	## CHECK GLOBAL PARAMETERS
+	if [ -z $crit_ram_percent  ]; then exit 1; fi
+	if [ -z $crit_swap_percent ]; then exit 1; fi
+	if [ -z $print_memory_hogs ]; then exit 1; fi
+
+
+	## EXIT IF NOT ENABLED
+	if ! $print_memory_hogs; then return; fi
+
+
+	## CHECK RAM
 	local mem_info=$('free' -m | head -n 2 | tail -n 1)
 	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
 	local max=$(echo "$mem_info" | awk '{mem=($2)} END {printf mem}')
 	local percent=$(bc <<< "$current*100/$max")
-
+	local ram_is_crit=false
 	if [ $percent -gt $crit_ram_percent ]; then
+		local ram_is_crit=true
+	fi
+
+
+	## CHECK SWAP
+	local swap_info=$('free' -m | tail -n 1)
+	local current=$(echo "$swap_info" | awk '{SWAP=($3)} END {printf SWAP}')
+	local max=$(echo "$swap_info" | awk '{SWAP=($2)} END {printf SWAP}')
+	local swap_is_crit=false
+	if [ $percent -gt $crit_swap_percent ]; then
+		local swap_is_crit=true
+	fi
+
+
+	if $ram_is_crit || $swap_is_crit ; then
 		local available=$(echo $mem_info | awk '{print $NF}')
 		local procs=$(ps --cols=80 -eo pmem,size,pid,cmd --sort=-%mem |\
 			      head -n 4 | tail -n 3 |\
@@ -870,7 +947,9 @@ local info_label_width=16
 local print_cols_max=100
 local print_logo_right=false
 local date_format="%Y.%m.%d - %T"
-local top_show_num_procs=3
+local print_cpu_hogs_num=3
+local print_cpu_hogs=true
+local print_memory_hogs=true
 
 
 
@@ -902,8 +981,8 @@ clear
 printHeader
 printLastLogins
 printSystemctl
-printTopCPU
-printTopRAM
+printHogsCPU
+printHogsMemory
 
 
 
