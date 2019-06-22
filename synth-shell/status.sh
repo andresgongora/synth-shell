@@ -881,11 +881,11 @@ printHogsMemory()
 local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 if [ "$(type -t getFormatCode)" != 'function' ]; then
-	source "$dir/../common/color.sh"
+	source "$dir/../bash-tools/bash-tools/color.sh"
 fi
 if [ "$(type -t printWithOffset)" != 'function' ];
 then
-	source "$dir/../common/print_utils.sh"
+	source "$dir/../bash-tools/bash-tools/print_utils.sh"
 fi
 
 

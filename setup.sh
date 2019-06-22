@@ -64,10 +64,10 @@ installScript()
 	## LOCAL VARIABLES
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 	local script="${INSTALL_DIR}/${script_name}.sh"
-	local source_script="${dir}/../terminal/${script_name}.sh"
-	local config_template_dir="${dir}/../config_templates"
+	local source_script="${dir}/synth-shell/${script_name}.sh"
+	local config_template_dir="${dir}/config_templates"
 	local uninstaller="${INSTALL_DIR}/uninstall.sh"
-	local edit_text_file_script="$dir/../common/edit_text_file.sh"
+	local edit_text_file_script="$dir/bash-tools/bash-tools/edit_text_file.sh"
 	source "$edit_text_file_script"
 
 
@@ -77,7 +77,8 @@ installScript()
 	"\n"\
 	"##-----------------------------------------------------\n"\
 	"## ${script_name}\n"\
-	"## Added from https://github.com/andresgongora/scripts/\n"\
+	"## Added by synth-shell\n"\
+	"## https://github.com/andresgongora/synth-shell/\n"\
 	"if [ -f ${script} ]; then\n"\
 	"\tsource ${script}\n"\
 	"fi")
@@ -87,7 +88,7 @@ installScript()
 	"\n"\
 	"##  +-----------------------------------+-----------------------------------+\n"\
 	"##  |                                                                       |\n"\
-	"##  | Copyright (c) 2014-2019, https://github.com/andresgongora/scripts/    |\n"\
+	"##  | Copyright (c) 2014-2019, https://github.com/andresgongora/synth-shell |\n"\
 	"##  | Visit the above URL for details opn license and authorship            |\n"\
 	"##  |                                                                       |\n"\
 	"##  | This program is free software: you can redistribute it and/or modify  |\n"\
@@ -116,7 +117,7 @@ installScript()
 	"##  and you will lose all your changes.\n"\
 	"##\n"\
 	"##  Visit for instructions and more information:\n"\
-	"##  https://github.com/andresgongora/scripts/ for instructions\n"\
+	"##  https://github.com/andresgongora/synth-shell/ for instructions\n"\
 	"##\n\n\n")
 
 
@@ -159,13 +160,13 @@ installScript()
 		## - Add common scripts TODO: Make this configurable	
 		## - Add actual script
 		## - Remove common functions from environment
-		cat "${dir}/../common/load_config.sh" |\
+		cat "${dir}/bash-tools/bash-tools/load_config.sh" |\
 			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
-		cat "${dir}/../common/color.sh" |\
+		cat "${dir}/bash-tools/bash-tools/color.sh" |\
 			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
-		cat "${dir}/../common/shorten_path.sh" |\
+		cat "${dir}/bash-tools/bash-tools/shorten_path.sh" |\
 			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
-		cat "${dir}/../common/print_utils.sh" |\
+		cat "${dir}/bash-tools/bash-tools/print_utils.sh" |\
 			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
 		cat "$source_script" |\
 			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
@@ -281,7 +282,7 @@ installerSystem()
 {
 	local option=$1
 	local INSTALL_DIR="/usr/local/bin" 
-	local CONFIG_DIR="/etc/andresgongora/scripts"
+	local CONFIG_DIR="/etc/synth-shell"
 	local BASHRC="/etc/bash.bashrc"
 
 	if [ $(id -u) -ne 0 ];
@@ -308,8 +309,8 @@ installerSystem()
 installerUser()
 {
 	local option=$1
-	local INSTALL_DIR="${HOME}/.config/scripts" 
-	local CONFIG_DIR="${HOME}/.config/scripts" 
+	local INSTALL_DIR="${HOME}/.config/synth-shell" 
+	local CONFIG_DIR="${HOME}/.config/synth-shell" 
 	local BASHRC="${HOME}/.bashrc" 
 
 	case "$option" in
