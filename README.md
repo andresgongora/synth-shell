@@ -42,7 +42,6 @@ rm -fr synth-shell
 
 
 ### Dependencies
-
 If you want to use `fancy-bash-promt.sh` you also need power-line fonts.
 Depending on your distro you can install it as:
 ```
@@ -54,42 +53,16 @@ sudo apt install fonts-powerline
 ```
 
 
-
 ### Script configuration/customization
-
-Lastly, you may configure your scripts by first copying the individual
-`*.config.example`-files included in this repo to your user's 
-`~/.config/synth-shell/` folder. First create a the configuration folder
-for your user under `~/.config`, and then copy the desired configuration files
-for the scripts you want.
+You can configure your scripts by modifying the corresponding configurtion
+files. In addition to said files, you can also find configuration examples
+in the following folder.
 ```
-#### Create configuration folder
-mkdir -p ~/.config/scripts
+## If you installed synth-shell for your user only
+~/.config/synth-shell/
 
-#### Configuration for status.sh
-cp /usr/local/bin/synth-shell/config_templates/status.config.example ~/.config/synth-shell/status.config
-
-#### Configuration for fancy-bash-prompt.sh
-cp /usr/local/bin/synth-shell/config_templates/fancy-bash-prompt.config.example ~/.config/synth-shell/fancy-bash-prompt.config
-```
-
-
-Then you can modify them for your needs. For example, to configure
-the colors in`fancy-bash-promt.sh` or `status.sh`, you can do as follows:
-```
-#### Colors and behaviour of status.sh
-nano ~/.config/synth-shell/status.config
-
-#### Colors of fancy-bash-promt.sh
-nano ~/.config/synth-shell/fancy-bash-prompt.config
-```
-
-Alternatively, you can use any of the example configuration files contained
-inside the example folders `/synth-shell/config_templates/*.examples/` by renaming
-them, and you cal also apply a system-wide configuration by modifying the conf
-files in `/etc/andresgongora/synth-shell/`; which are automatically created when
-using the installer.
-
+## If you isntalled it system-wide
+~/etc/synth-shell/
 
 
 
