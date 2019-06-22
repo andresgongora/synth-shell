@@ -108,11 +108,11 @@ prompt_command_hook()
 
 	if [ "$(type -t shortenPath)" != 'function' ];
 	then
-		source "$dir/../common/shorten_path.sh"
+		source "$dir/../bash-tools/bash-tools/shorten_path.sh"
 	fi
 	if [ "$(type -t removeColorCodes)" != 'function' ];
 	then
-		source "$dir/../common/color.sh"
+		source "$dir/../bash-tools/bash-tools/color.sh"
 	fi
 
 
@@ -159,7 +159,7 @@ prompt_command_hook()
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 	if [ "$(type -t getFormatCode)" != 'function' ];
 	then
-		source "$dir/../common/color.sh"
+		source "$dir/../bash-tools/bash-tools/color.sh"
 	fi
 
 
