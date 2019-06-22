@@ -22,7 +22,7 @@ This will guide you step by step through the process and let you choose what
 to install. It will also allow you to install the script for your user only,
 or system-wide (super user privileges required). To proceed, 
 [open and play this link in a separate tab](https://www.youtube.com/watch?v=k6ZMYWPQID0),
-and execute the following commands in your shell:
+and execute the following:
 ```
 git clone --recursive https://github.com/andresgongora/synth-shell.git
 chmod +x synth-shell/setup.sh
@@ -61,7 +61,6 @@ bash-tools, and copy the content of said dependency into the script you want.
 
 ### Uninstallation
 It's hard to say goodbye, but we had good times together, didn't we? :)
-Simply run the following commands and everything will be as before:
 ```
 git clone --recursive https://github.com/andresgongora/synth-shell.git
 chmod +x synth-shell/setup.sh
@@ -106,29 +105,25 @@ them.
 <!--------------------------------------+-------------------------------------->
 
 This project is only possible thanks to the effort of and passion of many, 
-including mentors, developers, and of course, our beloved coffe vending machine.
-If you like this collection of scripts and want to contribute in any way,
-you are most welcome to do so.
+including developers, testers, and of course, our beloved coffe vending machine.
+You can find a detailed list of everyone involved in the development
+in [AUTHORS.md](AUTHORS.md). Thanks to all of you!
 
-You can find a detailed list of everyone involved in the development of
-these scripts in [AUTHORS.md](AUTHORS.md). Thanks to all of you!
+If you like this project and want to contribute, you are most welcome to do so.
 
 
 
 ### Help us improve
 
-* Add your own scripts: do you have some cool scripts you wold like to 
-  add to this collection? Don't hesitate to create a pull-request or,
-  alternatively, contact the authors over email.
 * [Report a bug](https://github.com/andresgongora/synth-shell/issues): 
-  if you notice that something is not right, tell us. 
-  We'll try to fix it ASAP.
+  if you notice that something is not right, tell us. We'll try to fix it ASAP.
 * Become a developer: fork this repo and become an active developer!
   Take a look at the [issuess](https://github.com/andresgongora/synth-shell/issues)
   for suggestions of where to start. Also, take a look at our 
   [coding style](coding_style.md).
-* Push your one-time changes: even if its a tiny change, 
-  feel free to fill in a pull-request!
+* Do you have an idea that you would like to see in the next release? Send us
+  and email or open an [issue](https://github.com/andresgongora/synth-shell/issues)
+  with your suggestion!
 
 
 
