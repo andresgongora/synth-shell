@@ -49,6 +49,16 @@ in the following folders depending on how you isntalled it:
 
 
 
+### Manual instalation of individual scripts
+If you want to skip the above steps, and are only intereset in a very
+specific script, you can easily use it by its own.
+However, some scripts might source other scripts from the `bash-tools` folder,
+as they provided shared functioanlities to all scripts. If you are interested
+in a single script from my collection, check whether it depends on a script from
+bash-tools, and copy the content of said dependency into the script you want.
+
+
+
 ### Uninstallation
 It's hard to say goodbye, but we had good times together, didn't we? :)
 Simply run the following commands and everything will be as before:
@@ -58,16 +68,6 @@ chmod +x synth-shell/setup.sh
 synth-shell/setup.sh uninstall
 rm -fr synth-shell
 ```
-
-
-
-### Manual instalation of individual scripts
-If you want to skip the above steps, and are only intereset in a very
-specific script, you can easily use it by its own.
-However, some scripts might source other scripts from the `bash-tools` folder,
-as they provided shared functioanlities to all scripts. If you are interested
-in a single script from my collection, check whether it depends on a script from
-bash-tools, and copy the content of said dependency into the script you want.
 
 
 
