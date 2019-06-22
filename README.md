@@ -14,8 +14,6 @@ and overal productivity - small tweaks can go a long way.
 You can find more details and similar tools on
 [Yet Another Linux'n Electronics Blog](https://yalneb.blogspot.com/).
 
-![Example with status.sh and fancy-bash-prompt.sh](doc/screenshot.png)
-
 
 
 
@@ -147,6 +145,9 @@ nano ~/.bashrc
 <!--------------------------------------+-------------------------------------->
 #                                    Overview
 <!--------------------------------------+-------------------------------------->
+
+![Example with status.sh and fancy-bash-prompt.sh](doc/screenshot.png)
+
 
 ### status.sh
 Provides a report of your system status at one glance everytime you open a
