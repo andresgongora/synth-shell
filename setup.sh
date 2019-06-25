@@ -126,14 +126,9 @@ installScript()
 	case "$operation" in
 
 	uninstall)
-
-		## REMOVE HOOK
+		## REMOVE HOOK AND SCRIPT
 		editTextFile "$BASHRC" delete "$hook"
-
-		## REMOVE SCRIPT
-		if [ -f $script ]; then
-			rm $script
-		fi
+		if [ -f $script ]; then rm $script; fi
 		;;
 
 
@@ -266,8 +261,15 @@ installAll()
 ##
 uninstallAll()
 {
-	installScript uninstall "status"
-	installScript uninstall "fancy-bash-prompt"
+	## CHECK IF QUICK-UNINSTALL FILE EXISTS
+	local uninstaller="${INSTALL_DIR}/uninstall.sh"
+	if [ -f "$uninstaller" ]; then
+		## RUN QUICK-UNINSTALLER
+		"$uninstaller"	
+	else
+		installScript uninstall "status"
+		installScript uninstall "fancy-bash-prompt"
+	fi
 }
 
 
