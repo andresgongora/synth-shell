@@ -940,12 +940,14 @@ printHogsMemory()
 	local swap_info=$('free' -m | tail -n 1)
 	local current=$(echo "$swap_info" | awk '{SWAP=($3)} END {printf SWAP}')
 	local max=$(echo "$swap_info" | awk '{SWAP=($2)} END {printf SWAP}')
+	local percent=$(bc <<< "$current*100/$max")
 	local swap_is_crit=false
 	if [ $percent -gt $crit_swap_percent ]; then
 		local swap_is_crit=true
 	fi
 
 
+	## PRINT IF RAM OR SWAP ARE ABOVE THRESHOLD
 	if $ram_is_crit || $swap_is_crit ; then
 		local available=$(echo $mem_info | awk '{print $NF}')
 		local procs=$(ps --cols=80 -eo pmem,size,pid,cmd --sort=-%mem |\
