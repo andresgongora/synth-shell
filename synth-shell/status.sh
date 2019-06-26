@@ -556,6 +556,15 @@ printInfoColorpalette()
 
 ##------------------------------------------------------------------------------
 ##
+printInfoSpacer()
+{
+	printInfo "" ""
+}
+
+
+
+##------------------------------------------------------------------------------
+##
 printMonitorCPU()
 {
 	local message="Sys load avg"
@@ -687,6 +696,7 @@ printStatusInfo()
 			EXTERNALIPV4)	printInfoExternalIPv4;;
 			SERVICES)	printInfoSystemctl;;
 			PALETTE)	printInfoColorpalette;;
+			SPACER)		printInfoSpacer;;
 
 		## USAGE MONITORS (BARS)
 		##	NAME		FUNCTION		AS %
