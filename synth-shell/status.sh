@@ -397,6 +397,22 @@ printInfoDate()
 
 ##------------------------------------------------------------------------------
 ##
+printInfoUptime()
+{
+	## By John1024 from https://stackoverflow.com/questions/28353409/bash-format-uptime-to-show-days-hours-minutes
+	uptime=$(uptime |\
+	         sed -E 's/^[^,]*up *//;
+	                 s/, *[[:digit:]]* users.*//;
+	                 s/min/minutes/;
+	                 s/([[:digit:]]+):0?([[:digit:]]+)/\1 hours, \2 minutes/')
+
+	printInfo "Uptime" "$uptime"
+}
+
+
+
+##------------------------------------------------------------------------------
+##
 printInfoUser()
 {
 	printInfo "User" "$USER@$HOSTNAME"
@@ -691,6 +707,7 @@ printStatusInfo()
 			CPU)		printInfoCPU;;
 			SHELL)		printInfoShell;;
 			DATE)		printInfoDate;;
+			UPTIME)		printInfoUptime;;
 			USER)		printInfoUser;;
 			LOCALIPV4)	printInfoLocalIPv4;;
 			EXTERNALIPV4)	printInfoExternalIPv4;;
@@ -959,7 +976,7 @@ local print_info="
 	CPU
 	SHELL
 	DATE
-	USER
+	UPTIME
 	LOCALIPV4
 	EXTERNALIPV4
 	SERVICES
