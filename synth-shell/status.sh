@@ -413,11 +413,11 @@ printInfoUptime()
 	##	this separates the hours from the minutes and 
 	##	replaces it with hh hours, mm minutes
 	##
-	uptime=$(uptime |\
-	         sed -E 's/^[^,]*up *//;
-	                 s/, *[[:digit:]]* users.*//;
-	                 s/min/minutes/;
-	                 s/([[:digit:]]+):0?([[:digit:]]+)/\1 hours, \2 minutes/')
+	local uptime=$(uptime |\
+	               sed -E 's/^[^,]*up *//;
+	                       s/, *[[:digit:]]* users.*//;
+	                       s/min/minutes/;
+	                       s/([[:digit:]]+):0?([[:digit:]]+)/\1 hours, \2 minutes/')
 
 	printInfo "Uptime" "$uptime"
 }
@@ -455,7 +455,7 @@ printInfoNameLoggedIn()
 	## who			See who is logged in
 	## awk '{print $1;}'	First word of each line
 	## sort -u		Sort and remove duplicates
-	name_users=$(who | awk '{print $1;}' | sort -u)
+	local name_users=$(who | awk '{print $1;}' | sort -u)
 
 	printInfo "Logged in" "$name_users"
 }
@@ -563,9 +563,9 @@ printInfoExternalIPv4()
 ##
 printInfoSystemctl()
 {
-	systcl_num_failed=$(systemctl --failed |\
-	                    grep "loaded units listed" |\
-	                    head -c 1)
+	local systcl_num_failed=$(systemctl --failed |\
+	                          grep "loaded units listed" |\
+	                          head -c 1)
 
 	if   [ "$systcl_num_failed" -eq "0" ]; then
 		local sysctl="All services OK"
@@ -584,9 +584,9 @@ printInfoSystemctl()
 ##
 printInfoColorpalette()
 {
-	char="   "
+	local char="   "
 
-	standard_palette=$(printf '%s'\
+	local standard_palette=$(printf '%s'\
 	"$(formatText "$char" -b black)"\
 	"$(formatText "$char" -b red)"\
 	"$(formatText "$char" -b green)"\
@@ -596,7 +596,7 @@ printInfoColorpalette()
 	"$(formatText "$char" -b cyan)"\
 	"$(formatText "$char" -b light-gray)")
 
-	light_palette=$(printf '%s'\
+	local light_palette=$(printf '%s'\
 	"$(formatText "$char" -b dark-gray)"\
 	"$(formatText "$char" -b light-red)"\
 	"$(formatText "$char" -b light-green)"\
@@ -617,6 +617,14 @@ printInfoColorpalette()
 printInfoSpacer()
 {
 	printInfo "" ""
+}
+
+
+
+printInfoCPUUtilization()
+{
+	local avg_load=$(uptime | sed 's/^.*load average: //g')	
+	printInfo "Sys load" "$avg_load"
 }
 
 
@@ -758,6 +766,7 @@ printStatusInfo()
 			SERVICES)	printInfoSystemctl;;
 			PALETTE)	printInfoColorpalette;;
 			SPACER)		printInfoSpacer;;
+			CPUUTILIZATION)	printInfoCPUUtilization;;
 
 		## USAGE MONITORS (BARS)
 		##	NAME		FUNCTION		AS %
