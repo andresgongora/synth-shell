@@ -399,7 +399,6 @@ printInfoDate()
 ##
 printInfoUptime()
 {
-	## Get pretty uptime
 	local uptime=$(uptime -p | sed 's/^[^,]*up *//g')
 	printInfo "Uptime" "$uptime"
 }
@@ -732,7 +731,7 @@ printStatusInfo()
 	statusSwitch()
 	{
 		case $1 in
-		## INFO
+		## 	INFO (TEXT ONLY)
 		##	NAME		FUNCTION
 			OS)		printInfoOS;;
 			KERNEL)		printInfoKernel;;
@@ -750,7 +749,7 @@ printStatusInfo()
 			SPACER)		printInfoSpacer;;
 			CPUUTILIZATION)	printInfoCPUUtilization;;
 
-		## USAGE MONITORS (BARS)
+		## 	USAGE MONITORS (BARS)
 		##	NAME		FUNCTION		AS %
 			SYSLOADAVG)	printMonitorCPU;;
 			SYSLOADAVG%)	printMonitorCPU		true;;
