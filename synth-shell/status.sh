@@ -377,6 +377,21 @@ printInfoCPU()
 
 ##------------------------------------------------------------------------------
 ##
+printInfoGPU()
+{
+	local gpu_id=$(lspci | grep ' VGA ' | cut -d" " -f 1)
+	local gpu=$(lspci  -v -s "$gpu_id" |\
+	            head -n 1 |\
+	            sed 's/^.*: //g;s/(.*$//g;
+	                 s/Corporation //g'
+	           )
+
+	printInfo "GPU" "$gpu"
+}
+
+
+##------------------------------------------------------------------------------
+##
 printInfoShell()
 {
 	local shell=$(readlink /proc/$$/exe)
@@ -602,10 +617,54 @@ printInfoSpacer()
 
 
 
+##------------------------------------------------------------------------------
+##
 printInfoCPUUtilization()
 {
 	local avg_load=$(uptime | sed 's/^.*load average: //g')	
 	printInfo "Sys load" "$avg_load"
+}
+
+
+
+##------------------------------------------------------------------------------
+##
+printInfoCPUTemp()
+{
+	if ( which sensors > /dev/null 2>&1 ); then
+
+		## GET VALUES
+		local temp_line=$(sensors |\
+		                  grep Core |\
+		                  head -n 1 |\
+		                  sed 's/^.*:[ \t]*//g;s/[\(\),]//g')
+		local units=$(echo $temp_line |\
+		              sed -n 's/.*\(°[[CF]]*\).*/\1/p' )
+		local current=$(echo $temp_line |\
+		                sed -n 's/^.*+\(.*\)°[[CF]]*[ \t]*h.*/\1/p' )
+		local high=$(echo $temp_line |\
+		            sed -n 's/^.*high = +\(.*\)°[[CF]]*[ \t]*c.*/\1/p' )
+		local max=$(echo $temp_line |\
+		              sed -n 's/^.*crit = +\(.*\)°[[CF]]*[ \t]*.*/\1/p' )
+
+
+		## COMPOSE MESSAGE
+		if   (( $(echo "$current < $high" |bc -l) )); then 
+			local temp="$current$units";
+		elif (( $(echo "$current < $max" |bc -l) )); then 
+			local temp="$fc_crit$current$units";
+		else                             
+			local temp="$fc_error$current$units";
+		fi
+
+		
+		## PRINT MESSATE
+		printInfo "CPU temp" "$temp"
+	else
+		printInfo "CPU temp" "lm-sensors not installed"
+	fi
+
+	
 }
 
 
@@ -716,6 +775,37 @@ printMonitorHome()
 
 
 
+##------------------------------------------------------------------------------
+##
+printMonitorCPUTemp()
+{
+	if ( which sensors > /dev/null 2>&1 ); then
+
+		## GET VALIES
+		local temp_line=$(sensors |\
+		                  grep Core |\
+		                  head -n 1 |\
+		                  sed 's/^.*:[ \t]*//g;s/[\(\),]//g')
+		local units=$(echo $temp_line |\
+		              sed -n 's/.*\(°[[CF]]*\).*/\1/p' )
+		local current=$(echo $temp_line |\
+		                sed -n 's/^.*+\(.*\)°[[CF]]*[ \t]*h.*/\1/p' )
+		local high=$(echo $temp_line |\
+		            sed -n 's/^.*high = +\(.*\)°[[CF]]*[ \t]*c.*/\1/p' )
+		local max=$(echo $temp_line |\
+		              sed -n 's/^.*crit = +\(.*\)°[[CF]]*[ \t]*.*/\1/p' )
+		local crit_percent=$(bc <<< "$high*100/$max")
+
+		
+		## PRINT MONITOR
+		printMonitor $current $max $crit_percent \
+	        	     false $units "CPU temp"
+	else
+		printInfo "CPU temp" "lm-sensors not installed"
+	fi
+}
+
+
 
 
 
@@ -736,6 +826,7 @@ printStatusInfo()
 			OS)		printInfoOS;;
 			KERNEL)		printInfoKernel;;
 			CPU)		printInfoCPU;;
+			GPU)		printInfoGPU;;
 			SHELL)		printInfoShell;;
 			DATE)		printInfoDate;;
 			UPTIME)		printInfoUptime;;
@@ -748,21 +839,23 @@ printStatusInfo()
 			PALETTE)	printInfoColorpalette;;
 			SPACER)		printInfoSpacer;;
 			CPUUTILIZATION)	printInfoCPUUtilization;;
+			CPUTEMP)	printInfoCPUTemp;;
 
 		## 	USAGE MONITORS (BARS)
 		##	NAME		FUNCTION		AS %
-			SYSLOADAVG)	printMonitorCPU;;
-			SYSLOADAVG%)	printMonitorCPU		true;;
-			MEMORY)		printMonitorRAM;;
-			MEMORY%)	printMonitorRAM		true;;
-			SWAP)		printMonitorSwap;;
-			SWAP%)		printMonitorSwap 	true;;
-			HDDROOT)	printMonitorHDD;;
-			HDDROOT%)	printMonitorHDD 	true;;
-			HDDHOME)	printMonitorHome;;
-			HDDHOME%)	printMonitorHome 	true;;
+			SYSLOAD_MON)	printMonitorCPU;;
+			SYSLOAD_MON%)	printMonitorCPU		true;;
+			MEMORY_MON)	printMonitorRAM;;
+			MEMORY_MON%)	printMonitorRAM		true;;
+			SWAP_MON)	printMonitorSwap;;
+			SWAP_MON%)	printMonitorSwap 	true;;
+			HDDROOT_MON)	printMonitorHDD;;
+			HDDROOT_MON%)	printMonitorHDD 	true;;
+			HDDHOME_MON)	printMonitorHome;;
+			HDDHOME_MON%)	printMonitorHome 	true;;
+			CPUTEMP_MON)	printMonitorCPUTemp;;
 
-			*)		printInfo "Unknown" "?";;
+			*)		printInfo "Unknown" "Check your config";;
 		esac
 	}
 
@@ -1010,17 +1103,19 @@ local print_info="
 	OS
 	KERNEL
 	CPU
+	GPU
 	SHELL
 	DATE
 	UPTIME
 	LOCALIPV4
 	EXTERNALIPV4
 	SERVICES
-	SYSLOADAVG%
-	MEMORY
-	SWAP
-	HDDROOT
-	HDDHOME"
+	CPUTEMP
+	SYSLOAD_MON%
+	MEMORY_MON
+	SWAP_MON
+	HDDROOT_MON
+	HDDHOME_MON"
 
 local format_info="-c white"
 local format_highlight="-c blue  -e bold"
@@ -1046,7 +1141,8 @@ local date_format="%Y.%m.%d - %T"
 local print_cpu_hogs_num=3
 local print_cpu_hogs=true
 local print_memory_hogs=true
-
+local print_extra_new_line_top=true
+local print_extra_new_line_bot=true
 
 
 ## LOAD USER CONFIGURATION
@@ -1074,11 +1170,13 @@ local fc_none=$(getFormatCode -e reset)
 
 ## PRINT STATUS ELEMENTS
 clear
+if $print_extra_new_line_top; then echo ""; fi
 printHeader
 printLastLogins
 printSystemctl
 printHogsCPU
 printHogsMemory
+if $print_extra_new_line_bot; then echo ""; fi
 
 
 
