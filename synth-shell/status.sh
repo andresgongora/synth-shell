@@ -524,6 +524,38 @@ printInfoSystemctl()
 
 ##------------------------------------------------------------------------------
 ##
+printInfoColorpalette()
+{
+	char="   "
+
+	standard_palette=$(printf '%s'\
+	"$(formatText "$char" -b black)"\
+	"$(formatText "$char" -b red)"\
+	"$(formatText "$char" -b green)"\
+	"$(formatText "$char" -b yellow)"\
+	"$(formatText "$char" -b blue)"\
+	"$(formatText "$char" -b magenta)"\
+	"$(formatText "$char" -b cyan)"\
+	"$(formatText "$char" -b light-gray)")
+
+	light_palette=$(printf '%s'\
+	"$(formatText "$char" -b dark-gray)"\
+	"$(formatText "$char" -b light-red)"\
+	"$(formatText "$char" -b light-green)"\
+	"$(formatText "$char" -b light-yellow)"\
+	"$(formatText "$char" -b light-blue)"\
+	"$(formatText "$char" -b light-magenta)"\
+	"$(formatText "$char" -b light-cyan)"\
+	"$(formatText "$char" -b white)")
+
+	printInfo "Color palette" "$standard_palette"
+	printInfo ""              "$light_palette"
+}
+
+
+
+##------------------------------------------------------------------------------
+##
 printMonitorCPU()
 {
 	local message="Sys load avg"
@@ -654,6 +686,7 @@ printStatusInfo()
 			LOCALIPV4)	printInfoLocalIPv4;;
 			EXTERNALIPV4)	printInfoExternalIPv4;;
 			SERVICES)	printInfoSystemctl;;
+			PALETTE)	printInfoColorpalette;;
 
 		## USAGE MONITORS (BARS)
 		##	NAME		FUNCTION		AS %
