@@ -400,6 +400,19 @@ printInfoDate()
 printInfoUptime()
 {
 	## By John1024 from https://stackoverflow.com/questions/28353409/bash-format-uptime-to-show-days-hours-minutes
+	## -E			
+	## 	turns on extended regular expression syntax
+	## s/^[^,]*up *//
+	##	this substitutes command removes all text up to up
+	## s/, *[[:digit:]]* users.*//
+	##	This substitute command removes from user count onward
+	## s/min/minutes/
+	##	This replaces min with minutes
+	## s/([[:digit:]]+):0?([[:digit:]]+)/\1 hours, \2 minutes/'
+	##	If the line contains a time in the hh:mm format,
+	##	this separates the hours from the minutes and 
+	##	replaces it with hh hours, mm minutes
+	##
 	uptime=$(uptime |\
 	         sed -E 's/^[^,]*up *//;
 	                 s/, *[[:digit:]]* users.*//;
@@ -416,6 +429,35 @@ printInfoUptime()
 printInfoUser()
 {
 	printInfo "User" "$USER@$HOSTNAME"
+}
+
+
+
+##------------------------------------------------------------------------------
+##
+printInfoNumLoggedIn()
+{
+	## -n	silent
+	## 	replace everything with content of the group inside \( \)
+	## p	print
+	num_users=$(uptime |\
+	            sed -n 's/.*\([[0-9:]]* users\).*/\1/p')
+
+	printInfo "Logged in" "$num_users"
+}
+
+
+
+##------------------------------------------------------------------------------
+##
+printInfoNameLoggedIn()
+{
+	## who			See who is logged in
+	## awk '{print $1;}'	First word of each line
+	## sort -u		Sort and remove duplicates
+	name_users=$(who | awk '{print $1;}' | sort -u)
+
+	printInfo "Logged in" "$name_users"
 }
 
 
@@ -709,6 +751,8 @@ printStatusInfo()
 			DATE)		printInfoDate;;
 			UPTIME)		printInfoUptime;;
 			USER)		printInfoUser;;
+			NUMLOGGED)	printInfoNumLoggedIn;;
+			NAMELOGGED)	printInfoNameLoggedIn;;
 			LOCALIPV4)	printInfoLocalIPv4;;
 			EXTERNALIPV4)	printInfoExternalIPv4;;
 			SERVICES)	printInfoSystemctl;;
