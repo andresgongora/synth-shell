@@ -916,6 +916,10 @@ printHeader()
 	local info_cols=$(getTextNumCols "$info")
 
 
+	## PRINT TOP SPACER
+	if $print_extra_new_line_top; then echo ""; fi
+
+
 	## PRINT ONLY WHAT FITS IN THE TERMINAL
 	if [ $(( $logo_cols + $info_cols )) -lt $term_cols ]; then
 		if $print_logo_right ; then
@@ -931,6 +935,10 @@ printHeader()
 			printTwoElementsSideBySide "" "$info" "$print_cols_max"
 		fi
 	fi
+
+
+	## PRINT BOTTOM SPACER
+	if $print_extra_new_line_bot; then echo ""; fi
 }
 
 
@@ -1190,13 +1198,12 @@ local fc_none=$(getFormatCode -e reset)
 
 ## PRINT STATUS ELEMENTS
 clear
-if $print_extra_new_line_top; then echo ""; fi
 printHeader
 printLastLogins
 printSystemctl
 printHogsCPU
 printHogsMemory
-if $print_extra_new_line_bot; then echo ""; fi
+
 
 
 
