@@ -28,11 +28,7 @@
 ##	system resources, possible errors, and suspicions system activity.
 ##
 ##
-##
-##	INSTALLATION:
-##	Simply copy and paste this file into your ~/.bashrc file, or source
-##	it externally (recommended).
-##
+
 
 
 status()
@@ -509,7 +505,9 @@ printInfoExternalIPv4()
 ##
 printInfoSystemctl()
 {
-	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
+	systcl_num_failed=$(systemctl --failed |\
+	                    grep "loaded units listed" |\
+	                    head -c 1)
 
 	if   [ "$systcl_num_failed" -eq "0" ]; then
 		local sysctl="All services OK"
@@ -600,7 +598,7 @@ printMonitorHDD()
 
 	local message="Storage /"
 	local units="GB"
-	local current=$(df -B1G / | grep "/" | awk '{key=($3)} END {printf key}')
+	local current=$(df -B1G / | grep "/" |awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G / | grep "/" | awk '{key=($2)} END {printf key}')
 
 
@@ -620,7 +618,7 @@ printMonitorHome()
 
 	local message="Storage /home"
 	local units="GB"
-	local current=$(df -B1G ~ | grep "/" | awk '{key=($3)} END {printf key}')
+	local current=$(df -B1G ~ | grep "/" |awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G ~ | grep "/" | awk '{key=($2)} END {printf key}')
 
 
@@ -751,7 +749,9 @@ printLastLogins()
 ##
 printSystemctl()
 {
-	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
+	systcl_num_failed=$(systemctl --failed |\
+	                    grep "loaded units listed" |\
+	                    head -c 1)
 
 	if [ "$systcl_num_failed" -ne "0" ]; then
 		local failed=$(systemctl --failed | awk '/UNIT/,/^$/')
