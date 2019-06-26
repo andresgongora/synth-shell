@@ -578,32 +578,51 @@ printInfoSystemctl()
 
 ##------------------------------------------------------------------------------
 ##
-printInfoColorpalette()
+printInfoColorpaletteSmall()
 {
-	local char="   "
+	local char="▀▀"
 
-	local standard_palette=$(printf '%s'\
-	"$(formatText "$char" -b black)"\
-	"$(formatText "$char" -b red)"\
-	"$(formatText "$char" -b green)"\
-	"$(formatText "$char" -b yellow)"\
-	"$(formatText "$char" -b blue)"\
-	"$(formatText "$char" -b magenta)"\
-	"$(formatText "$char" -b cyan)"\
-	"$(formatText "$char" -b light-gray)")
+	local palette=$(printf '%s'\
+	"$(formatText "$char" -c black -b dark-gray)"\
+	"$(formatText "$char" -c red -b light-red)"\
+	"$(formatText "$char" -c green -b light-green)"\
+	"$(formatText "$char" -c yellow -b light-yellow)"\
+	"$(formatText "$char" -c blue -b light-blue)"\
+	"$(formatText "$char" -c magenta -b light-magenta)"\
+	"$(formatText "$char" -c cyan -b light-cyan)"\
+	"$(formatText "$char" -c light-gray -b white)")
 
-	local light_palette=$(printf '%s'\
-	"$(formatText "$char" -b dark-gray)"\
-	"$(formatText "$char" -b light-red)"\
-	"$(formatText "$char" -b light-green)"\
-	"$(formatText "$char" -b light-yellow)"\
-	"$(formatText "$char" -b light-blue)"\
-	"$(formatText "$char" -b light-magenta)"\
-	"$(formatText "$char" -b light-cyan)"\
-	"$(formatText "$char" -b white)")
+	printInfo "Color palette" "$palette"
+}
 
-	printInfo "Color palette" "$standard_palette"
-	printInfo ""              "$light_palette"
+
+
+##------------------------------------------------------------------------------
+##
+printInfoColorpaletteFancy()
+{
+	local palette_top=$(printf '%s'\
+		"$(formatText "▄" -c dark-gray)$(formatText "▄" -c dark-gray -b black)$(formatText "█" -c black) "\
+		"$(formatText "▄" -c light-red)$(formatText "▄" -c light-red -b red)$(formatText "█" -c red) "\
+		"$(formatText "▄" -c light-green)$(formatText "▄" -c light-green -b green)$(formatText "█" -c green) "\
+		"$(formatText "▄" -c light-yellow)$(formatText "▄" -c light-yellow -b yellow)$(formatText "█" -c yellow) "\
+		"$(formatText "▄" -c light-blue)$(formatText "▄" -c light-blue -b blue)$(formatText "█" -c blue) "\
+		"$(formatText "▄" -c light-magenta)$(formatText "▄" -c light-magenta -b magenta)$(formatText "█" -c magenta) "\
+		"$(formatText "▄" -c light-cyan)$(formatText "▄" -c light-cyan -b cyan)$(formatText "█" -c cyan) "\
+		"$(formatText "▄" -c white)$(formatText "▄" -c white -b light-gray)$(formatText "█" -c light-gray) ")
+
+	local palette_bot=$(printf '%s'\
+		"$(formatText "██" -c dark-gray)$(formatText "▀" -c black) "\
+		"$(formatText "██" -c light-red)$(formatText "▀" -c red) "\
+		"$(formatText "██" -c light-green)$(formatText "▀" -c green) "\
+		"$(formatText "██" -c light-yellow)$(formatText "▀" -c yellow) "\
+		"$(formatText "██" -c light-blue)$(formatText "▀" -c blue) "\
+		"$(formatText "██" -c light-magenta)$(formatText "▀" -c magenta) "\
+		"$(formatText "██" -c light-cyan)$(formatText "▀" -c cyan) "\
+		"$(formatText "██" -c white)$(formatText "▀" -c light-gray) ")
+
+	printInfo "" "$palette_top"
+	printInfo "Color palette" "$palette_bot"
 }
 
 
@@ -836,7 +855,8 @@ printStatusInfo()
 			LOCALIPV4)	printInfoLocalIPv4;;
 			EXTERNALIPV4)	printInfoExternalIPv4;;
 			SERVICES)	printInfoSystemctl;;
-			PALETTE)	printInfoColorpalette;;
+			PALETTE_SMALL)	printInfoColorpaletteSmall;;
+			PALETTE)	printInfoColorpaletteFancy;;
 			SPACER)		printInfoSpacer;;
 			CPUUTILIZATION)	printInfoCPUUtilization;;
 			CPUTEMP)	printInfoCPUTemp;;
