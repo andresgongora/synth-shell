@@ -399,26 +399,8 @@ printInfoDate()
 ##
 printInfoUptime()
 {
-	## By John1024 from https://stackoverflow.com/questions/28353409/bash-format-uptime-to-show-days-hours-minutes
-	## -E			
-	## 	turns on extended regular expression syntax
-	## s/^[^,]*up *//
-	##	this substitutes command removes all text up to up
-	## s/, *[[:digit:]]* users.*//
-	##	This substitute command removes from user count onward
-	## s/min/minutes/
-	##	This replaces min with minutes
-	## s/([[:digit:]]+):0?([[:digit:]]+)/\1 hours, \2 minutes/'
-	##	If the line contains a time in the hh:mm format,
-	##	this separates the hours from the minutes and 
-	##	replaces it with hh hours, mm minutes
-	##
-	local uptime=$(uptime |\
-	               sed -E 's/^[^,]*up *//;
-	                       s/, *[[:digit:]]* users.*//;
-	                       s/min/minutes/;
-	                       s/([[:digit:]]+):0?([[:digit:]]+)/\1 hours, \2 minutes/')
-
+	## Get pretty uptime
+	local uptime=$(uptime -p | sed 's/^[^,]*up *//g')
 	printInfo "Uptime" "$uptime"
 }
 
