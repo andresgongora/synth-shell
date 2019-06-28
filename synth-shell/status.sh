@@ -28,11 +28,7 @@
 ##	system resources, possible errors, and suspicions system activity.
 ##
 ##
-##
-##	INSTALLATION:
-##	Simply copy and paste this file into your ~/.bashrc file, or source
-##	it externally (recommended).
-##
+
 
 
 status()
@@ -381,6 +377,21 @@ printInfoCPU()
 
 ##------------------------------------------------------------------------------
 ##
+printInfoGPU()
+{
+	local gpu_id=$(lspci | grep ' VGA ' | cut -d" " -f 1)
+	local gpu=$(lspci  -v -s "$gpu_id" |\
+	            head -n 1 |\
+	            sed 's/^.*: //g;s/(.*$//g;
+	                 s/Corporation //g'
+	           )
+
+	printInfo "GPU" "$gpu"
+}
+
+
+##------------------------------------------------------------------------------
+##
 printInfoShell()
 {
 	local shell=$(readlink /proc/$$/exe)
@@ -401,9 +412,48 @@ printInfoDate()
 
 ##------------------------------------------------------------------------------
 ##
+printInfoUptime()
+{
+	local uptime=$(uptime -p | sed 's/^[^,]*up *//g')
+	printInfo "Uptime" "$uptime"
+}
+
+
+
+##------------------------------------------------------------------------------
+##
 printInfoUser()
 {
 	printInfo "User" "$USER@$HOSTNAME"
+}
+
+
+
+##------------------------------------------------------------------------------
+##
+printInfoNumLoggedIn()
+{
+	## -n	silent
+	## 	replace everything with content of the group inside \( \)
+	## p	print
+	num_users=$(uptime |\
+	            sed -n 's/.*\([[0-9:]]* users\).*/\1/p')
+
+	printInfo "Logged in" "$num_users"
+}
+
+
+
+##------------------------------------------------------------------------------
+##
+printInfoNameLoggedIn()
+{
+	## who			See who is logged in
+	## awk '{print $1;}'	First word of each line
+	## sort -u		Sort and remove duplicates
+	local name_users=$(who | awk '{print $1;}' | sort -u)
+
+	printInfo "Logged in" "$name_users"
 }
 
 
@@ -509,7 +559,9 @@ printInfoExternalIPv4()
 ##
 printInfoSystemctl()
 {
-	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
+	local systcl_num_failed=$(systemctl --failed |\
+	                          grep "loaded units listed" |\
+	                          head -c 1)
 
 	if   [ "$systcl_num_failed" -eq "0" ]; then
 		local sysctl="All services OK"
@@ -520,6 +572,118 @@ printInfoSystemctl()
 	fi
 
 	printInfo "Services" "$sysctl"
+}
+
+
+
+##------------------------------------------------------------------------------
+##
+printInfoColorpaletteSmall()
+{
+	local char="▀▀"
+
+	local palette=$(printf '%s'\
+	"$(formatText "$char" -c black -b dark-gray)"\
+	"$(formatText "$char" -c red -b light-red)"\
+	"$(formatText "$char" -c green -b light-green)"\
+	"$(formatText "$char" -c yellow -b light-yellow)"\
+	"$(formatText "$char" -c blue -b light-blue)"\
+	"$(formatText "$char" -c magenta -b light-magenta)"\
+	"$(formatText "$char" -c cyan -b light-cyan)"\
+	"$(formatText "$char" -c light-gray -b white)")
+
+	printInfo "Color palette" "$palette"
+}
+
+
+
+##------------------------------------------------------------------------------
+##
+printInfoColorpaletteFancy()
+{
+	local palette_top=$(printf '%s'\
+		"$(formatText "▄" -c dark-gray)$(formatText "▄" -c dark-gray -b black)$(formatText "█" -c black) "\
+		"$(formatText "▄" -c light-red)$(formatText "▄" -c light-red -b red)$(formatText "█" -c red) "\
+		"$(formatText "▄" -c light-green)$(formatText "▄" -c light-green -b green)$(formatText "█" -c green) "\
+		"$(formatText "▄" -c light-yellow)$(formatText "▄" -c light-yellow -b yellow)$(formatText "█" -c yellow) "\
+		"$(formatText "▄" -c light-blue)$(formatText "▄" -c light-blue -b blue)$(formatText "█" -c blue) "\
+		"$(formatText "▄" -c light-magenta)$(formatText "▄" -c light-magenta -b magenta)$(formatText "█" -c magenta) "\
+		"$(formatText "▄" -c light-cyan)$(formatText "▄" -c light-cyan -b cyan)$(formatText "█" -c cyan) "\
+		"$(formatText "▄" -c white)$(formatText "▄" -c white -b light-gray)$(formatText "█" -c light-gray) ")
+
+	local palette_bot=$(printf '%s'\
+		"$(formatText "██" -c dark-gray)$(formatText "▀" -c black) "\
+		"$(formatText "██" -c light-red)$(formatText "▀" -c red) "\
+		"$(formatText "██" -c light-green)$(formatText "▀" -c green) "\
+		"$(formatText "██" -c light-yellow)$(formatText "▀" -c yellow) "\
+		"$(formatText "██" -c light-blue)$(formatText "▀" -c blue) "\
+		"$(formatText "██" -c light-magenta)$(formatText "▀" -c magenta) "\
+		"$(formatText "██" -c light-cyan)$(formatText "▀" -c cyan) "\
+		"$(formatText "██" -c white)$(formatText "▀" -c light-gray) ")
+
+	printInfo "" "$palette_top"
+	printInfo "Color palette" "$palette_bot"
+}
+
+
+
+##------------------------------------------------------------------------------
+##
+printInfoSpacer()
+{
+	printInfo "" ""
+}
+
+
+
+##------------------------------------------------------------------------------
+##
+printInfoCPUUtilization()
+{
+	local avg_load=$(uptime | sed 's/^.*load average: //g')	
+	printInfo "Sys load" "$avg_load"
+}
+
+
+
+##------------------------------------------------------------------------------
+##
+printInfoCPUTemp()
+{
+	if ( which sensors > /dev/null 2>&1 ); then
+
+		## GET VALUES
+		local temp_line=$(sensors |\
+		                  grep Core |\
+		                  head -n 1 |\
+		                  sed 's/^.*:[ \t]*//g;s/[\(\),]//g')
+		local units=$(echo $temp_line |\
+		              sed -n 's/.*\(°[[CF]]*\).*/\1/p' )
+		local current=$(echo $temp_line |\
+		                sed -n 's/^.*+\(.*\)°[[CF]]*[ \t]*h.*/\1/p' )
+		local high=$(echo $temp_line |\
+		            sed -n 's/^.*high = +\(.*\)°[[CF]]*[ \t]*c.*/\1/p' )
+		local max=$(echo $temp_line |\
+		              sed -n 's/^.*crit = +\(.*\)°[[CF]]*[ \t]*.*/\1/p' )
+
+
+		## COMPOSE MESSAGE
+		if   (( $(echo "$current < $high" |bc -l) )); then 
+			local temp="$current$units";
+		elif (( $(echo "$current < $max" |bc -l) )); then 
+			local temp="$fc_crit$current$units";
+		else                             
+			local temp="$fc_error$current$units";
+		fi
+
+		
+		## PRINT MESSATE
+		printInfo "CPU temp" "$temp"
+	else
+		printInfo "CPU temp" "lm-sensors not installed"
+	fi
+
+	
 }
 
 
@@ -600,7 +764,7 @@ printMonitorHDD()
 
 	local message="Storage /"
 	local units="GB"
-	local current=$(df -B1G / | grep "/" | awk '{key=($3)} END {printf key}')
+	local current=$(df -B1G / | grep "/" |awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G / | grep "/" | awk '{key=($2)} END {printf key}')
 
 
@@ -620,7 +784,7 @@ printMonitorHome()
 
 	local message="Storage /home"
 	local units="GB"
-	local current=$(df -B1G ~ | grep "/" | awk '{key=($3)} END {printf key}')
+	local current=$(df -B1G ~ | grep "/" |awk '{key=($3)} END {printf key}')
 	local max=$(df -B1G ~ | grep "/" | awk '{key=($2)} END {printf key}')
 
 
@@ -628,6 +792,37 @@ printMonitorHome()
 	             $as_percentage $units $message
 }
 
+
+
+##------------------------------------------------------------------------------
+##
+printMonitorCPUTemp()
+{
+	if ( which sensors > /dev/null 2>&1 ); then
+
+		## GET VALIES
+		local temp_line=$(sensors |\
+		                  grep Core |\
+		                  head -n 1 |\
+		                  sed 's/^.*:[ \t]*//g;s/[\(\),]//g')
+		local units=$(echo $temp_line |\
+		              sed -n 's/.*\(°[[CF]]*\).*/\1/p' )
+		local current=$(echo $temp_line |\
+		                sed -n 's/^.*+\(.*\)°[[CF]]*[ \t]*h.*/\1/p' )
+		local high=$(echo $temp_line |\
+		            sed -n 's/^.*high = +\(.*\)°[[CF]]*[ \t]*c.*/\1/p' )
+		local max=$(echo $temp_line |\
+		              sed -n 's/^.*crit = +\(.*\)°[[CF]]*[ \t]*.*/\1/p' )
+		local crit_percent=$(bc <<< "$high*100/$max")
+
+		
+		## PRINT MONITOR
+		printMonitor $current $max $crit_percent \
+	        	     false $units "CPU temp"
+	else
+		printInfo "CPU temp" "lm-sensors not installed"
+	fi
+}
 
 
 
@@ -645,32 +840,42 @@ printStatusInfo()
 	statusSwitch()
 	{
 		case $1 in
-		## INFO
+		## 	INFO (TEXT ONLY)
 		##	NAME		FUNCTION
 			OS)		printInfoOS;;
 			KERNEL)		printInfoKernel;;
 			CPU)		printInfoCPU;;
+			GPU)		printInfoGPU;;
 			SHELL)		printInfoShell;;
 			DATE)		printInfoDate;;
+			UPTIME)		printInfoUptime;;
 			USER)		printInfoUser;;
+			NUMLOGGED)	printInfoNumLoggedIn;;
+			NAMELOGGED)	printInfoNameLoggedIn;;
 			LOCALIPV4)	printInfoLocalIPv4;;
 			EXTERNALIPV4)	printInfoExternalIPv4;;
 			SERVICES)	printInfoSystemctl;;
+			PALETTE_SMALL)	printInfoColorpaletteSmall;;
+			PALETTE)	printInfoColorpaletteFancy;;
+			SPACER)		printInfoSpacer;;
+			CPUUTILIZATION)	printInfoCPUUtilization;;
+			CPUTEMP)	printInfoCPUTemp;;
 
-		## USAGE MONITORS (BARS)
+		## 	USAGE MONITORS (BARS)
 		##	NAME		FUNCTION		AS %
-			SYSLOADAVG)	printMonitorCPU;;
-			SYSLOADAVG%)	printMonitorCPU		true;;
-			MEMORY)		printMonitorRAM;;
-			MEMORY%)	printMonitorRAM		true;;
-			SWAP)		printMonitorSwap;;
-			SWAP%)		printMonitorSwap 	true;;
-			HDDROOT)	printMonitorHDD;;
-			HDDROOT%)	printMonitorHDD 	true;;
-			HDDHOME)	printMonitorHome;;
-			HDDHOME%)	printMonitorHome 	true;;
+			SYSLOAD_MON)	printMonitorCPU;;
+			SYSLOAD_MON%)	printMonitorCPU		true;;
+			MEMORY_MON)	printMonitorRAM;;
+			MEMORY_MON%)	printMonitorRAM		true;;
+			SWAP_MON)	printMonitorSwap;;
+			SWAP_MON%)	printMonitorSwap 	true;;
+			HDDROOT_MON)	printMonitorHDD;;
+			HDDROOT_MON%)	printMonitorHDD 	true;;
+			HDDHOME_MON)	printMonitorHome;;
+			HDDHOME_MON%)	printMonitorHome 	true;;
+			CPUTEMP_MON)	printMonitorCPUTemp;;
 
-			*)		printInfo "Unknown" "?";;
+			*)		printInfo "Unknown" "Check your config";;
 		esac
 	}
 
@@ -711,6 +916,10 @@ printHeader()
 	local info_cols=$(getTextNumCols "$info")
 
 
+	## PRINT TOP SPACER
+	if $print_extra_new_line_top; then echo ""; fi
+
+
 	## PRINT ONLY WHAT FITS IN THE TERMINAL
 	if [ $(( $logo_cols + $info_cols )) -lt $term_cols ]; then
 		if $print_logo_right ; then
@@ -726,6 +935,10 @@ printHeader()
 			printTwoElementsSideBySide "" "$info" "$print_cols_max"
 		fi
 	fi
+
+
+	## PRINT BOTTOM SPACER
+	if $print_extra_new_line_bot; then echo ""; fi
 }
 
 
@@ -751,7 +964,9 @@ printLastLogins()
 ##
 printSystemctl()
 {
-	systcl_num_failed=$(systemctl --failed | grep "loaded units listed" | head -c 1)
+	systcl_num_failed=$(systemctl --failed |\
+	                    grep "loaded units listed" |\
+	                    head -c 1)
 
 	if [ "$systcl_num_failed" -ne "0" ]; then
 		local failed=$(systemctl --failed | awk '/UNIT/,/^$/')
@@ -846,12 +1061,14 @@ printHogsMemory()
 	local swap_info=$('free' -m | tail -n 1)
 	local current=$(echo "$swap_info" | awk '{SWAP=($3)} END {printf SWAP}')
 	local max=$(echo "$swap_info" | awk '{SWAP=($2)} END {printf SWAP}')
+	local percent=$(bc <<< "$current*100/$max")
 	local swap_is_crit=false
 	if [ $percent -gt $crit_swap_percent ]; then
 		local swap_is_crit=true
 	fi
 
 
+	## PRINT IF RAM OR SWAP ARE ABOVE THRESHOLD
 	if $ram_is_crit || $swap_is_crit ; then
 		local available=$(echo $mem_info | awk '{print $NF}')
 		local procs=$(ps --cols=80 -eo pmem,size,pid,cmd --sort=-%mem |\
@@ -914,17 +1131,19 @@ local print_info="
 	OS
 	KERNEL
 	CPU
+	GPU
 	SHELL
 	DATE
-	USER
+	UPTIME
 	LOCALIPV4
 	EXTERNALIPV4
 	SERVICES
-	SYSLOADAVG%
-	MEMORY
-	SWAP
-	HDDROOT
-	HDDHOME"
+	CPUTEMP
+	SYSLOAD_MON%
+	MEMORY_MON
+	SWAP_MON
+	HDDROOT_MON
+	HDDHOME_MON"
 
 local format_info="-c white"
 local format_highlight="-c blue  -e bold"
@@ -950,7 +1169,8 @@ local date_format="%Y.%m.%d - %T"
 local print_cpu_hogs_num=3
 local print_cpu_hogs=true
 local print_memory_hogs=true
-
+local print_extra_new_line_top=true
+local print_extra_new_line_bot=true
 
 
 ## LOAD USER CONFIGURATION
@@ -983,6 +1203,7 @@ printLastLogins
 printSystemctl
 printHogsCPU
 printHogsMemory
+
 
 
 

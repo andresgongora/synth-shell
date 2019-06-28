@@ -1,4 +1,4 @@
-##!/bin/bash
+#!/bin/bash
 
 ##  +-----------------------------------+-----------------------------------+
 ##  |                                                                       |
@@ -126,14 +126,10 @@ installScript()
 	case "$operation" in
 
 	uninstall)
-
-		## REMOVE HOOK
+		## REMOVE HOOK AND SCRIPT
+		printInfo "Removed $script_name hook from $BASHRC"
 		editTextFile "$BASHRC" delete "$hook"
-
-		## REMOVE SCRIPT
-		if [ -f $script ]; then
-			rm $script
-		fi
+		if [ -f $script ]; then rm $script; fi
 		;;
 
 
@@ -141,12 +137,14 @@ installScript()
 
 		## CHECK THAT INSTALL DIR EXISTS
 		if [ ! -d $INSTALL_DIR ]; then
+			printInfo "Creating directory $INSTALL_DIR"
 			mkdir -p $INSTALL_DIR
 		fi
 
 
 
 		## CREATE EMPTY SCRIPT FILE	
+		printInfo "Creating file $script"
 		if [ -f $script ]; then
 			rm $script
 		fi
@@ -176,6 +174,7 @@ installScript()
 
 
 		## ADD HOOK TO /etc/bash.bashrc
+		printInfo "Adding $script_name hook to $BASHRC"
 		editTextFile "$BASHRC" append "$hook"
 
 
@@ -186,6 +185,7 @@ installScript()
 		##   - If none, copy current configuration
 		##   - If there is, but different, copy with .new extension
 		## - Copy all examples files (overwrite old examples)
+		printInfo "Adding config files to $CONFIG_DIR"
 		local sys_conf_file="${CONFIG_DIR}/${script_name}.config"
 		local conf_example_dir="${config_template_dir}/${script_name}.config.examples"
 		local conf_template="${config_template_dir}/${script_name}.config"
@@ -206,6 +206,7 @@ installScript()
 
 
 		## ADD QUICK-UNINSTALLER
+		printInfo "Adding quick uninstaller as $uninstaller"
 		editTextFile "$uninstaller" append "$script_header"
 		cat "$edit_text_file_script" |\
 			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$uninstaller"
@@ -216,6 +217,7 @@ installScript()
 		chmod +x "$uninstaller"
 
 
+		printSuccess "Script $script_name succesfully installed"
 		;;
 
 
@@ -234,28 +236,18 @@ installScript()
 ##
 installAll()
 {
-	printf 'Install status.sh? [y]/n: '
-
-	exec 6<&0
-	exec 0<$(tty)
-	read -n 1 action
-	exec 0<&6 6<&-
-
+	local action=$(promptUser "Install status? (Y/n)" "" "yYnN" "y")
 	case "$action" in
-		""|y|Y )	installScript install "status" ;;
+		""|y|Y )	installScript install "status" 
+				;;
 		*)		echo ""
 	esac
 
 
-	printf 'Install fancy-bash-prompt.sh? [y]/n: '
-
-	exec 6<&0
-	exec 0<$(tty)
-	read -n 1 action
-	exec 0<&6 6<&-
-
+	local action=$(promptUser "Install fancy-bash-prompt? (Y/n)" "" "yYnN" "y")
 	case "$action" in
-		""|y|Y )	installScript install "fancy-bash-prompt" ;;
+		""|y|Y )	installScript install "fancy-bash-prompt" 
+				;;
 		*)		echo ""
 	esac
 }
@@ -266,8 +258,15 @@ installAll()
 ##
 uninstallAll()
 {
-	installScript uninstall "status"
-	installScript uninstall "fancy-bash-prompt"
+	## CHECK IF QUICK-UNINSTALL FILE EXISTS
+	local uninstaller="${INSTALL_DIR}/uninstall.sh"
+	if [ -f "$uninstaller" ]; then
+		## RUN QUICK-UNINSTALLER
+		"$uninstaller"	
+	else
+		installScript uninstall "status"
+		installScript uninstall "fancy-bash-prompt"
+	fi
 }
 
 
@@ -285,17 +284,21 @@ installerSystem()
 	local CONFIG_DIR="/etc/synth-shell"
 	local BASHRC="/etc/bash.bashrc"
 
-	if [ $(id -u) -ne 0 ];
-		then echo "Please run as root"
+	if [ $(id -u) -ne 0 ]; then 
+		printError "Please run as root"
 		exit
 	fi
 
+	printInfo "Running systemwide"
+
 	case "$option" in
-		uninstall)	printf 'Uninstalling...\n'
+		uninstall)	printInfo "Uninstalling synth-shell"
 				uninstallAll
+				printSuccess "synth-shell was uninstalled"
 				;;
-		""|install)	printf 'Installing...\n'
+		""|install)	printInfo "Installing synth-shell"
 				installAll
+				printSuccess "synth-shell was installed"
 				;;
 		*)		echo "Usage: $0 {install|uninstall}" & exit 1
 	esac
@@ -313,12 +316,16 @@ installerUser()
 	local CONFIG_DIR="${HOME}/.config/synth-shell" 
 	local BASHRC="${HOME}/.bashrc" 
 
+	printInfo "Running for user $USER"
+
 	case "$option" in
-		uninstall)	printf 'Uninstalling...\n'
+		uninstall)	printInfo "Uninstalling synth-shell"
 				uninstallAll
+				printSuccess "synth-shell was uninstalled"
 				;;
-		""|install)	printf 'Installing...\n'
+		""|install)	printInfo "Installing synth-shell"
 				installAll
+				printSuccess "synth-shell was installed"
 				;;
 		*)		echo "Usage: $0 {install|uninstall}" & exit 1
 	esac
@@ -339,54 +346,26 @@ installerUser()
 ##
 promptUser()
 {
-	local install_option=""
-	local action=""
+	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+	source "$dir/bash-tools/bash-tools/user_io.sh"
+	printHeader "Installation wizard for synth-shell"
 
-
-
-	## CHOSE INSTALL OPTION: INSTALL/UNINTSALL
-	printf 'This script will install/remove '
-	printf 'status.sh and fancy-bash-prompt.sh\n'
-	printf 'Would you like to [i]nstall or [u]ninstall it?\n'
-	printf '[i]/u: '
-
-	exec 6<&0
-	exec 0<$(tty)
-	read -n 1 action
-	exec 0<&6 6<&-
-
+	
+	
+	local action=$(promptUser "Would you like to install or uninstall synth-shell?" "[i] install / [u] uninstall. Default i" "iIuU" "i")
 	case "$action" in
-		""|i|I )	printf '\nInstalling...\n\n'
-				local install_option="install"
-				;;
-		u|U )		printf '\nUninstalling...\n\n'
-				local install_option="uninstall"
-				;;
-		*)		echo "Invalid option"
-				exit 1
+		""|i|I )	local install_option="install" ;;
+		u|U )		local install_option="uninstall" ;;
+		*)		printError "Invalid option"; exit 1
 	esac
 
 
 
-	## CHOOSE SCOPE: USER/SYSTEM
-	printf "For [u]ser $USER only (recommended) "
-	printf 'or [s]ystem wide (requires elevated privileges)?\n'
-	printf '[u]/s?: '
-	
-	exec 6<&0
-	exec 0<$(tty)
-	read -n 1 action
-	exec 0<&6 6<&-			
-
+	local action=$(promptUser "Would you like to install it for your current user only (recommended),\n\tor system wide (requires elevated privileges)?" "[u] current user only / [s] system wide install. Default u" "uUsS" "u")
 	case "$action" in
-		""|u|U )	printf "\nRunning for user $USER\n\n"
-				installerUser   $install_option
-				;;
-		s|S )		printf "\nRunning systemwide\n\n"
-				sudo bash -c "bash $0 $install_option"
-				;;
-		*)		echo "\nInvalid option"
-				exit 1
+		""|u|U )	installerUser   $install_option ;;
+		s|S )		sudo bash -c "bash $0 $install_option" ;;
+		*)		printError "Invalid option"; exit 1
 	esac
 }
 
