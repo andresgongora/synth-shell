@@ -1,9 +1,18 @@
 ![synth-shell](doc/synth-shell.jpg)
 
-**synth-bash** is a collection of small scripts meant to improve your terminal
+**synth-shell** is a collection of small scripts meant to improve your terminal
 and overal productivity - small tweaks can go a long way.
 You can find more details and similar tools on
 [Yet Another Linux'n Electronics Blog](https://yalneb.blogspot.com/).
+
+
+- System status report with the most relevan information when you open up a new
+  terminal. It also works over SSH to monitor your server or RaspberryPi!!
+
+- Fancy bash prompt with colors. Makes separating your input from 
+  command-outputs that much easier. 
+
+- More coming soon...
 
 
 
