@@ -528,20 +528,20 @@ printInfoLocalIPv4()
 printInfoExternalIPv4()
 {
 	if   ( which dig > /dev/null 2>&1 ); then
-		local ip=$($(which dig) TXT -4 +short \
+		local ip=$(dig +time=3 +tries=1 TXT -4 +short \
 		           o-o.myaddr.l.google.com @ns1.google.com |\
 		           awk -F\" '{print $2}')
 
 	elif ( which nslookup > /dev/null 2>&1 ); then
-		local ip=$($(which nslookup) -q=txt \
+		local ip=$(nslookup -timeout=3 -q=txt \
 		           o-o.myaddr.l.google.com 216.239.32.10 |\
 		           awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
 
 	elif ( which curl > /dev/null 2>&1 ); then
-		local ip=$($(which curl2>&1 ) -s https://api.ipify.org)
+		local ip=$(curl -s https://api.ipify.org)
 
 	elif ( which wget > /dev/null 2>&1 ); then
-		local ip=$($(which wget) -q -O - https://api.ipify.org)
+		local ip=$(wget -q -O - https://api.ipify.org)
 	else
 		local result="Error"
 	fi
