@@ -6,6 +6,7 @@
 - Fix uninstaller bug (now uses quick-uninstall files left by installer, if available)
 - New info elements (some are optional and not shown by default)
 - Minor bug fixes
+- Improve installer
 
 
 
