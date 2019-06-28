@@ -35,6 +35,8 @@ git clone --recursive https://github.com/andresgongora/synth-shell.git
 chmod +x synth-shell/setup.sh
 synth-shell/setup.sh
 rm -fr synth-shell
+bash
+source ~/.bashrc
 ```
 
 
