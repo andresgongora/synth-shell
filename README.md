@@ -8,10 +8,8 @@ You can find more details and similar tools on
 
 - System status report with the most relevan information when you open up a new
   terminal. It also works over SSH to monitor your server or RaspberryPi!!
-
 - Fancy bash prompt with colors. Makes separating your input from 
   command-outputs that much easier. 
-
 - More coming soon...
 
 
