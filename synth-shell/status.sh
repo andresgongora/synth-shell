@@ -993,7 +993,7 @@ printHogsCPU()
 
 
 	## CHECK CPU LOAD
-	local current=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
+	local current=$(awk '{avg_1m=($1)} END {printf "%3.2f", avg_1m}' /proc/loadavg)
 	local max=$(nproc --all)
 	local percent=$(bc <<< "$current*100/$max")
 
