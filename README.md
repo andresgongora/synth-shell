@@ -29,7 +29,8 @@ This will guide you step by step through the process and let you choose what
 to install. It will also allow you to install the script for your user only,
 or system-wide (super user privileges required). To proceed, 
 [open and play this link in a separate tab](https://www.youtube.com/watch?v=k6ZMYWPQID0),
-and execute the following:
+and execute the following to feel like
+[Hackerman](https://www.youtube.com/watch?v=KEkrWRHCDQU&list=WL&index=63&t=0s):
 ```
 git clone --recursive https://github.com/andresgongora/synth-shell.git
 chmod +x synth-shell/setup.sh
