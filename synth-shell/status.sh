@@ -379,6 +379,7 @@ printInfoCPU()
 ##
 printInfoGPU()
 {
+	## DETECT GPU(s)set	
 	local gpu_id=$(lspci | grep ' VGA ' | cut -d" " -f 1)
 
 	## FOR ALL DETECTED IDs
@@ -386,7 +387,10 @@ printInfoGPU()
 	   	local gpu=$(lspci  -v -s "$line" |\
 		            head -n 1 |\
 		            sed 's/^.*: //g;s/(.*$//g;
-		                 s/Corporation //g'
+		                 s/Corporation //g;
+		                 s/Integrated Graphics Controller/HD Graphics/g;
+		                 s/Core Processor//g;
+		                 s/  */ /g'
 		           )
 
 		printInfo "GPU" "$gpu"

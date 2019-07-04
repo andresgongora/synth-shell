@@ -1,9 +1,10 @@
 <!--------------------------------------+-------------------------------------->
-#                                      v2.1
+#                                v2.1.1 & v2.1.2
 <!--------------------------------------+-------------------------------------->
 
 - Update README
 - Fix bug that prevented correct reading of user config files
+- SUpport for multiple GPUs
 
 
 
