@@ -39,9 +39,12 @@ alias free='\free -mht'
 ##==============================================================================
 ##	COMMAND OVERRIDES
 ##==============================================================================
+
+## GET CURRENT FOLDER
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 
+## BETTER LS
 BETTER_LS_FILE="$DIR/better-ls.sh"
 if [ -f $BETTER_LS_FILE ]; then
 	chmod +x "$BETTER_LS_FILE"
@@ -56,6 +59,8 @@ if [ -f /usr/bin/bat ]; then
         alias cat='bat' ## Replace cat with bat
 fi
 
+
+## BETTER HISTORY
 BETTER_HISTORY_FILE="$DIR/better-history.sh"
 if [ -f $BETTER_HISTORY_FILE ]; then
         source "$BETTER_HISTORY_FILE"

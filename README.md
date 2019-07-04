@@ -1,9 +1,16 @@
 ![synth-shell](doc/synth-shell.jpg)
 
-**synth-bash** is a collection of small scripts meant to improve your terminal
+**synth-shell** is a collection of small scripts meant to improve your terminal
 and overal productivity - small tweaks can go a long way.
 You can find more details and similar tools on
 [Yet Another Linux'n Electronics Blog](https://yalneb.blogspot.com/).
+
+
+- System status report with the most relevan information when you open up a new
+  terminal. It also works over SSH to monitor your server or RaspberryPi!!
+- Fancy bash prompt with colors. Makes separating your input from 
+  command-outputs that much easier. 
+- More coming soon...
 
 
 
@@ -22,12 +29,15 @@ This will guide you step by step through the process and let you choose what
 to install. It will also allow you to install the script for your user only,
 or system-wide (super user privileges required). To proceed, 
 [open and play this link in a separate tab](https://www.youtube.com/watch?v=k6ZMYWPQID0),
-and execute the following:
+and execute the following to feel like
+[Hackerman](https://www.youtube.com/watch?v=KEkrWRHCDQU&list=WL&index=63&t=0s):
 ```
 git clone --recursive https://github.com/andresgongora/synth-shell.git
 chmod +x synth-shell/setup.sh
 synth-shell/setup.sh
 rm -fr synth-shell
+bash
+source ~/.bashrc
 ```
 
 

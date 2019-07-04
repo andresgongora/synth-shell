@@ -528,20 +528,20 @@ printInfoLocalIPv4()
 printInfoExternalIPv4()
 {
 	if   ( which dig > /dev/null 2>&1 ); then
-		local ip=$($(which dig) TXT -4 +short \
+		local ip=$(dig +time=3 +tries=1 TXT -4 +short \
 		           o-o.myaddr.l.google.com @ns1.google.com |\
 		           awk -F\" '{print $2}')
 
 	elif ( which nslookup > /dev/null 2>&1 ); then
-		local ip=$($(which nslookup) -q=txt \
+		local ip=$(nslookup -timeout=3 -q=txt \
 		           o-o.myaddr.l.google.com 216.239.32.10 |\
 		           awk -F \" 'BEGIN{RS="\r\n"}{print $2}END{RS="\r\n"}')
 
 	elif ( which curl > /dev/null 2>&1 ); then
-		local ip=$($(which curl2>&1 ) -s https://api.ipify.org)
+		local ip=$(curl -s https://api.ipify.org)
 
 	elif ( which wget > /dev/null 2>&1 ); then
-		local ip=$($(which wget) -q -O - https://api.ipify.org)
+		local ip=$(wget -q -O - https://api.ipify.org)
 	else
 		local result="Error"
 	fi
@@ -993,7 +993,7 @@ printHogsCPU()
 
 
 	## CHECK CPU LOAD
-	local current=$(awk '{avg_1m=($1)} END {printf "%3.0f", avg_1m}' /proc/loadavg)
+	local current=$(awk '{avg_1m=($1)} END {printf "%3.2f", avg_1m}' /proc/loadavg)
 	local max=$(nproc --all)
 	local percent=$(bc <<< "$current*100/$max")
 
@@ -1174,8 +1174,8 @@ local print_extra_new_line_bot=true
 
 
 ## LOAD USER CONFIGURATION
-local user_config_file="$HOME/.config/scripts/status.config"
-local sys_config_file="/etc/andresgongora/scripts/status.config"
+local user_config_file="$HOME/.config/synth-shell/status.config"
+local sys_config_file="/etc/andresgongora/synth-shell/status.config"
 if   [ -f $user_config_file ]; then
 	source $user_config_file
 elif [ -f $sys_config_file ]; then
