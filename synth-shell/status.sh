@@ -1174,8 +1174,8 @@ local print_extra_new_line_bot=true
 
 
 ## LOAD USER CONFIGURATION
-local user_config_file="$HOME/.config/scripts/status.config"
-local sys_config_file="/etc/andresgongora/scripts/status.config"
+local user_config_file="$HOME/.config/synth-shell/status.config"
+local sys_config_file="/etc/andresgongora/synth-shell/status.config"
 if   [ -f $user_config_file ]; then
 	source $user_config_file
 elif [ -f $sys_config_file ]; then
