@@ -193,8 +193,8 @@ prompt_command_hook()
 
 
 	## LOAD USER CONFIGURATION
-	local user_config_file="$HOME/.config/scripts/fancy-bash-prompt.config"
-	local sys_config_file="/etc/andresgongora/scripts/fancy-bash-prompt.config"
+	local user_config_file="$HOME/.config/synth-shell/fancy-bash-prompt.config"
+	local sys_config_file="/etc/andresgongora/synth-shell/fancy-bash-prompt.config"
 	if   [ -f $user_config_file ]; then
 		source $user_config_file
 	elif [ -f $sys_config_file ]; then
