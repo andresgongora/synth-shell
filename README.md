@@ -125,14 +125,14 @@ If you like this project and want to contribute, you are most welcome to do so.
 
 ### Help us improve
 
-* [Report a bug](https://github.com/andresgongora/synth-shell/issues): 
+* [Report a bug](https://github.com/andresgongora/synth-shell/issues/new/choose): 
   if you notice that something is not right, tell us. We'll try to fix it ASAP.
 * Become a developer: fork this repo and become an active developer!
   Take a look at the [issuess](https://github.com/andresgongora/synth-shell/issues)
   for suggestions of where to start. Also, take a look at our 
   [coding style](coding_style.md).
 * Do you have an idea that you would like to see in the next release? Send us
-  and email or open an [issue](https://github.com/andresgongora/synth-shell/issues)
+  and email or open an [issue](https://github.com/andresgongora/synth-shell/issues/new/choose)
   with your suggestion!
 
 
