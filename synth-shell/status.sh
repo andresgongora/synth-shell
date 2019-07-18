@@ -519,6 +519,12 @@ printInfoLocalIPv4()
 	fi
 
 
+	## FIX IP FORMAT
+	## Add extra space after commas for readibility
+	local result=$(echo "$result" | sed 's/,/, /g')
+
+
+	## PRINT LOCAL IPs
 	## Returns "N/A" if actual query result is empty,
 	## and returns "Error" if no programs found
 	[ $ip ] || local ip="N/A"
