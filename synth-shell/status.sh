@@ -1209,7 +1209,7 @@ local fc_none=$(getFormatCode -e reset)
 
 
 ## PRINT STATUS ELEMENTS
-clear
+#clear
 printHeader
 printLastLogins
 printSystemctl
