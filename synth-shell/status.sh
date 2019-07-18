@@ -390,6 +390,7 @@ printInfoGPU()
 		                 s/Corporation //g;
 		                 s/Integrated Graphics Controller/HD Graphics/g;
 		                 s/Core Processor//g;
+		                 s/Series Chipset //g;
 		                 s/Advanced Micro Devices, Inc. [AMD/ATI]/ATI/g;
 		                 s/ASPEED Technology, Inc. ASPEED Graphics Family/ASPEED Technology Graphics Family/g;
 		                 s/  */ /g'
