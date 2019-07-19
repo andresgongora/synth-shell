@@ -1096,7 +1096,7 @@ printHogsMemory()
 
 		printf "${fc_crit}MEMORY:\t "
 		printf "${fc_info}Only ${available} MB of RAM available!!\n"
-		printf "${fc_crit}    %%\t SIZE\t  PID\tCOMMANDD\n"
+		printf "${fc_crit}    %%\t SIZE\t  PID\tCOMMAND\n"
 		printf "${fc_info}${procs}${fc_none}\n\n"
 	fi
 }
