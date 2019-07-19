@@ -952,6 +952,8 @@ printHeader()
 		else
 			printTwoElementsSideBySide "" "$info" "$print_cols_max"
 		fi
+	else
+		echo "synth-shell status.sh does not fit in the current terminal..."
 	fi
 
 
