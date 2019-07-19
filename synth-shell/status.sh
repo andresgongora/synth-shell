@@ -383,18 +383,32 @@ printInfoGPU()
 	local gpu_id=$(lspci | grep ' VGA ' | cut -d" " -f 1)
 
 	## FOR ALL DETECTED IDs
+	## Get the GPU name, but trim all buzzwords away
 	echo -e "$gpu_id" | while read line ; do
 	   	local gpu=$(lspci  -v -s "$line" |\
 		            head -n 1 |\
 		            sed 's/^.*: //g;s/(.*$//g;
-		                 s/Corporation //g;
-		                 s/Integrated Graphics Controller/HD Graphics/g;
+		                 s/Corporation//g;
 		                 s/Core Processor//g;
-		                 s/Series Chipset //g;
-		                 s/Advanced Micro Devices, Inc. [AMD/ATI]/ATI/g;
-		                 s/ASPEED Technology, Inc. ASPEED Graphics Family/ASPEED Technology Graphics Family/g;
+		                 s/Series//g;
+		                 s/Chipset//g;
+		                 s/Graphics//g;
+		                 s/Family//g;
+		                 s/Inc.//g;
+		                 s/,//g;
+		                 s/Technology//g;
+		                 s/Mobility/M/g;
+		                 s/Advanced Micro Devices/AMD/g;
+		                 s/\[AMD\/ATI\]/ATI/g; 
+		                 s/Integrated Graphics Controller/HD Graphics/g;
 		                 s/  */ /g'
 		           )
+
+		## If GPU name still to long, remove anything between []
+		if [ "${#gpu}" -gt 30 ]; then
+			local gpu=$(echo "$gpu" | sed 's/\[.*\]//g' )
+		fi
+
 
 		printInfo "GPU" "$gpu"
 	done
@@ -952,8 +966,6 @@ printHeader()
 		else
 			printTwoElementsSideBySide "" "$info" "$print_cols_max"
 		fi
-	else
-		echo "synth-shell status.sh does not fit in the current terminal..."
 	fi
 
 
@@ -1120,8 +1132,7 @@ local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 if [ "$(type -t getFormatCode)" != 'function' ]; then
 	source "$dir/../bash-tools/bash-tools/color.sh"
 fi
-if [ "$(type -t printWithOffset)" != 'function' ];
-then
+if [ "$(type -t printWithOffset)" != 'function' ]; then
 	source "$dir/../bash-tools/bash-tools/print_utils.sh"
 fi
 
