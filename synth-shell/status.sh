@@ -383,15 +383,32 @@ printInfoGPU()
 	local gpu_id=$(lspci | grep ' VGA ' | cut -d" " -f 1)
 
 	## FOR ALL DETECTED IDs
+	## Get the GPU name, but trim all buzzwords away
 	echo -e "$gpu_id" | while read line ; do
 	   	local gpu=$(lspci  -v -s "$line" |\
 		            head -n 1 |\
 		            sed 's/^.*: //g;s/(.*$//g;
-		                 s/Corporation //g;
-		                 s/Integrated Graphics Controller/HD Graphics/g;
+		                 s/Corporation//g;
 		                 s/Core Processor//g;
+		                 s/Series//g;
+		                 s/Chipset//g;
+		                 s/Graphics//g;
+		                 s/Family//g;
+		                 s/Inc.//g;
+		                 s/,//g;
+		                 s/Technology//g;
+		                 s/Mobility/M/g;
+		                 s/Advanced Micro Devices/AMD/g;
+		                 s/\[AMD\/ATI\]/ATI/g; 
+		                 s/Integrated Graphics Controller/HD Graphics/g;
 		                 s/  */ /g'
 		           )
+
+		## If GPU name still to long, remove anything between []
+		if [ "${#gpu}" -gt 30 ]; then
+			local gpu=$(echo "$gpu" | sed 's/\[.*\]//g' )
+		fi
+
 
 		printInfo "GPU" "$gpu"
 	done
@@ -516,6 +533,12 @@ printInfoLocalIPv4()
 	fi
 
 
+	## FIX IP FORMAT
+	## Add extra space after commas for readibility
+	local result=$(echo "$result" | sed 's/,/, /g')
+
+
+	## PRINT LOCAL IPs
 	## Returns "N/A" if actual query result is empty,
 	## and returns "Error" if no programs found
 	[ $ip ] || local ip="N/A"
@@ -1087,7 +1110,7 @@ printHogsMemory()
 
 		printf "${fc_crit}MEMORY:\t "
 		printf "${fc_info}Only ${available} MB of RAM available!!\n"
-		printf "${fc_crit}    %%\t SIZE\t  PID\tCOMMANDD\n"
+		printf "${fc_crit}    %%\t SIZE\t  PID\tCOMMAND\n"
 		printf "${fc_info}${procs}${fc_none}\n\n"
 	fi
 }
@@ -1109,8 +1132,7 @@ local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 if [ "$(type -t getFormatCode)" != 'function' ]; then
 	source "$dir/../bash-tools/bash-tools/color.sh"
 fi
-if [ "$(type -t printWithOffset)" != 'function' ];
-then
+if [ "$(type -t printWithOffset)" != 'function' ]; then
 	source "$dir/../bash-tools/bash-tools/print_utils.sh"
 fi
 
@@ -1206,7 +1228,7 @@ local fc_none=$(getFormatCode -e reset)
 
 
 ## PRINT STATUS ELEMENTS
-clear
+#clear
 printHeader
 printLastLogins
 printSystemctl
