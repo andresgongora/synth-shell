@@ -395,13 +395,13 @@ printInfoGPU()
 		                 s/Graphics//g;
 		                 s/Family//g;
 		                 s/Inc.//g;
-		                 s/Integrated Controller/IC/g;
 		                 s/,//g;
 		                 s/Technology//g;
 		                 s/Mobility/M/g;
 		                 s/Advanced Micro Devices/AMD/g;
 		                 s/\[AMD\/ATI\]/ATI/g; 
 		                 s/Integrated Graphics Controller/HD Graphics/g;
+		                 s/Integrated Controller/IC/g;
 		                 s/  */ /g'
 		           )
 
