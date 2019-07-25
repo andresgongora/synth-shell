@@ -395,6 +395,7 @@ printInfoGPU()
 		                 s/Graphics//g;
 		                 s/Family//g;
 		                 s/Inc.//g;
+		                 s/Integrated Controller/IC/g;
 		                 s/,//g;
 		                 s/Technology//g;
 		                 s/Mobility/M/g;
