@@ -92,17 +92,19 @@ rm -fr synth-shell
 
 
 ### status.sh
-Provides a report of your system status at one glance everytime you open a
-new terminal. If it detects that any parameter (e.g. system load, memory, etc.)
-is over a critical threshold, it will provide a warning and additional
-information to identify the culprit. I also plot a configurable logo, so
-you may impress your crush from the library with your unique ASCII art.
+Provides a summarized system report in a single glance everytime you open up a
+new terminal. If it detects that any system parameter (e.g. cpu load,
+memory, etc.) is over a critical threshold, it will provide a warning and 
+additional information about the cause. Last but not least, it also prints an
+user configurable logo such that you may impress your crush from the library 
+with some awesome ASCII art.
 
 
 ### fancy-bash-prompt.sh
-Adds colors and triangular separators to you bash prompt. The triangles are
-placed in an overlaping pattern to avoid accidental cuts if you were to touch
-them.
+Adds colors and triangular separators to you bash prompt. 
+For best results, consider installing (and telling your terminal to use) 
+the `hack-ttf` font alongside the powerline-fonts (the later is required for
+the separators).
 
 
 
@@ -127,13 +129,12 @@ If you like this project and want to contribute, you are most welcome to do so.
 
 * [Report a bug](https://github.com/andresgongora/synth-shell/issues/new/choose): 
   if you notice that something is not right, tell us. We'll try to fix it ASAP.
+* Suggest an idea you would like to see in the next release: send us
+  and email or open an [issue](https://github.com/andresgongora/synth-shell/issues)!
 * Become a developer: fork this repo and become an active developer!
-  Take a look at the [issuess](https://github.com/andresgongora/synth-shell/issues)
+  Take a look at the [issues](https://github.com/andresgongora/synth-shell/issues)
   for suggestions of where to start. Also, take a look at our 
   [coding style](coding_style.md).
-* Do you have an idea that you would like to see in the next release? Send us
-  and email or open an [issue](https://github.com/andresgongora/synth-shell/issues/new/choose)
-  with your suggestion!
 
 
 
