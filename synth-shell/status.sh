@@ -950,6 +950,7 @@ printHeader()
 
 
 	## PRINT TOP SPACER
+	if $clear_before_print; then clear; fi
 	if $print_extra_new_line_top; then echo ""; fi
 
 
@@ -1201,6 +1202,7 @@ local date_format="%Y.%m.%d - %T"
 local print_cpu_hogs_num=3
 local print_cpu_hogs=true
 local print_memory_hogs=true
+local clear_before_print=false
 local print_extra_new_line_top=true
 local print_extra_new_line_bot=true
 
@@ -1229,7 +1231,6 @@ local fc_none=$(getFormatCode -e reset)
 
 
 ## PRINT STATUS ELEMENTS
-#clear
 printHeader
 printLastLogins
 printSystemctl
