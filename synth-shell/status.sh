@@ -1038,12 +1038,11 @@ printHogsCPU()
 		## CALL TOP IN BATCH MODE
 		## Check if "%Cpus(s)" is shown, otherwise, call "top -1"
 		## Escape all '%' characters
-		local delay=$(echo "scale=5; 1/1000" | bc)
-		local top=$(nice 'top' -b -d $delay -n 1 )
+		local top=$(nice 'top' -b -d 0.01 -n 1 )
 		local cpus=$(echo "$top" | grep "Cpu(s)" )
 		if [ -z "$cpus" ]; then
 			echo ":("
-			local top=$(nice 'top' -b -d $delay -1 -n 1 )
+			local top=$(nice 'top' -b -d 0.01 -1 -n 1 )
 			local cpus=$(echo "$top" | grep "Cpu(s)" )
 		fi
 		local top=$(echo "$top" | sed 's/\%/\%\%/g' )
