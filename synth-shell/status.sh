@@ -1041,7 +1041,6 @@ printHogsCPU()
 		local top=$(nice 'top' -b -d 0.01 -n 1 )
 		local cpus=$(echo "$top" | grep "Cpu(s)" )
 		if [ -z "$cpus" ]; then
-			echo ":("
 			local top=$(nice 'top' -b -d 0.01 -1 -n 1 )
 			local cpus=$(echo "$top" | grep "Cpu(s)" )
 		fi
