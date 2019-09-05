@@ -1016,6 +1016,8 @@ printSystemctl()
 ##
 printHogsCPU()
 {
+	export LC_NUMERIC="C"
+
 	## CHECK GLOBAL PARAMETERS
 	if [ -z $crit_cpu_percent   ]; then exit 1; fi
 	if [ -z $print_cpu_hogs_num ]; then exit 1; fi
