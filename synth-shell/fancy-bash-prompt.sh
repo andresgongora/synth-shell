@@ -153,6 +153,15 @@ prompt_command_hook()
 ##------------------------------------------------------------------------------
 ##
 
+	## CHECK IF COLOR SUPPORTED
+	## Check if compliant with Ecma-48 (ISO/IEC-6429)
+	## If not supported, just exit
+	if [ ! -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+		exit 0
+	fi
+
+
+
 	## INCLUDE EXTERNAL DEPENDENCIES
 	## Only if the functions are not available
 	## If not, search in `common` folder
@@ -200,6 +209,7 @@ prompt_command_hook()
 	elif [ -f $sys_config_file ]; then
 		source $sys_config_file
 	fi
+
 
 
 
