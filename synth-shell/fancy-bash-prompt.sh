@@ -153,21 +153,11 @@ prompt_command_hook()
 ##------------------------------------------------------------------------------
 ##
 
-	## CHECK IF COLOR SUPPORTED
-	## Check if compliant with Ecma-48 (ISO/IEC-6429)
-	## If not supported, just exit
-	if [ ! -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-		exit 0
-	fi
-
-
-
 	## INCLUDE EXTERNAL DEPENDENCIES
 	## Only if the functions are not available
 	## If not, search in `common` folder
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-	if [ "$(type -t getFormatCode)" != 'function' ];
-	then
+	if [ "$(type -t getFormatCode)" != 'function' ]; then
 		source "$dir/../bash-tools/bash-tools/color.sh"
 	fi
 
@@ -282,8 +272,16 @@ prompt_command_hook()
 
 
 }
-fancy_bash_prompt
-unset fancy_bash_prompt
+## CALL SCRIPT
+## CHECK IF COLOR SUPPORTED
+## - Check if compliant with Ecma-48 (ISO/IEC-6429)
+##	- Call script
+##	- Unset script
+if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	fancy_bash_prompt
+	unset fancy_bash_prompt
+fi
+
 
 
 
