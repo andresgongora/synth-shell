@@ -49,7 +49,7 @@ fancy_bash_prompt()
 
 ##------------------------------------------------------------------------------
 ##	getGitBranch
-##	Returns current git branch for current directory, if and only if,
+##	Returns current git branch for current directory, if (and only if)
 ##	the current directory is part of a git repository, and git is installed.
 ##	Returns an empty string otherwise.
 ##
@@ -203,8 +203,8 @@ prompt_command_hook()
 
 
 
-	## GENERATE COLOR FORMATING SEQUENCES
-	## The sequences will confuse the bash promt. To tell the terminal that they are non-printint
+	## GENERATE COLOR FORMATTING SEQUENCES
+	## The sequences will confuse the bash prompt. To tell the terminal that they are non-printing
 	## characters, we must surround them by \[ and \]
 	local no_color="\[$(getFormatCode -e reset)\]"
 	local ps1_input_format="\[$(getFormatCode       -c $font_color_input -b $background_input -e $texteffect_input)\]"
@@ -222,7 +222,7 @@ prompt_command_hook()
 
 
 
-	## ENABLE GIT ACCORDING TO USER CONFIG
+	## ENABLE GIT BRANCH VISIBILITY ACCORDING TO USER CONFIG
 	FBP_SHOW_GIT=$show_git
 
 
@@ -250,7 +250,7 @@ prompt_command_hook()
 
 
 
-	## BASH PROMT - Generate promt and remove format from the rest
+	## BASH PROMPT - Generate prompt and remove format from the rest
 	FBP_PS1="$titlebar${vertical_padding}${ps1_user}${ps1_host}${ps1_pwd}${ps1_git}${ps1_input}"
 	FBP_PS1_GIT="$titlebar${vertical_padding}${ps1_user_git}${ps1_host_git}${ps1_pwd_git}${ps1_git_git}${ps1_input}"
 

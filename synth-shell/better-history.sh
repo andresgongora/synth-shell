@@ -22,7 +22,7 @@
 
 
 ## TODO: add spacers between different days and sessions, with a beautiful header
-## TODO: Fix line wraps. Maybem put everything inside a pager
+## TODO: Fix line wraps. Maybe put everything inside a pager
 ## TODO: Format this script file
 
 
