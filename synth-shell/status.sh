@@ -951,6 +951,7 @@ printHeader()
 
 
 	## PRINT TOP SPACER
+	if $clear_before_print; then clear; fi
 	if $print_extra_new_line_top; then echo ""; fi
 
 
@@ -1016,6 +1017,8 @@ printSystemctl()
 ##
 printHogsCPU()
 {
+	export LC_NUMERIC="C"
+
 	## CHECK GLOBAL PARAMETERS
 	if [ -z $crit_cpu_percent   ]; then exit 1; fi
 	if [ -z $print_cpu_hogs_num ]; then exit 1; fi
@@ -1036,11 +1039,10 @@ printHogsCPU()
 		## CALL TOP IN BATCH MODE
 		## Check if "%Cpus(s)" is shown, otherwise, call "top -1"
 		## Escape all '%' characters
-		local top=$(nice 'top' -b -d 0.1 -n 1 )
+		local top=$(nice 'top' -b -d 0.01 -n 1 )
 		local cpus=$(echo "$top" | grep "Cpu(s)" )
 		if [ -z "$cpus" ]; then
-			echo ":("
-			local top=$(nice 'top' -b -d 0.1 -1 -n 1 )
+			local top=$(nice 'top' -b -d 0.01 -1 -n 1 )
 			local cpus=$(echo "$top" | grep "Cpu(s)" )
 		fi
 		local top=$(echo "$top" | sed 's/\%/\%\%/g' )
@@ -1202,6 +1204,7 @@ local date_format="%Y.%m.%d - %T"
 local print_cpu_hogs_num=3
 local print_cpu_hogs=true
 local print_memory_hogs=true
+local clear_before_print=false
 local print_extra_new_line_top=true
 local print_extra_new_line_bot=true
 
@@ -1230,7 +1233,6 @@ local fc_none=$(getFormatCode -e reset)
 
 
 ## PRINT STATUS ELEMENTS
-#clear
 printHeader
 printLastLogins
 printSystemctl
