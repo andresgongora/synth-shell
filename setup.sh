@@ -22,10 +22,6 @@
 ##
 ##	QUICK INSTALLER
 ##
-##	This script will install these scripts to /usr/bin/locale and will
-##	apply status.sh and fancy-bash-prompt.sh systemwide.
-##	THIS IS WORK IN PROGRESS
-##
 
 
 
@@ -89,7 +85,7 @@ installScript()
 	"##  +-----------------------------------+-----------------------------------+\n"\
 	"##  |                                                                       |\n"\
 	"##  | Copyright (c) 2014-2019, https://github.com/andresgongora/synth-shell |\n"\
-	"##  | Visit the above URL for details opn license and authorship            |\n"\
+	"##  | Visit the above URL for details of license and authorship.            |\n"\
 	"##  |                                                                       |\n"\
 	"##  | This program is free software: you can redistribute it and/or modify  |\n"\
 	"##  | it under the terms of the GNU General Public License as published by  |\n"\
@@ -117,7 +113,7 @@ installScript()
 	"##  and you will lose all your changes.\n"\
 	"##\n"\
 	"##  Visit for instructions and more information:\n"\
-	"##  https://github.com/andresgongora/synth-shell/ for instructions\n"\
+	"##  https://github.com/andresgongora/synth-shell/\n"\
 	"##\n\n\n")
 
 

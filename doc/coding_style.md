@@ -20,7 +20,7 @@ slowly grow as needed.
 Avoid global variables unless strictly needed. Even if they are meant to be
 unset at the end of the script, it is always possible that the script stops
 prematurely or that the developer forgets about it. Global variables can
-_contamiante_ the user's run space and lead to unexpected behaviour.
+_contaminate_ the user's run space and lead to unexpected behaviour.
 
 Global variables are named in uppercase and using underscores.
 
@@ -35,7 +35,7 @@ MY_SUPER_STRING="Hello world!"
 
 Declare _local_ variables using `local` rather than `declare` or other options.
 Because local variables can not be declared in the main body of the script,
-this will enforce wrapping everithing into functions, which is not a bad thing. 
+this will enforce wrapping everything into functions, which is not a bad thing. 
 
 Local variables are named all in lower case and using underscores.
 
@@ -59,7 +59,7 @@ but it ensures that the code is easy to read, modular and reusable.
 
 Functions are named using camel case, with the first letter in lower case. Also,
 all names must be or contain a verb that describes the action that will
-performed by the function. An exception to this rule is when the function
+be performed by the function. An exception to this rule is when the function
 returns (prints) a boolean. In this case, the function starts with `is` or
 `has` to make it easier to read.
 
@@ -83,7 +83,7 @@ hasEnoughMemory()
 <!--------------------------------------+-------------------------------------->
 
 * **Tabs** for indenting
-* **Spaces** for alignment (its rarely needed)
+* **Spaces** for alignment (It's rarely needed.)
 
 ```
 getData()
@@ -110,16 +110,17 @@ getData()
 <!--------------------------------------+-------------------------------------->
 
 ### Line length
-Limit lines to 80 characters whenever possible (code + characters). 
+Limit lines to 80 characters whenever possible (code + comments). 
 Use backslash '\' to continue code on a second line.
 This is because of the following reasons:
-* Traditionally, temrinals were 80 chars wide. This no longer holds true, but  
+* Traditionally, terminals were 80 chars wide. This no longer holds true, but  
   is as good as any other line-length limit in a similar range.
-* When working on a single monitor, its useful to visualize two files side  
-  by side. With more than 80 characres per line, it becomes difficul unless  
-  the scriin is very wide
-* When solving conflicts when mergin two files, the same applies; only that  
-  this time its useful to visualize 3 files side by side.
+* When working on a single monitor, it's useful to visualize two files side  
+  by side. With more than 80 characters per line, it becomes difficult unless  
+  the screen is very wide.
+* When solving conflicts when merging two files, the same applies; only that 
+  this time it's useful to visualize three files side by side.
+
 
 
 
@@ -127,8 +128,8 @@ This is because of the following reasons:
 If adding new lines to separate chunks of code, use either 1, 2, 3 or 6 lines.
 
 * 1 line if the code is very related
-* 2 lines if the code in inside the same function, and the function is short
-* 3 lines if the code in inside the same function, and the function is  
+* 2 lines if the code is inside the same function, and the function is short
+* 3 lines if the code is inside the same function, and the function is  
     complex. In this case, a "header-comment" must be placed above each chunk  
     explaining what it does.
 * 6 lines To separate bigger code sections, like to separate the sections that  
@@ -144,7 +145,7 @@ If adding new lines to separate chunks of code, use either 1, 2, 3 or 6 lines.
 <!--------------------------------------+-------------------------------------->
 
 ### System binary calls
-Please do not call any system binary using only it's name, wrap it in `'`, 
+Please do not call any system binary using only its name - wrap it in `'`, 
 or use `which`. 
 
 For example, do not do call `ls` or `/usr/bin/ls`, as the

@@ -6,7 +6,7 @@ You can find more details and similar tools on
 [Yet Another Linux'n Electronics Blog](https://yalneb.blogspot.com/).
 
 
-- System status report with the most relevan information when you open up a new
+- System status report with the most relevant information when you open up a new
   terminal. It also works over SSH to monitor your server or RaspberryPi!!
 - Fancy bash prompt with colors. Makes separating your input from 
   command-outputs that much easier. 
@@ -42,7 +42,7 @@ source ~/.bashrc
 
 
 If you want to use `fancy-bash-promt.sh` you also need power-line fonts.
-Depending on your distro you can install it as follows (the exact name of the package varies from distro to distro):
+Depending on your distro you can install them as follows (the exact name of the package varies from distro to distro):
 
 * ArchLinux: `sudo pacman -S powerline-fonts`
 * Debian/Ubuntu: `sudo apt install fonts-powerline`
@@ -50,20 +50,20 @@ Depending on your distro you can install it as follows (the exact name of the pa
 
 
 ### Script configuration/customization
-You can configure your scripts by modifying the corresponding configurtion
+You can configure your scripts by modifying the corresponding configuration
 files. In addition to said files, you can also find configuration examples
-in the following folders depending on how you isntalled it:
+in the following folders depending on how you installed **synth-shell**:
 
 * Current user only: `~/.config/synth-shell/`
 * System wide: `~/etc/synth-shell/`
 
 
 
-### Manual instalation of individual scripts
-If you want to skip the above steps, and are only intereset in a very
-specific script, you can easily use it by its own.
+### Manual installation of individual scripts
+If you want to skip the above steps, and are only interested in a very
+specific script, you can easily use it on its own.
 However, some scripts might source other scripts from the `bash-tools` folder,
-as they provided shared functioanlities to all scripts. If you are interested
+as they provide shared functionalities to all scripts. If you are interested
 in a single script from my collection, check whether it depends on a script from
 bash-tools, and copy the content of said dependency into the script you want.
 
@@ -92,16 +92,16 @@ rm -fr synth-shell
 
 
 ### status.sh
-Provides a summarized system report in a single glance everytime you open up a
+Provides a summarized system report at a single glance every time you open up a
 new terminal. If it detects that any system parameter (e.g. cpu load,
 memory, etc.) is over a critical threshold, it will provide a warning and 
-additional information about the cause. Last but not least, it also prints an
+additional information about the cause. Last but not least, it also prints a
 user configurable logo such that you may impress your crush from the library 
 with some awesome ASCII art.
 
 
 ### fancy-bash-prompt.sh
-Adds colors and triangular separators to you bash prompt. 
+Adds colors and triangular separators to your bash prompt. 
 For best results, consider installing (and telling your terminal to use) 
 the `hack-ttf` font alongside the powerline-fonts (the later is required for
 the separators).
@@ -116,8 +116,8 @@ the separators).
 #                                   Contribute
 <!--------------------------------------+-------------------------------------->
 
-This project is only possible thanks to the effort of and passion of many, 
-including developers, testers, and of course, our beloved coffe vending machine.
+This project is only possible thanks to the effort and passion of many, 
+including developers, testers, and of course, our beloved coffee vending machine.
 You can find a detailed list of everyone involved in the development
 in [AUTHORS.md](AUTHORS.md). Thanks to all of you!
 
@@ -143,13 +143,13 @@ If you like this project and want to contribute, you are most welcome to do so.
 There are two branches in this repository:
 
 * **master**: this is the main branch, and thus contains fully functional 
-  scripts. When you want to use the scripts as an _user_, 
+  scripts. When you want to use the scripts as a _user_, 
   this is the branch you want to clone or download.
 * **develop**: this branch contains all the new features and most recent 
   contributions. It is always _stable_, in the sense that you can use it
   without major inconveniences. 
-  However, its very prone to undetected bugs and it might be subject to major
-  unanounced changes. If you want to contribute, this is the branch 
+  However, it's very prone to undetected bugs and it might be subject to major
+  unannounced changes. If you want to contribute, this is the branch 
   you should pull-request to.
 
 
@@ -164,16 +164,16 @@ There are two branches in this repository:
 
 Why **synth-shell**? That's a quite easy question. Its started out as a loose
 bunch of (super simple) scripts that I kept around to aid me during
-system maintenance. But after a while, a started to get the hang out of bash
-and wrote more complex stuff. I wanted my code not only to work
+system maintenance. But after a while, as I started to get the hang of bash
+and wrote more complex stuff, I wanted my code not only to work
 and be purely useful, but also to provide some eye-candy.
 
-Naturally, it didn't start the way you see it today. Many scripts started out as
-an ugly attempt to get the behaviour I wanted, but using many snippets from
+Naturally, it didn't start the way you see it today; Many scripts started out as
+an ugly attempt to get the behaviour I wanted, by using many snippets from
 different third parties. This meant that the code was usually quite ugly and
 full of bugs - not because of the third parties, but because of the way I
-integrated them. yet over time, I rewrote all scripts from scratch, removed
-the fluff, and also got lot's of help by super friendly and engaged 
+integrated them. Yet over time, I rewrote all scripts from scratch, removed
+the fluff, and also got lots of help from super-friendly and engaged 
 [contributors](AUTHORS.md). The result is what you see today.
 I admit it, it's nothing fancy, but writing these scripts provided me with
 lots of joy.
