@@ -28,14 +28,15 @@ The recommended way to install synth-shell is to run the provided setup script.
 This will guide you step by step through the process and let you choose what
 to install. It will also allow you to install the script for your user only,
 or system-wide (super user privileges required). To proceed, 
-[open and play this link in a separate tab](https://www.youtube.com/watch?v=k6ZMYWPQID0),
-and execute the following to feel like
-[Hackerman](https://www.youtube.com/watch?v=KEkrWRHCDQU&list=WL&index=63&t=0s):
+[open and play this link in a separate tab](https://www.youtube.com/embed/MpN91wHAr1k),
+if you want to feel like
+[Hackerman](https://www.youtube.com/embed/KEkrWRHCDQU),
+then enter the following into your terminal or telnet session:
 ```
 git clone --recursive https://github.com/andresgongora/synth-shell.git
 chmod +x synth-shell/setup.sh
 synth-shell/setup.sh
-rm -fr synth-shell
+rm -fr synth-shell # optional, to remove the cloned git repo
 bash
 source ~/.bashrc
 ```
