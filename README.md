@@ -100,6 +100,14 @@ additional information about the cause. Last but not least, it also prints a
 user configurable logo such that you may impress your crush from the library 
 with some awesome ASCII art.
 
+Feel free to customize your prompt to match your exact requirements with some
+of the many available options. For details please check the appropriate
+`~/.config/synth-shell/status.config` or `/etc/synth-shell/status.config`
+depending on your installation option.
+
+![status configuration options](doc/status_config_preview.png)
+
+
 
 ### fancy-bash-prompt.sh
 Adds colors and triangular separators to your bash prompt. 
