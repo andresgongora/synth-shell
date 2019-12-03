@@ -4,7 +4,7 @@
 
 - Improvement and fixes to textfiles and code comments
 - Fixed "N/A" message printed for SWAP_MON if there is no swap
-
+- Add preview of the configuation options for status.sh
 
 
 
