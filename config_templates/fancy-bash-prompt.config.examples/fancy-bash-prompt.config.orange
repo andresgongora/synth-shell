@@ -1,0 +1,48 @@
+##==============================================================================
+## COLORS
+##
+## Control the color and format scheme of the bash prompt.
+## The prompt is divided into segments, listed belows starting from the left:
+## -  USER: shows the user's name.
+## -  HOST: shows the host's name.
+## -   PWD: shows the current directory.
+## -   GIT: if inside a git repository, shows the name of current branch.
+## - INPUT: actual bash input.
+##
+## Valid color options:
+##      white black light-gray dark-gray
+##      red green yellow blue cyan purple
+##      light-red light-green light-yellow light-blue light-cyan light-purple
+##      values in the range [0-255] for 256 bit colors
+##==============================================================================
+
+font_color_user="black"
+background_user="208"
+texteffect_user="bold"
+
+font_color_host="black"
+background_host="180"
+texteffect_host="bold"
+
+font_color_pwd="black"
+background_pwd="white"
+texteffect_pwd="bold"
+
+font_color_git="light-gray"
+background_git="dark-gray"
+texteffect_git="bold"
+
+font_color_input="208"
+background_input="none"
+texteffect_input="bold"
+
+
+
+##==============================================================================
+## BEHAVIOR
+##==============================================================================
+local separator_char='\uE0B0'   # Separation character, '\uE0B0'=triangle
+enable_vertical_padding=true    # Add extra new line over prompt
+show_git=true                   # Enable/Disable git info if inside a repo
+
+

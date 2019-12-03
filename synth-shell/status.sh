@@ -781,7 +781,8 @@ printMonitorSwap()
 
 
 	if [ "$max" -eq "0" ]; then
-		printf "${fc_info}${message}${fc_highlight}N/A{fc_none}"
+		local pad=${info_label_width}
+		printf "${fc_info}%-${pad}s${fc_highlight}N/A${fc_none}" "${message}"
 	else
 		printMonitor $current $max $crit_swap_percent \
 		             $as_percentage $units $message
