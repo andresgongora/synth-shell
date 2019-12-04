@@ -712,13 +712,13 @@ printInfoCPUTemp()
 		                  head -n 1 |\
 		                  sed 's/^.*:[ \t]*//g;s/[\(\),]//g')
 		local units=$(echo $temp_line |\
-		              sed -n 's/.*\(°[[CF]]*\).*/\1/p' )
+		              sed -n 's/.*\(°[[CF]]*\).*/\1/p')
 		local current=$(echo $temp_line |\
-		                sed -n 's/^.*+\(.*\)°[[CF]]*[ \t]*h.*/\1/p' )
+		                sed -n 's/^.*+\(.*\)°[[CF]]*[ \t]*h.*/\1/p')
 		local high=$(echo $temp_line |\
-		            sed -n 's/^.*high = +\(.*\)°[[CF]]*[ \t]*c.*/\1/p' )
+		             sed -n 's/^.*high = +\(.*\)°[[CF]]*[ \t]*c.*/\1/p')
 		local max=$(echo $temp_line |\
-		              sed -n 's/^.*crit = +\(.*\)°[[CF]]*[ \t]*.*/\1/p' )
+		            sed -n 's/^.*crit = +\(.*\)°[[CF]]*[ \t]*.*/\1/p')
 
 
 		## COMPOSE MESSAGE
@@ -798,14 +798,13 @@ printMonitorSwap()
 	## This is not fool-proof, but if num_swap_devs>=1, there should be swap
 	local num_swap_devs=$(($(wc -l /proc/swaps | awk '{print $1;}') -1))
 	
-	if [ "$num_swap_devs" -lt 1 ]; then
-		## NO SWAP
+	if [ "$num_swap_devs" -lt 1 ]; then ## NO SWAP
+		
 
 		local pad=${info_label_width}
 		printf "${fc_info}%-${pad}s${fc_highlight}N/A${fc_none}" "${message}"
-	else
-		## HAS SWAP
-
+	
+	else ## HAS SWAP	
 		local swap_info=$('free' -m | tail -n 1)
 		local current=$(echo "$swap_info" |\
 		                awk '{SWAP=($3)} END {printf SWAP}')
