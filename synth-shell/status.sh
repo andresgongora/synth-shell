@@ -1113,26 +1113,30 @@ printHogsMemory()
 
 
 	## CHECK RAM
+	local ram_is_crit=false
 	local mem_info=$('free' -m | head -n 2 | tail -n 1)
 	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
 	local max=$(echo "$mem_info" | awk '{mem=($2)} END {printf mem}')
 	local percent=$(bc <<< "$current*100/$max")
-	local ram_is_crit=false
 	if [ $percent -gt $crit_ram_percent ]; then
 		local ram_is_crit=true
 	fi
 
 
 	## CHECK SWAP
-	local swap_info=$('free' -m | tail -n 1)
-	local current=$(echo "$swap_info" | awk '{SWAP=($3)} END {printf SWAP}')
-	local max=$(echo "$swap_info" | awk '{SWAP=($2)} END {printf SWAP}')
-	local percent=$(bc <<< "$current*100/$max")
+	## First check if there is any swap at all by checking /proc/swaps
+	## If tehre is at least one swap partition listed, proceed
 	local swap_is_crit=false
-	if [ $percent -gt $crit_swap_percent ]; then
-		local swap_is_crit=true
+	local num_swap_devs=$(($(wc -l /proc/swaps | awk '{print $1;}') -1))	
+	if [ "$num_swap_devs" -ge 1 ]; then
+		local swap_info=$('free' -m | tail -n 1)
+		local current=$(echo "$swap_info" | awk '{SWAP=($3)} END {printf SWAP}')
+		local max=$(echo "$swap_info" | awk '{SWAP=($2)} END {printf SWAP}')
+		local percent=$(bc <<< "$current*100/$max")
+		if [ $percent -gt $crit_swap_percent ]; then
+			local swap_is_crit=true
+		fi
 	fi
-
 
 	## PRINT IF RAM OR SWAP ARE ABOVE THRESHOLD
 	if $ram_is_crit || $swap_is_crit ; then
