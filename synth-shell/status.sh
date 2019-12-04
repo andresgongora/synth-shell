@@ -284,7 +284,16 @@ printMonitor()
 	local units=$5
 	local label=${@:6}
 	local pad=$info_label_width
-	local percent=$(bc <<< "$current*100/$max")
+
+
+	## COMPUTE PERCENT
+	## If max=0, then avoid division
+	## Otherwise compute as usual
+	if [ "$max" -eq 0 ]; then
+		local percent=100
+	else
+		local percent=$(bc <<< "$current*100/$max")
+	fi
 
 
 	## SET COLORS DEPENDING ON LOAD
