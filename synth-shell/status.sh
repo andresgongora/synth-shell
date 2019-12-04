@@ -286,6 +286,15 @@ printMonitor()
 	local pad=$info_label_width
 
 
+	## CHECK VARIABLES
+	## If max is empty, assign 0
+	## If crit percent is empty, assign 100
+	## If crit_percent > 100, assign 100
+	if [ -z $max ]; then local max=0; fi
+	if [ -z $crit_percent ]; then local local crit_percent=100; fi
+	if [ "$crit_percent" -gt 100 ]; then local crit_percent=100; fi
+
+
 	## COMPUTE PERCENT
 	## If max=0, then avoid division
 	## Otherwise compute as usual
