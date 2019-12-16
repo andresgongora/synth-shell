@@ -281,6 +281,9 @@ installerSystem()
 	local CONFIG_DIR="/etc/synth-shell"
 	local BASHRC="/etc/bash.bashrc"
 
+	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+	source "$dir/bash-tools/bash-tools/user_io.sh"
+
 	if [ $(id -u) -ne 0 ]; then 
 		printError "Please run as root"
 		exit
@@ -347,8 +350,6 @@ promptUser()
 	source "$dir/bash-tools/bash-tools/user_io.sh"
 	printHeader "Installation wizard for synth-shell"
 
-	
-	
 	local action=$(promptUser "Would you like to install or uninstall synth-shell?" "[i] install / [u] uninstall. Default i" "iIuU" "i")
 	case "$action" in
 		""|i|I )	local install_option="install" ;;
@@ -375,10 +376,9 @@ installer()
 {
 	case "$1" in
 		install|uninstall)	installerSystem "$1";;
-		*)			promptUser ;;
+		*)			promptUser;;
 	esac
 }
-
 
 installer $1
 

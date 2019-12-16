@@ -240,7 +240,7 @@ prompt_command_hook()
 	## Must be set in PS1
 	case $TERM in
 	xterm*|rxvt*)
-		local titlebar='\[\033]0;${USER}:${NEW_PWD}\007\]'
+		local titlebar="\[\033]0;${USER}:${NEW_PWD}\007\]"
 		;;
 	*)
 		local titlebar=""
@@ -250,8 +250,8 @@ prompt_command_hook()
 
 
 	## BASH PROMPT - Generate prompt and remove format from the rest
-	FBP_PS1="$titlebar${vertical_padding}${ps1_user}${ps1_host}${ps1_pwd}${ps1_git}${ps1_input}"
-	FBP_PS1_GIT="$titlebar${vertical_padding}${ps1_user_git}${ps1_host_git}${ps1_pwd_git}${ps1_git_git}${ps1_input}"
+	FBP_PS1="${titlebar}${vertical_padding}${ps1_user}${ps1_host}${ps1_pwd}${ps1_git}${ps1_input}"
+	FBP_PS1_GIT="${titlebar}${vertical_padding}${ps1_user_git}${ps1_host_git}${ps1_pwd_git}${ps1_git_git}${ps1_input}"
 
 
 

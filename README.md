@@ -71,13 +71,9 @@ bash-tools, and copy the content of said dependency into the script you want.
 
 
 ### Uninstallation
-It's hard to say goodbye, but we had good times together, didn't we? :)
-```
-git clone --recursive https://github.com/andresgongora/synth-shell.git
-chmod +x synth-shell/setup.sh
-synth-shell/setup.sh uninstall
-rm -fr synth-shell
-```
+It's hard to say goodbye, but we had good times together, didn't we? :) 
+Just run the script again as if to install it, 
+but choose `uninstall` when prompted.
 
 
 
