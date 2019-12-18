@@ -104,14 +104,14 @@ prompt_command_hook()
 	## LOAD EXTERNAL DEPENENCIES
 	## Only if the functions are not available
 	## If not, search in `common` folder
-	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
 	if [ "$(type -t shortenPath)" != 'function' ];
 	then
+		local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 		source "$dir/../bash-tools/bash-tools/shorten_path.sh"
 	fi
 	if [ "$(type -t removeColorCodes)" != 'function' ];
 	then
+		local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 		source "$dir/../bash-tools/bash-tools/color.sh"
 	fi
 
