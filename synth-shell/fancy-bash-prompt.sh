@@ -129,6 +129,7 @@ prompt_command_hook()
 	FBP_USER=" $user "
 	FBP_HOST=" $host "
 	FBP_PWD=" $path "
+	FBP_TITLEBAR="$user: $path"
 	if [ -z "$git_branch" ]; then
 		FBP_GIT=""
 	else
@@ -240,7 +241,7 @@ prompt_command_hook()
 	## Must be set in PS1
 	case $TERM in
 	xterm*|rxvt*)
-		local titlebar="\[\033]0;${USER}:${NEW_PWD}\007\]"
+		local titlebar="\[\033]0;\${FBP_TITLEBAR}\007\]"
 		;;
 	*)
 		local titlebar=""
