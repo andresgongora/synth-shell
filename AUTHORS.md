@@ -27,7 +27,7 @@ You may add your name, email, a link to your personal web-site/blog/profile
 	Main developer
 
 	
-*	**Sami Olmari**	 
+*	**Sami Olmari**  
 	<sami@olmari.fi>  
 	www.olmari.fi  
 	2019 - Major improvements to `status.sh`
@@ -36,6 +36,10 @@ You may add your name, email, a link to your personal web-site/blog/profile
 *	**Fiko Borizqy**  
 	<fiko@dr.com>  
 	2019 - Incorporate git-related information to `fancy-bash-promt.sh`
+
+
+*	**PeterJRiches**  
+	2019 - Proofreading of comments and explanation fixes
 
 
 

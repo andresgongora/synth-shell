@@ -49,7 +49,7 @@ fancy_bash_prompt()
 
 ##------------------------------------------------------------------------------
 ##	getGitBranch
-##	Returns current git branch for current directory, if and only if,
+##	Returns current git branch for current directory, if (and only if)
 ##	the current directory is part of a git repository, and git is installed.
 ##	Returns an empty string otherwise.
 ##
@@ -104,14 +104,14 @@ prompt_command_hook()
 	## LOAD EXTERNAL DEPENENCIES
 	## Only if the functions are not available
 	## If not, search in `common` folder
-	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
 	if [ "$(type -t shortenPath)" != 'function' ];
 	then
+		local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 		source "$dir/../bash-tools/bash-tools/shorten_path.sh"
 	fi
 	if [ "$(type -t removeColorCodes)" != 'function' ];
 	then
+		local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 		source "$dir/../bash-tools/bash-tools/color.sh"
 	fi
 
@@ -126,13 +126,13 @@ prompt_command_hook()
 
 
 	## UPDATE BASH PROMPT ELEMENTS
-	FBP_USER=" $user "
-	FBP_HOST=" $host "
-	FBP_PWD=" $path "
+	FBP_USER="$user"
+	FBP_HOST="$host"
+	FBP_PWD="$path"
 	if [ -z "$git_branch" ]; then
 		FBP_GIT=""
 	else
-		FBP_GIT=" $git_branch "
+		FBP_GIT="$git_branch"
 	fi
 
 
@@ -157,8 +157,7 @@ prompt_command_hook()
 	## Only if the functions are not available
 	## If not, search in `common` folder
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-	if [ "$(type -t getFormatCode)" != 'function' ];
-	then
+	if [ "$(type -t getFormatCode)" != 'function' ]; then
 		source "$dir/../bash-tools/bash-tools/color.sh"
 	fi
 
@@ -203,26 +202,26 @@ prompt_command_hook()
 
 
 
-	## GENERATE COLOR FORMATING SEQUENCES
-	## The sequences will confuse the bash promt. To tell the terminal that they are non-printint
+	## GENERATE COLOR FORMATTING SEQUENCES
+	## The sequences will confuse the bash prompt. To tell the terminal that they are non-printing
 	## characters, we must surround them by \[ and \]
 	local no_color="\[$(getFormatCode -e reset)\]"
 	local ps1_input_format="\[$(getFormatCode       -c $font_color_input -b $background_input -e $texteffect_input)\]"
 	local ps1_input="${ps1_input_format} "
 
-	local ps1_user_git=$(printSegment "\${FBP_USER}" $font_color_user $background_user $background_host $texteffect_user)
-	local ps1_host_git=$(printSegment "\${FBP_HOST}" $font_color_host $background_host $background_pwd $texteffect_host)
-	local ps1_pwd_git=$(printSegment "\${FBP_PWD}" $font_color_pwd $background_pwd $background_git $texteffect_pwd)
-	local ps1_git_git=$(printSegment "\${FBP_GIT}" $font_color_git $background_git $background_input $texteffect_git)
+	local ps1_user_git=$(printSegment " \${FBP_USER} " $font_color_user $background_user $background_host $texteffect_user)
+	local ps1_host_git=$(printSegment " \${FBP_HOST} " $font_color_host $background_host $background_pwd $texteffect_host)
+	local ps1_pwd_git=$(printSegment " \${FBP_PWD} " $font_color_pwd $background_pwd $background_git $texteffect_pwd)
+	local ps1_git_git=$(printSegment " \${FBP_GIT} " $font_color_git $background_git $background_input $texteffect_git)
 
-	local ps1_user=$(printSegment "\${FBP_USER}" $font_color_user $background_user $background_host $texteffect_user)
-	local ps1_host=$(printSegment "\${FBP_HOST}" $font_color_host $background_host $background_pwd $texteffect_host)
-	local ps1_pwd=$(printSegment "\${FBP_PWD}" $font_color_pwd $background_pwd $background_input $texteffect_pwd)
+	local ps1_user=$(printSegment " \${FBP_USER} " $font_color_user $background_user $background_host $texteffect_user)
+	local ps1_host=$(printSegment " \${FBP_HOST} " $font_color_host $background_host $background_pwd $texteffect_host)
+	local ps1_pwd=$(printSegment " \${FBP_PWD} " $font_color_pwd $background_pwd $background_input $texteffect_pwd)
 	local ps1_git=""
 
 
 
-	## ENABLE GIT ACCORDING TO USER CONFIG
+	## ENABLE GIT BRANCH VISIBILITY ACCORDING TO USER CONFIG
 	FBP_SHOW_GIT=$show_git
 
 
@@ -241,7 +240,7 @@ prompt_command_hook()
 	## Must be set in PS1
 	case $TERM in
 	xterm*|rxvt*)
-		local titlebar='\[\033]0;${USER}:${NEW_PWD}\007\]'
+		local titlebar="\[\033]0;\${FBP_USER}@\${FBP_HOST}: \${FBP_PWD}\007\]"
 		;;
 	*)
 		local titlebar=""
@@ -250,9 +249,9 @@ prompt_command_hook()
 
 
 
-	## BASH PROMT - Generate promt and remove format from the rest
-	FBP_PS1="$titlebar${vertical_padding}${ps1_user}${ps1_host}${ps1_pwd}${ps1_git}${ps1_input}"
-	FBP_PS1_GIT="$titlebar${vertical_padding}${ps1_user_git}${ps1_host_git}${ps1_pwd_git}${ps1_git_git}${ps1_input}"
+	## BASH PROMPT - Generate prompt and remove format from the rest
+	FBP_PS1="${titlebar}${vertical_padding}${ps1_user}${ps1_host}${ps1_pwd}${ps1_git}${ps1_input}"
+	FBP_PS1_GIT="${titlebar}${vertical_padding}${ps1_user_git}${ps1_host_git}${ps1_pwd_git}${ps1_git_git}${ps1_input}"
 
 
 
@@ -272,8 +271,16 @@ prompt_command_hook()
 
 
 }
-fancy_bash_prompt
-unset fancy_bash_prompt
+## CALL SCRIPT
+## CHECK IF COLOR SUPPORTED
+## - Check if compliant with Ecma-48 (ISO/IEC-6429)
+##	- Call script
+##	- Unset script
+if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	fancy_bash_prompt
+	unset fancy_bash_prompt
+fi
+
 
 
 

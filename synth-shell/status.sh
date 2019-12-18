@@ -23,7 +23,7 @@
 
 ##
 ##	DESCRIPTION:
-##	This scripts prints to terminal a summary of your systems' status. This
+##	This script prints to terminal a summary of your system's status. This
 ##	includes basic information about the OS and the CPU, as well as
 ##	system resources, possible errors, and suspicions system activity.
 ##
@@ -44,10 +44,10 @@ status()
 ##	getLocalIPv6()
 ##
 ##	Looks up and returns local IPv6-address.
-##	Test for the presence of several program in case one is missing.
+##	Test for the presence of several programs in case one is missing.
 ##	Program search ordering is based on timed tests, fastest to slowest.
 ##
-##	!!! NOTE: Still needs to figure out how to look for IP address that
+##	!!! NOTE: Still need to figure out how to look for IP address that
 ##	!!!       have a default gateway attached to related interface,
 ##	!!!       otherwise this returns a list of IPv6's if there are many.
 ##
@@ -59,21 +59,21 @@ getLocalIPv6()
 	## GREP REGGEX EXPRESSION TO RETRIEVE IP STRINGS
 	##
 	## The following string is intuitive and easy to read, but only parses
-	## strings that look like IPs without cheking their value. For instance,
+	## strings that look like IPs without checking their value. For instance,
 	## it does NOT check value ranges of IPv6
 	##
 	## grep explanation:
-	## -oP				only match and perl reggex
+	## -oP				only return matching parts of a line, and use perl regex
 	## \s*inet6\s+			any-spaces "inet6" at-least-1-space
 	## (addr:?\s*)?			optionally, followed by addr or addr:
-	## \K				everything until here, ommit
+	## \K				everything until here, omit
 	## (){1,8}			repeat block at least 1 time, up to 8
 	## ([0-9abcdef]){0,4}:*		up to 4 chars from [] followed by :
 	##
 	#local grep_reggex='\s*inet6\s+(addr:?\s*)?\K(([0-9abcdef]){0,4}:*){1,8}'
 	##
-	## The following string, on the other hand, is easier to read and
-	## understand, but is MUCH safer, as it ensure that the IP
+	## The following string, on the other hand, is harder to read and
+	## understand, but is MUCH safer, as it ensures that the IP
 	## fulfills some criteria.
 	local grep_reggex='^\s*inet6\s+(addr:?\s*)?\K((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?'
 
@@ -105,7 +105,7 @@ getLocalIPv6()
 ##	getExternalIPv6()
 ##
 ##	Makes an query to internet-server and returns public IPv6-address.
-##	Test for the presence of several program in case one is missing.
+##	Tests for the presence of several programs in case one is missing.
 ##	Program search ordering is based on timed tests, fastest to slowest.
 ##	DNS-based queries are always faster, ~0.1 seconds.
 ##	URL-queries are relatively slow, ~1 seconds.
@@ -165,17 +165,17 @@ printInfo()
 
 ##------------------------------------------------------------------------------
 ##
-##	printBar(CURRENT, MAX, SIZE, CRIT_PERCENT)
+##	printBar(CURRENT, MAX, SIZE, COLOR, COLOR)
 ##
 ##	Prints a bar that is filled depending on the relation between
 ##	CURRENT and MAX
 ##
-##	1. CURRENT:     ammount to display on the bar.
-##	2. MAX:         ammount that means that the bar should be printed
-##	                completely full.
-##	3. SIZE:        length of the bar as number of characters.
-##	4. COLOR:	Color for the brackets. May be empty for not color
-##	5. COLOR:	Color for the bars. May be empty for not color
+##	1. CURRENT:       amount to display on the bar.
+##	2. MAX:           amount that means that the bar should be printed
+##	                  completely full.
+##	3. SIZE:          length of the bar as number of characters.
+##	4. BRACKET_COLOR: Color for the brackets. May be empty for not colored.
+##	5. BAR_COLOR:	  Color for the bars. May be empty for not colored.
 ##
 printBar()
 {
@@ -216,18 +216,19 @@ printBar()
 
 ##------------------------------------------------------------------------------
 ##
-##	printFraction(NUMERAND, DENOMINTOR, PADDING_DIGITS, UNITS)
-##	Prints a color-formatted fraction with padding to reach MAX_DIGITS
+##	printFraction(NUMERATOR, DENOMINATOR, PADDING_DIGITS, UNITS)
 ##
-##	1. NUMERAND: first shown number
-##	2. DENOMINATOR: second shown number
-##	3. PADDING_DIGITS: determines the minimum lenght of NUMERAND and
-##	   DENOMINATOR. If they have less digits than this, extra spaces
-##	   are appended for padding.
+##	Prints a color-formatted fraction with padding to reach MAX_DIGITS.
+##
+##	1. NUMERATOR:      first shown number
+##	2. DENOMINATOR:    second shown number
+##	3. PADDING_DIGITS: determines the minimum length of NUMERATOR and
+##	                   DENOMINATOR. If they have less digits than this,
+##	                   then extra spaces are appended for padding.
 ##	4. UNITS: a string that is attached to the end of the fraction,
-##	   meant to include optional units (e.g. MB) for display purposes.
-##	   if "none", no units are displayed.
-##	5,6,7. COLORS
+##	          meant to include optional units (e.g. MB) for display purposes.
+##	          If "none", no units are displayed.
+##	5,6,7. COLORS: of decoration (/), numbers, and units.
 ##
 printFraction()
 {
@@ -253,7 +254,7 @@ printFraction()
 ##
 ##	printMonitor()
 ##
-##	Prints a resurse utilization monitor,c omprised of a bar and a fraction.
+##	Prints a resource utilization monitor, comprised of a bar and a fraction.
 ##
 ##	1. CURRENT: current resource utilization (e.g. occupied GB in HDD)
 ##	2. MAX: max resource utilization (e.g. HDD size)
@@ -283,7 +284,25 @@ printMonitor()
 	local units=$5
 	local label=${@:6}
 	local pad=$info_label_width
-	local percent=$(bc <<< "$current*100/$max")
+
+
+	## CHECK VARIABLES
+	## If max is empty, assign 0
+	## If crit percent is empty, assign 100
+	## If crit_percent > 100, assign 100
+	if [ -z $max ]; then local max=0; fi
+	if [ -z $crit_percent ]; then local local crit_percent=100; fi
+	if [ "$crit_percent" -gt 100 ]; then local crit_percent=100; fi
+
+
+	## COMPUTE PERCENT
+	## If max=0, then avoid division
+	## Otherwise compute as usual
+	if [ "$max" -eq 0 ]; then
+		local percent=100
+	else
+		local percent=$(bc <<< "$current*100/$max")
+	fi
 
 
 	## SET COLORS DEPENDING ON LOAD
@@ -393,13 +412,15 @@ printInfoGPU()
 		                 s/Series//g;
 		                 s/Chipset//g;
 		                 s/Graphics//g;
+		                 s/processor//g;
+		                 s/Controller//g;
 		                 s/Family//g;
 		                 s/Inc.//g;
 		                 s/,//g;
 		                 s/Technology//g;
 		                 s/Mobility/M/g;
 		                 s/Advanced Micro Devices/AMD/g;
-		                 s/\[AMD\/ATI\]/ATI/g; 
+		                 s/\[AMD\/ATI\]/ATI/g;
 		                 s/Integrated Graphics Controller/HD Graphics/g;
 		                 s/Integrated Controller/IC/g;
 		                 s/  */ /g'
@@ -497,24 +518,24 @@ printInfoNameLoggedIn()
 ##
 printInfoLocalIPv4()
 {
-	## GREP REGGEX EXPRESSION TO RETRIEVE IP STRINGS
+	## GREP REGEX EXPRESSION TO RETRIEVE IP STRINGS
 	##
 	## The following string is intuitive and easy to read, but only parses
-	## strings that look like IPs without cheking their value. For instance,
+	## strings that look like IPs, without checking their value. For instance,
 	## it does NOT check whether the IP bytes are [0-255], rather it
 	## accepts values from [0-999] as valid.
 	##
 	## grep explanation:
-	## -oP				only match and perl reggex
+	## -oP				only return matching parts of a line, and use perl regex
 	## \s*inet\s+			any-spaces "inet6" at-least-1-space
 	## (addr:?\s*)?			optionally, followed by addr or addr:
-	## \K				everything until here, ommit
+	## \K				everything until here, omit
 	## (){4}			repeat block at least 1 time, up to 8
 	## ([0-9]){1,4}:*		1 to 3 integers [0-9] followed by "."
 	##
 	#local grep_reggex='^\s*inet\s+(addr:?\s*)?\K(([0-9]){1,3}\.*){4}'
 	##
-	## The following string, on the other hand, is easier to read and
+	## The following string, on the other hand, is harder to read and
 	## understand, but is MUCH safer, as it ensure that the IP
 	## fulfills some criteria.
 	local grep_reggex='^\s*inet\s+(addr:?\s*)?\K(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))'
@@ -552,8 +573,8 @@ printInfoLocalIPv4()
 ##
 ##	getExternalIPv4()
 ##
-##	Makes an query to internet-server and returns public IPv4-address.
-##	Test for the presence of several program in case one is missing.
+##	Makes a query to internet-server and returns public IPv4-address.
+##	Test for the presence of several programs in case one is missing.
 ##	Program search ordering is based on timed tests, fastest to slowest.
 ##	DNS-based queries are always faster, ~0.1 seconds.
 ##	URL-queries are relatively slow, ~1 seconds.
@@ -691,13 +712,13 @@ printInfoCPUTemp()
 		                  head -n 1 |\
 		                  sed 's/^.*:[ \t]*//g;s/[\(\),]//g')
 		local units=$(echo $temp_line |\
-		              sed -n 's/.*\(°[[CF]]*\).*/\1/p' )
+		              sed -n 's/.*\(°[[CF]]*\).*/\1/p')
 		local current=$(echo $temp_line |\
-		                sed -n 's/^.*+\(.*\)°[[CF]]*[ \t]*h.*/\1/p' )
+		                sed -n 's/^.*+\(.*\)°[[CF]]*[ \t]*h.*/\1/p')
 		local high=$(echo $temp_line |\
-		            sed -n 's/^.*high = +\(.*\)°[[CF]]*[ \t]*c.*/\1/p' )
+		             sed -n 's/^.*high = +\(.*\)°[[CF]]*[ \t]*c.*/\1/p')
 		local max=$(echo $temp_line |\
-		              sed -n 's/^.*crit = +\(.*\)°[[CF]]*[ \t]*.*/\1/p' )
+		            sed -n 's/^.*crit = +\(.*\)°[[CF]]*[ \t]*.*/\1/p')
 
 
 		## COMPOSE MESSAGE
@@ -710,7 +731,7 @@ printInfoCPUTemp()
 		fi
 
 		
-		## PRINT MESSATE
+		## PRINT MESSAGE
 		printInfo "CPU temp" "$temp"
 	else
 		printInfo "CPU temp" "lm-sensors not installed"
@@ -766,20 +787,30 @@ printMonitorRAM()
 ##
 printMonitorSwap()
 {
+	local message="Swap"
+	local units="MB"
 	local as_percentage=$1
 	if [ -z "$as_percentage" ]; then local as_percentage=false; fi
 
 
-	local message="Swap"
-	local units="MB"
-	local swap_info=$('free' -m | tail -n 1)
-	local current=$(echo "$swap_info" | awk '{SWAP=($3)} END {printf SWAP}')
-	local max=$(echo "$swap_info" | awk '{SWAP=($2)} END {printf SWAP}')
+	## CHECK IF SYSTEM HAS SWAP
+	## Count number of lines in /proc/swaps, excluding the header (-1)
+	## This is not fool-proof, but if num_swap_devs>=1, there should be swap
+	local num_swap_devs=$(($(wc -l /proc/swaps | awk '{print $1;}') -1))
+	
+	if [ "$num_swap_devs" -lt 1 ]; then ## NO SWAP
+		
 
+		local pad=${info_label_width}
+		printf "${fc_info}%-${pad}s${fc_highlight}N/A${fc_none}" "${message}"
+	
+	else ## HAS SWAP	
+		local swap_info=$('free' -m | tail -n 1)
+		local current=$(echo "$swap_info" |\
+		                awk '{SWAP=($3)} END {printf SWAP}')
+		local max=$(echo "$swap_info" |\
+		            awk '{SWAP=($2)} END {printf SWAP}')
 
-	if [ "$max" -eq "0" ]; then
-		printf "${fc_info}${message}${fc_highlight}N/A{fc_none}"
-	else
 		printMonitor $current $max $crit_swap_percent \
 		             $as_percentage $units $message
 	fi
@@ -833,7 +864,7 @@ printMonitorCPUTemp()
 {
 	if ( which sensors > /dev/null 2>&1 ); then
 
-		## GET VALIES
+		## GET VALUES
 		local temp_line=$(sensors |\
 		                  grep Core |\
 		                  head -n 1 |\
@@ -981,10 +1012,10 @@ printHeader()
 ##
 printLastLogins()
 {
-	## DO NOTHING FOR NOW -> This is disabled  intentionally for now.
-	## Printing logins should only be done under different conditions
+	## DO NOTHING FOR NOW -> This is disabled intentionally for now.
+	## Printing logins should only be done under special circumstances:
 	## 1. User configurable set to always on
-	## 2. If the IP/terminal is very diffefrent from usual
+	## 2. If the IP/terminal is very different from usual
 	## 3. Other anomalies...
 	if false; then
 		printf "${fc_highlight}\nLAST LOGINS:\n${fc_info}"
@@ -1082,26 +1113,30 @@ printHogsMemory()
 
 
 	## CHECK RAM
+	local ram_is_crit=false
 	local mem_info=$('free' -m | head -n 2 | tail -n 1)
 	local current=$(echo "$mem_info" | awk '{mem=($2-$7)} END {printf mem}')
 	local max=$(echo "$mem_info" | awk '{mem=($2)} END {printf mem}')
 	local percent=$(bc <<< "$current*100/$max")
-	local ram_is_crit=false
 	if [ $percent -gt $crit_ram_percent ]; then
 		local ram_is_crit=true
 	fi
 
 
 	## CHECK SWAP
-	local swap_info=$('free' -m | tail -n 1)
-	local current=$(echo "$swap_info" | awk '{SWAP=($3)} END {printf SWAP}')
-	local max=$(echo "$swap_info" | awk '{SWAP=($2)} END {printf SWAP}')
-	local percent=$(bc <<< "$current*100/$max")
+	## First check if there is any swap at all by checking /proc/swaps
+	## If tehre is at least one swap partition listed, proceed
 	local swap_is_crit=false
-	if [ $percent -gt $crit_swap_percent ]; then
-		local swap_is_crit=true
+	local num_swap_devs=$(($(wc -l /proc/swaps | awk '{print $1;}') -1))	
+	if [ "$num_swap_devs" -ge 1 ]; then
+		local swap_info=$('free' -m | tail -n 1)
+		local current=$(echo "$swap_info" | awk '{SWAP=($3)} END {printf SWAP}')
+		local max=$(echo "$swap_info" | awk '{SWAP=($2)} END {printf SWAP}')
+		local percent=$(bc <<< "$current*100/$max")
+		if [ $percent -gt $crit_swap_percent ]; then
+			local swap_is_crit=true
+		fi
 	fi
-
 
 	## PRINT IF RAM OR SWAP ARE ABOVE THRESHOLD
 	if $ram_is_crit || $swap_is_crit ; then
@@ -1242,8 +1277,8 @@ printHogsMemory
 
 
 ## RUN SCRIPT
-## It's wrapped with "{}" to avoid environment pollution
-## It's also called in a subshell with "()" to REALLY avoid pollution
+## This whole script is wrapped with "{}" to avoid environment pollution.
+## It's also called in a subshell with "()" to REALLY avoid pollution.
 }
 (status)
 unset status
