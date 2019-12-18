@@ -3,9 +3,9 @@
 <!--------------------------------------+-------------------------------------->
 
 - Improvement and fixes to textfiles and code comments
-- Fixed "N/A" message printed for SWAP_MON if there is no swap (thanks to jhakonen)
+- Fixed "N/A" message printed for SWAP_MON if there is no swap (reported by jhakonen)
 - Add preview of the configuation options for status.sh
-- fancy_bash_prompt: Update titlebar of terminal-window when changing folder (thanks to jhakonen)
+- fancy_bash_prompt: Update titlebar of terminal-window when changing folder (reported by jhakonen)
 
 
 
@@ -16,8 +16,7 @@
 #                                    v2.1.5
 <!--------------------------------------+-------------------------------------->
 
-- Fix top delay parameter to avoid conflicts depending on locale config,
-  reported by b1oki
+- Fix top delay parameter to avoid conflicts depending on locale config, reported by b1oki
 
 
 
