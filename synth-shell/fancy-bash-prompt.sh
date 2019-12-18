@@ -129,7 +129,7 @@ prompt_command_hook()
 	FBP_USER=" $user "
 	FBP_HOST=" $host "
 	FBP_PWD=" $path "
-	FBP_TITLEBAR="$user: $path"
+	FBP_TITLEBAR="$user@$host: $path"
 	if [ -z "$git_branch" ]; then
 		FBP_GIT=""
 	else
