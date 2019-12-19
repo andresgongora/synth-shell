@@ -3,6 +3,7 @@
 <!--------------------------------------+-------------------------------------->
 
 - Abridged installation steps.
+- Quick 256-color reference in fancy-bash-prompt.config, suggested by Omega100.
 
 
 
