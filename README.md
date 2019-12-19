@@ -36,9 +36,7 @@ then enter the following into your terminal or telnet session:
 git clone --recursive https://github.com/andresgongora/synth-shell.git
 chmod +x synth-shell/setup.sh
 synth-shell/setup.sh
-rm -fr synth-shell # optional, to remove the cloned git repo
 bash
-source ~/.bashrc
 ```
 
 
