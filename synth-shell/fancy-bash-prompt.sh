@@ -1,31 +1,32 @@
 #!/bin/bash
 
-##	+-----------------------------------+-----------------------------------+
-##	|                                                                       |
-##	| Copyright (c) 2018-2019, Andres Gongora <mail@andresgongora.com>.     |
-##	|                                                                       |
-##	| This program is free software: you can redistribute it and/or modify  |
-##	| it under the terms of the GNU General Public License as published by  |
-##	| the Free Software Foundation, either version 3 of the License, or     |
-##	| (at your option) any later version.                                   |
-##	|                                                                       |
-##	| This program is distributed in the hope that it will be useful,       |
-##	| but WITHOUT ANY WARRANTY; without even the implied warranty of        |
-##	| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         |
-##	| GNU General Public License for more details.                          |
-##	|                                                                       |
-##	| You should have received a copy of the GNU General Public License     |
-##	| along with this program. If not, see <http://www.gnu.org/licenses/>.  |
-##	|                                                                       |
-##	+-----------------------------------------------------------------------+
+##  +-----------------------------------+-----------------------------------+
+##  |                                                                       |
+##  | Copyright (c) 2018-2020, Andres Gongora <mail@andresgongora.com>.     |
+##  |                                                                       |
+##  | This program is free software: you can redistribute it and/or modify  |
+##  | it under the terms of the GNU General Public License as published by  |
+##  | the Free Software Foundation, either version 3 of the License, or     |
+##  | (at your option) any later version.                                   |
+##  |                                                                       |
+##  | This program is distributed in the hope that it will be useful,       |
+##  | but WITHOUT ANY WARRANTY; without even the implied warranty of        |
+##  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         |
+##  | GNU General Public License for more details.                          |
+##  |                                                                       |
+##  | You should have received a copy of the GNU General Public License     |
+##  | along with this program. If not, see <http://www.gnu.org/licenses/>.  |
+##  |                                                                       |
+##  +-----------------------------------------------------------------------+
 
 
 ##
 ##	DESCRIPTION
 ##
 ##	This script updates your "PS1" environment variable to display colors.
-##	Additionally, it also shortens the name of your current path to a maximum
-##	25 characters, which is quite useful when working in deeply nested folders.
+##	Additionally, it also shortens the name of your current path to a 
+##	maximum 25 characters, which is quite useful when working in deeply
+##	nested folders.
 ##
 ##
 ##

@@ -2,7 +2,7 @@
 
 ##  +-----------------------------------+-----------------------------------+
 ##  |                                                                       |
-##  | Copyright (c) 2019, Andres Gongora <mail@andresgongora.com>.          |
+##  | Copyright (c) 2019-2020, Andres Gongora <mail@andresgongora.com>.     |
 ##  | Copyright (c) 2019, Sami Olmari <sami@olmari.fi>.                     |
 ##  |                                                                       |
 ##  | This program is free software: you can redistribute it and/or modify  |
