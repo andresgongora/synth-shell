@@ -182,7 +182,8 @@ I admit it, it's nothing fancy, but writing these scripts provided me with
 lots of joy.
 
 And about the name? That's quite easy. I spent most of my coding frenzy
-listening to [SynthWave](https://en.wikipedia.org/wiki/Synthwave).
+listening to [SynthWave](https://en.wikipedia.org/wiki/Synthwave) to feel like
+[Hackerman](https://www.youtube.com/watch?v=KEkrWRHCDQU).
 
 
 
