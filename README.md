@@ -46,6 +46,12 @@ Depending on your distro you can install them as follows (the exact name of the 
 * ArchLinux: `sudo pacman -S powerline-fonts`
 * Debian/Ubuntu: `sudo apt install fonts-powerline`
 
+Finally, make sure that your `locale` is set to UTF-8 to show the propper
+separator characters. If your terminal does not display the triangle separators
+as shown in the screenshots below, edit your `/etc/locale.conf` file
+(select your language, but in UTF-8 format) and run `sudo locale-gen`.
+[More info](https://wiki.archlinux.org/index.php/locale).
+
 
 
 ### Script configuration/customization
