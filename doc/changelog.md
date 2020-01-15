@@ -2,6 +2,17 @@
 #                                     NEXT
 <!--------------------------------------+-------------------------------------->
 
+-
+
+
+
+
+
+
+<!--------------------------------------+-------------------------------------->
+#                                     v2.3
+<!--------------------------------------+-------------------------------------->
+
 - Abridged installation steps.
 - Quick 256-color reference in fancy-bash-prompt.config, suggested by Omega100.
 - Added note to make sure UTF-8 is enabled in locale config, suggested by dzionek.
