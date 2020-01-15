@@ -44,7 +44,8 @@ bash
 
 
 If you want to use `fancy-bash-promt.sh` you also need power-line fonts.
-Depending on your distro you can install them as follows (the exact name of the package varies from distro to distro):
+Depending on your distro you can install them as follows (the exact name of the 
+package varies from distro to distro):
 
 * ArchLinux: `sudo pacman -S powerline-fonts`
 * Debian/Ubuntu: `sudo apt install fonts-powerline`
