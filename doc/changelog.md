@@ -5,7 +5,7 @@
 - Abridged installation steps.
 - Quick 256-color reference in fancy-bash-prompt.config, suggested by Omega100.
 - Added note to make sure UTF-8 is enabled in locale config, suggested by dzionek.
-- Added symbol to indicate status of the current git branch, if current wordir is inside git branch. Inspired by twolfson's sexy-bash-prompt (https://github.com/twolfson/sexy-bash-prompt).
+- Added symbol to indicate status of the current git branch if current workdir is inside git branch. Inspired by twolfson's sexy-bash-prompt (https://github.com/twolfson/sexy-bash-prompt).
 
 
 
