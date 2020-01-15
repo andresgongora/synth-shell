@@ -207,5 +207,5 @@ Copyright (c) 2014-2020, Andres Gongora - www.andresgongora.com
   Read [license-GPLv3.txt](LICENSE),
   or if not present, <http://www.gnu.org/licenses/>.
 * If you need a closed-source version of this software
-  for commercial purposes, please contact the authors.
+  for commercial purposes, please contact the [authors](AUTHORS.md).
 
