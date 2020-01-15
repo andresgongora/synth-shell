@@ -254,11 +254,11 @@ prompt_command_hook()
 	local enable_vertical_padding=true
 
 	local show_git=true
-	local git_symbol_synced='✓'
+	local git_symbol_synced=''
 	local git_symbol_unpushed='△'
 	local git_symbol_unpulled='▽'
 	local git_symbol_unpushedunpulled='○'
-	local git_symbol_dirty='✎'
+	local git_symbol_dirty='*'
 	local git_symbol_dirty_unpushed='▲'
 	local git_symbol_dirty_unpulled='▼'
 	local git_symbol_dirty_unpushedunpulled='●'
