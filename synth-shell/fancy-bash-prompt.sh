@@ -69,62 +69,63 @@ fancy_bash_prompt()
 ##
 getGitBranch()
 {
-	## CHECK IF IN A GIT REPOSITORY, OTHERWISE SKIP
 	if ( which git > /dev/null 2>&1 ); then
 
-		## GET BRANCH NAME
-		branch=$(git branch 2> /dev/null |\
-		         sed -n '/^[^*]/d;s/*\s*\(.*\)/\1/p')
+		## CHECK IF IN A GIT REPOSITORY, OTHERWISE SKIP
+		local branch=$(git branch 2> /dev/null |\
+		             sed -n '/^[^*]/d;s/*\s*\(.*\)/\1/p')	
 
-		## GET GIT STATUS
-		## This information contains whether the current branch is
-		## ahead, behind or diverged (ahead & behind), as well as
-		## whether any file has been modified locally (is dirty).
-		## --porcelain: script friendly outbut.
-		## -b:          show branch tracking info.
-		## -u no:       do not list untracked/dirty files
-		## From the first line we get whether we are synced, and if
-		## there are more lines, then we know it is dirty.
-		## NOTE: this requires that tyou fetch your repository,
-		##       otherwise your information is outdated.
-		is_dirty=false &&\
-		         [[ -n "$(git status --porcelain)" ]] &&\
-		         is_dirty=true
-		is_ahead=false &&\
-		         [[ "$(git status --porcelain -u no -b)" == *"ahead"* ]] &&\
-		         is_ahead=true
-		is_behind=false &&\
-		          [[ "$(git status --porcelain -u no -b)" == *"behind"* ]] &&\
-		          is_behind=true
+		if [[ -n "$branch" ]]; then
+
+			## GET GIT STATUS
+			## This information contains whether the current branch is
+			## ahead, behind or diverged (ahead & behind), as well as
+			## whether any file has been modified locally (is dirty).
+			## --porcelain: script friendly outbut.
+			## -b:          show branch tracking info.
+			## -u no:       do not list untracked/dirty files
+			## From the first line we get whether we are synced, and if
+			## there are more lines, then we know it is dirty.
+			## NOTE: this requires that tyou fetch your repository,
+			##       otherwise your information is outdated.
+			local is_dirty=false &&\
+				       [[ -n "$(git status --porcelain)" ]] &&\
+				       is_dirty=true
+			local is_ahead=false &&\
+				       [[ "$(git status --porcelain -u no -b)" == *"ahead"* ]] &&\
+				       is_ahead=true
+			local is_behind=false &&\
+				        [[ "$(git status --porcelain -u no -b)" == *"behind"* ]] &&\
+				        is_behind=true
 
 
-		## SELECT SYMBOL
-		if   $is_dirty && $is_ahead && $is_behind; then
-			symbol=$FBP_GIT_DIRTY_DIVERGED
-		elif $is_dirty && $is_ahead; then
-			symbol=$FBP_GIT_DIRTY_AHEAD
-		elif $is_dirty && $is_behind; then
-			symbol=$FBP_GIT_DIRTY_BEHIND
-		elif $is_dirty; then
-			symbol=$FBP_GIT_DIRTY
-		elif $is_ahead && $is_behind; then
-			symbol=$FBP_GIT_DIVERGED
-		elif $is_ahead; then
-			symbol=$FBP_GIT_AHEAD
-		elif $is_behind; then
-			symbol=$FBP_GIT_BEHIND
-		else
-			symbol=$FBP_GIT_SYNCED
+			## SELECT SYMBOL
+			if   $is_dirty && $is_ahead && $is_behind; then
+				local symbol=$FBP_GIT_DIRTY_DIVERGED
+			elif $is_dirty && $is_ahead; then
+				local symbol=$FBP_GIT_DIRTY_AHEAD
+			elif $is_dirty && $is_behind; then
+				local symbol=$FBP_GIT_DIRTY_BEHIND
+			elif $is_dirty; then
+				local symbol=$FBP_GIT_DIRTY
+			elif $is_ahead && $is_behind; then
+				local symbol=$FBP_GIT_DIVERGED
+			elif $is_ahead; then
+				local symbol=$FBP_GIT_AHEAD
+			elif $is_behind; then
+				local symbol=$FBP_GIT_BEHIND
+			else
+				local symbol=$FBP_GIT_SYNCED
+			fi
+
+
+			## RETURN STRING
+			echo "$branch $symbol"	
 		fi
-
-
-		## RETURN STRING
-		echo "$branch $symbol"
-
-
-	else
-		echo ""
 	fi
+	
+	## DEFAULT
+	echo ""
 }
 
 
@@ -258,7 +259,7 @@ prompt_command_hook()
 	local git_symbol_unpushed='△'
 	local git_symbol_unpulled='▽'
 	local git_symbol_unpushedunpulled='○'
-	local git_symbol_dirty='*'
+	local git_symbol_dirty='!'
 	local git_symbol_dirty_unpushed='▲'
 	local git_symbol_dirty_unpulled='▼'
 	local git_symbol_dirty_unpushedunpulled='●'
