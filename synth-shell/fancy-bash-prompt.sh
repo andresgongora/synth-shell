@@ -49,15 +49,79 @@ fancy_bash_prompt()
 
 
 ##------------------------------------------------------------------------------
-##	getGitBranch
+##	getGitInfo
 ##	Returns current git branch for current directory, if (and only if)
 ##	the current directory is part of a git repository, and git is installed.
+##
+##	In addition, it adds a symbol to indicate the state of the repository.
+##	By default, these symbols and their meaning are (set globally):
+##
+##		UPSTREAM	NO CHANGE		DIRTY
+##		up to date	FBP_GIT_SYNCED		FBP_GIT_DIRTY
+##		ahead		FBP_GIT_AHEAD		FBP_GIT_DIRTY_AHEAD
+##		behind		FBP_GIT_BEHIND		FBP_GIT_DIRTY_BEHIND
+##		diverged	FBP_GIT_DIVERGED	FBP_GIT_DIRTY_DIVERGED		
+##
 ##	Returns an empty string otherwise.
+##
+##	Inspired by twolfson's sexy-bash-prompt:
+##	https://github.com/twolfson/sexy-bash-prompt
 ##
 getGitBranch()
 {
+	## CHECK IF IN A GIT REPOSITORY, OTHERWISE SKIP
 	if ( which git > /dev/null 2>&1 ); then
-		git branch 2> /dev/null | sed -n '/^[^*]/d;s/*\s*\(.*\)/\1/p'
+
+		## GET BRANCH NAME
+		branch=$(git branch 2> /dev/null |\
+		         sed -n '/^[^*]/d;s/*\s*\(.*\)/\1/p')
+
+		## GET GIT STATUS
+		## This information contains whether the current branch is
+		## ahead, behind or diverged (ahead & behind), as well as
+		## whether any file has been modified locally (is dirty).
+		## --porcelain: script friendly outbut.
+		## -b:          show branch tracking info.
+		## -u no:       do not list untracked/dirty files
+		## From the first line we get whether we are synced, and if
+		## there are more lines, then we know it is dirty.
+		## NOTE: this requires that tyou fetch your repository,
+		##       otherwise your information is outdated.
+		is_dirty=false &&\
+		         [[ -n "$(git status --porcelain)" ]] &&\
+		         is_dirty=true
+		is_ahead=false &&\
+		         [[ "$(git status --porcelain -u no -b)" == *"ahead"* ]] &&\
+		         is_ahead=true
+		is_behind=false &&\
+		          [[ "$(git status --porcelain -u no -b)" == *"behind"* ]] &&\
+		          is_behind=true
+
+
+		## SELECT SYMBOL
+		if   $is_dirty && $is_ahead && $is_behind; then
+			symbol=$FBP_GIT_DIRTY_DIVERGED
+		elif $is_dirty && $is_ahead; then
+			symbol=$FBP_GIT_DIRTY_AHEAD
+		elif $is_dirty && $is_behind; then
+			symbol=$FBP_GIT_DIRTY_BEHIND
+		elif $is_dirty; then
+			symbol=$FBP_GIT_DIRTY
+		elif $is_ahead && $is_behind; then
+			symbol=$FBP_GIT_DIVERGED
+		elif $is_ahead; then
+			symbol=$FBP_GIT_AHEAD
+		elif $is_behind; then
+			symbol=$FBP_GIT_BEHIND
+		else
+			symbol=$FBP_GIT_SYNCED
+		fi
+
+
+		## RETURN STRING
+		echo "$branch $symbol"
+
+
 	else
 		echo ""
 	fi
@@ -139,7 +203,7 @@ prompt_command_hook()
 
 
 	## CHOOSE PS1 FORMAT IF INSIDE GIT REPO
-	if [ ! -z "$(getGitBranch)" ] && $FBP_SHOW_GIT; then
+	if [ ! -z "$(getGitBranch)" ] && $FBP_GIT_SHOW; then
 		PS1=$FBP_PS1_GIT
 	else
 		PS1=$FBP_PS1
@@ -188,7 +252,16 @@ prompt_command_hook()
 
 	local separator_char='\uE0B0'
 	local enable_vertical_padding=true
+
 	local show_git=true
+	local git_symbol_synced='✓'
+	local git_symbol_unpushed='△'
+	local git_symbol_unpulled='▽'
+	local git_symbol_unpushedunpulled='○'
+	local git_symbol_dirty='✎'
+	local git_symbol_dirty_unpushed='▲'
+	local git_symbol_dirty_unpulled='▼'
+	local git_symbol_dirty_unpushedunpulled='●'
 
 
 
@@ -222,8 +295,19 @@ prompt_command_hook()
 
 
 
-	## ENABLE GIT BRANCH VISIBILITY ACCORDING TO USER CONFIG
-	FBP_SHOW_GIT=$show_git
+	## MAKE GIT OPTIONS GLOBALLY AVAILABLE
+	## This is needed because each time the prompt updates,
+	## it must re-check the status of the current git repository,
+	## and to do so, it must remember the user's configuation
+	FBP_GIT_SHOW=$show_git
+	FBP_GIT_SYNCED=$git_symbol_synced
+	FBP_GIT_AHEAD=$git_symbol_unpushed
+	FBP_GIT_BEHIND=$git_symbol_unpulled
+	FBP_GIT_DIVERGED=$git_symbol_unpushedunpulled
+	FBP_GIT_DIRTY=$git_symbol_dirty
+	FBP_GIT_DIRTY_AHEAD=$git_symbol_dirty_unpushed
+	FBP_GIT_DIRTY_BEHIND=$git_symbol_dirty_unpulled
+	FBP_GIT_DIRTY_DIVERGED=$git_symbol_dirty_unpushedunpulled
 
 
 
@@ -281,7 +365,6 @@ if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
 	fancy_bash_prompt
 	unset fancy_bash_prompt
 fi
-
 
 
 
