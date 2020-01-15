@@ -36,9 +36,7 @@ then enter the following into your terminal or telnet session:
 git clone --recursive https://github.com/andresgongora/synth-shell.git
 chmod +x synth-shell/setup.sh
 synth-shell/setup.sh
-rm -fr synth-shell # optional, to remove the cloned git repo
 bash
-source ~/.bashrc
 ```
 
 
@@ -47,6 +45,12 @@ Depending on your distro you can install them as follows (the exact name of the 
 
 * ArchLinux: `sudo pacman -S powerline-fonts`
 * Debian/Ubuntu: `sudo apt install fonts-powerline`
+
+Finally, make sure that your `locale` is set to UTF-8 to show the propper
+separator characters. If your terminal does not display the triangle separators
+as shown in the screenshots below, edit your `/etc/locale.conf` file
+(select your language, but in UTF-8 format) and run `sudo locale-gen`.
+[More info](https://wiki.archlinux.org/index.php/locale).
 
 
 
@@ -106,7 +110,8 @@ depending on your installation option.
 
 
 ### fancy-bash-prompt.sh
-Adds colors and triangular separators to your bash prompt. 
+Adds colors and triangular separators to your bash prompt, and if the current
+working directory is part of a git repository, also git statuses and branches.
 For best results, consider installing (and telling your terminal to use) 
 the `hack-ttf` font alongside the powerline-fonts (the later is required for
 the separators).
@@ -184,7 +189,8 @@ I admit it, it's nothing fancy, but writing these scripts provided me with
 lots of joy.
 
 And about the name? That's quite easy. I spent most of my coding frenzy
-listening to [SynthWave](https://en.wikipedia.org/wiki/Synthwave).
+listening to [SynthWave](https://en.wikipedia.org/wiki/Synthwave) to feel like
+[Hackerman](https://www.youtube.com/watch?v=KEkrWRHCDQU).
 
 
 
@@ -196,11 +202,11 @@ listening to [SynthWave](https://en.wikipedia.org/wiki/Synthwave).
 #                                    License
 <!--------------------------------------+-------------------------------------->
 
-Copyright (c) 2014-2019, Andres Gongora - www.andresgongora.com
+Copyright (c) 2014-2020, Andres Gongora - www.andresgongora.com
 
 * This software is released under a GPLv3 license.
   Read [license-GPLv3.txt](LICENSE),
   or if not present, <http://www.gnu.org/licenses/>.
 * If you need a closed-source version of this software
-  for commercial purposes, please contact the authors.
+  for commercial purposes, please contact the [authors](AUTHORS.md).
 
