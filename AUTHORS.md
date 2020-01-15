@@ -51,7 +51,7 @@ You may add your name, email, a link to your personal web-site/blog/profile
 <!--------------------------------------+-------------------------------------->
 
 Bug reports and new feature suggestions, provideded by users world-wide,
-are usually mentioned in the changelogs.
+are usually mentioned in the [changelogs](doc/changelog.md).
 
 We kindly thank all of them for their valuable feedback.
 
