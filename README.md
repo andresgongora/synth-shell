@@ -110,7 +110,8 @@ depending on your installation option.
 
 
 ### fancy-bash-prompt.sh
-Adds colors and triangular separators to your bash prompt. 
+Adds colors and triangular separators to your bash prompt, and if the current
+working directory is part of a git repository, also git statuses and branches.
 For best results, consider installing (and telling your terminal to use) 
 the `hack-ttf` font alongside the powerline-fonts (the later is required for
 the separators).
