@@ -9,7 +9,10 @@ You can find more details and similar tools on
 - System status report with the most relevant information when you open up a new
   terminal. It also works over SSH to monitor your server or RaspberryPi!!
 - Fancy bash prompt with colors. Makes separating your input from 
-  command-outputs that much easier. 
+  command-outputs that much easier.
+- Git related information at one glance. Just enter a directory containing a
+  repository, and your bash prompt will print-out additional information to
+  aid your workflow.
 - More coming soon...
 
 
