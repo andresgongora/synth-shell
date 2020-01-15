@@ -172,23 +172,20 @@ There are two branches in this repository:
 #                                     About
 <!--------------------------------------+-------------------------------------->
 
-Why **synth-shell**? That's a quite easy question. Its started out as a loose
-bunch of (super simple) scripts that I kept around to aid me during
-system maintenance. But after a while, as I started to get the hang of bash
-and wrote more complex stuff, I wanted my code not only to work
-and be purely useful, but also to provide some eye-candy.
+**synth-shell** started as a loose collection of (very simple) bash scripts I 
+used for system maintenance. In the beginning, they were simple aids to make my 
+life easier, but as I progressively got the hang out of bash, I also wanted them
+to print some nice output to the terminal.
 
-Naturally, it didn't start the way you see it today; Many scripts started out as
-an ugly attempt to get the behaviour I wanted, by using many snippets from
-different third parties. This meant that the code was usually quite ugly and
-full of bugs - not because of the third parties, but because of the way I
-integrated them. Yet over time, I rewrote all scripts from scratch, removed
-the fluff, and also got lots of help from super-friendly and engaged 
-[contributors](AUTHORS.md). The result is what you see today.
+Naturally, it didn't start the way you see it today. The content of most scripts
+were loose snippets from third parties that were somehow smashed together. They
+worked, but not exactly the way I wanted. So, over time I have rewritten all
+scripts from scratch, removed fluff, and teamed up with super-friendly and
+engaged [contributors](AUTHORS.md). The result is what you see today.
 I admit it, it's nothing fancy, but writing these scripts provided me with
 lots of joy.
 
-And about the name? That's quite easy. I spent most of my coding frenzy
+And the name? That's quite easy. I spent most of my coding frenzy
 listening to [SynthWave](https://en.wikipedia.org/wiki/Synthwave) to feel like
 [Hackerman](https://www.youtube.com/watch?v=KEkrWRHCDQU).
 
