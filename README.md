@@ -27,38 +27,36 @@ You can find more details and similar tools on
 
 ### Automatic setup
 
-The recommended way to install synth-shell is to run the provided setup script.
-This will guide you step by step through the process and let you choose what
-to install. It will also allow you to install the script for your user only,
-or system-wide (super user privileges required). To proceed, 
+The included [setup script](setup.sh) will guide you step by step through the
+process and let you choose what features to install. During the setup, you can
+choose to install synth-shell for your user only (recommended) or system-wide
+(superuser privileges required). To proceed,
 [open and play this link in a separate tab](https://www.youtube.com/embed/MpN91wHAr1k)
-if you want to feel like
-[Hackerman](https://www.youtube.com/embed/KEkrWRHCDQU),
-then enter the following into your terminal or telnet session:
+and enter the following into your terminal or telnet session:
 ```
 git clone --recursive https://github.com/andresgongora/synth-shell.git
 chmod +x synth-shell/setup.sh
 synth-shell/setup.sh
-bash
 ```
 
-
-If you want to use `fancy-bash-promt.sh` you also need power-line fonts.
-Depending on your distro you can install them as follows (the exact name of the 
-package varies from distro to distro):
+Once done, you can fire up a new terminal and enjoy the result. Note that for
+`fancy-bash-prompt.sh` you might also need
+[power-line fonts](https://github.com/powerline/fonts). You can instal it
+as follows (the exact name of the package varies from distro to distro):
 
 * ArchLinux: `sudo pacman -S powerline-fonts`
 * Debian/Ubuntu: `sudo apt install fonts-powerline`
 
-Finally, make sure that your `locale` is set to UTF-8 to show the propper
-separator characters. If your terminal does not display the triangle separators
-as shown in the screenshots below, edit your `/etc/locale.conf` file
-(select your language, but in UTF-8 format) and run `sudo locale-gen`.
-[More info](https://wiki.archlinux.org/index.php/locale).
+Finally, open up a new terminal and test that everything works. Sometimes,
+despite power-line fonts being properly installed, the triangle separator is
+still not shown. In this case, make sure that your `locale` is set to UTF-8 by
+editing `/etc/locale.conf` file (select your language but in UTF-8 format) and
+running `sudo locale-gen`.
+[More info on locale](https://wiki.archlinux.org/index.php/locale).
 
 
 
-### Script configuration/customization
+### Configuration/customization
 You can configure your scripts by modifying the corresponding configuration
 files. In addition to said files, you can also find configuration examples
 in the following folders depending on how you installed **synth-shell**:
@@ -68,19 +66,9 @@ in the following folders depending on how you installed **synth-shell**:
 
 
 
-### Manual installation of individual scripts
-If you want to skip the above steps, and are only interested in a very
-specific script, you can easily use it on its own.
-However, some scripts might source other scripts from the `bash-tools` folder,
-as they provide shared functionalities to all scripts. If you are interested
-in a single script from my collection, check whether it depends on a script from
-bash-tools, and copy the content of said dependency into the script you want.
-
-
-
 ### Uninstallation
 It's hard to say goodbye, but we had good times together, didn't we? :) 
-Just run the script again as if to install it, 
+Just run the setup script again as if to install it, 
 but choose `uninstall` when prompted.
 
 
@@ -97,17 +85,17 @@ but choose `uninstall` when prompted.
 
 
 ### status.sh
-Provides a summarized system report at a single glance every time you open up a
-new terminal. If it detects that any system parameter (e.g. cpu load,
-memory, etc.) is over a critical threshold, it will provide a warning and 
-additional information about the cause. Last but not least, it also prints a
-user configurable logo such that you may impress your crush from the library 
-with some awesome ASCII art.
+`status.sh` provides a summarized system report at a single glance every time
+you open up a new terminal. If it detects that any system parameter
+(e.g. CPU load, memory, etc.) is over a critical threshold, it will provide a
+warning and additional information about the cause. Last but not least, it
+prints a user-configurable ASCII logo to impress your crush from the library
+with how awesome you are.
 
-Feel free to customize your prompt to match your exact requirements with some
-of the many available options. For details please check the appropriate
-`~/.config/synth-shell/status.config` or `/etc/synth-shell/status.config`
-depending on your installation option.
+Feel free to customize your status report through the many available options
+in `~/.config/synth-shell/status.config` (user-only install) or
+`/etc/synth-shell/status.config` (system-wide install),or by replacing their
+content with the examples files you can find under the same directory.
 
 ![status configuration options](doc/status_config_preview.png)
 
