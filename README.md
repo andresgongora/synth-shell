@@ -20,7 +20,7 @@ combination of small bash scripts.
 
 - **better ls**: an `ls -la` on steroids alternative.
   
-- **alias**: add colors and a nicer behaviour to basic commands
+- **alias**: add colors and a nicer behaviour to basic commands.
   - `grep`.
   - `pacman`.
   - `tree`.
@@ -174,7 +174,7 @@ for color and sorting options.
 <!--------------------------------------+-------------------------------------->
 
 This project is only possible thanks to the effort and passion of many, 
-including developers, testers, and of course, our beloved coffee vending machine.
+including developers, testers, and of course, our beloved coffee machine.
 You can find a detailed list of everyone involved in the development
 in [AUTHORS.md](AUTHORS.md). Thanks to all of you!
 
@@ -192,6 +192,8 @@ If you like this project and want to contribute, you are most welcome to do so.
   Take a look at the [issues](https://github.com/andresgongora/synth-shell/issues)
   for suggestions of where to start. Also, take a look at our 
   [coding style](coding_style.md).
+* Spread the word: telling your friends is the fastes way to get this code to
+  the people who might enjoy it!
 
 
 
