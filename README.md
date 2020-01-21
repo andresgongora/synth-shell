@@ -191,17 +191,17 @@ used for system maintenance. In the beginning, they were simple aids to make my
 life easier, but as I progressively got the hang out of bash, I also wanted them
 to print some nice output to the terminal.
 
-Naturally, it didn't start the way you see it today. The content of most scripts
-were loose snippets from third parties that were somehow smashed together. They
-worked, but not exactly the way I wanted. So, over time I have rewritten all
-scripts from scratch, removed fluff, and teamed up with super-friendly and
-engaged [contributors](AUTHORS.md). The result is what you see today.
-I admit it, it's nothing fancy, but writing these scripts provided me with
-lots of joy.
+This repository was quite different at the beginning. The content of most
+scripts were loose snippets from third parties that were somehow smashed 
+together. They worked, but not exactly the way I wanted. So, over time I have 
+rewritten most scripts from scratch, removed fluff, and teamed up with 
+super-friendly and engaged [contributors](AUTHORS.md). The result is what you 
+see today. I admit it, it's nothing fancy. But it was real fun working on the 
+scripts.
 
 And the name? That's quite easy. I spent most of my coding frenzy
 listening to [SynthWave](https://en.wikipedia.org/wiki/Synthwave) to feel like
-[Hackerman](https://www.youtube.com/watch?v=KEkrWRHCDQU).
+my idol, [Hackerman](https://www.youtube.com/watch?v=KEkrWRHCDQU).
 
 
 
