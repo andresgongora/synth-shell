@@ -5,6 +5,7 @@
 - Better README.
 - Add alias scripts.
 - Add better-ls script.
+- Add reminder during installation of optional packages.
 
 
 
