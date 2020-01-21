@@ -1,19 +1,30 @@
 ![synth-shell](doc/synth-shell.jpg)
 
-**synth-shell** is a collection of small scripts meant to improve your terminal
-and overal productivity - small tweaks can go a long way.
-You can find more details and similar tools on
-[Yet Another Linux'n Electronics Blog](https://yalneb.blogspot.com/).
+
+**synth-shell**  improves your terminal experience and productivity through a 
+combination of small bash scripts.
 
 
-- System status report with the most relevant information when you open up a new
-  terminal. It also works over SSH to monitor your server or RaspberryPi!!
-- Fancy bash prompt with colors. Makes separating your input from 
-  command-outputs that much easier.
-- Git related information at one glance. Just enter a directory containing a
-  repository, and your bash prompt will print-out additional information to
-  aid your workflow.
-- More coming soon...
+- **System status report**:
+  - Automatically printed in new terminal sessions (local, SSH, ...).
+  - Monitor your servers, RaspberryPis, and workstations. All system info you
+    need at a glance (e.g. external IP address, CPU temperature, etc.).
+  - Detect broken services or CPU hogs.
+  - Print your own ASCII logo every time you log in.
+
+- **Fancy bash prompt**:
+  - Configurable colors and aesthetics.
+  - Git statuses (requires pull/push, is dirty, etc.) if inside a directory that
+    is part of a git repository.
+  - Better separation between user input and command outputs.
+  
+- **More coming soon...**
+
+
+All features are optional during installation and you can configure their 
+behaviour. Once set up, they are simply called from within you `.bashrc` file, 
+so they become part of any new session. You can find more details and similar 
+tools on [Yet Another Linux'n Electronics Blog](https://yalneb.blogspot.com/).
 
 
 
