@@ -84,7 +84,7 @@ files. You can find them, along example configuration files, in the following
 folders depending on how you installed **synth-shell**:
 
 * Current-user only: `~/.config/synth-shell/`
-* System wide: `~/etc/synth-shell/`
+* System wide: `/etc/synth-shell/`
 
 
 
