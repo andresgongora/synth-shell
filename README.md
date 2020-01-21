@@ -61,8 +61,7 @@ chmod +x synth-shell/setup.sh
 synth-shell/setup.sh
 ```
 
-Once done, you can fire up a new terminal and enjoy the result. Note that for
-`fancy-bash-prompt.sh` you might also need
+Note that for `fancy-bash-prompt.sh` you might also need
 [power-line fonts](https://github.com/powerline/fonts). You can instal it
 as follows (the exact name of the package varies from distro to distro):
 
@@ -70,10 +69,10 @@ as follows (the exact name of the package varies from distro to distro):
 * Debian/Ubuntu: `sudo apt install fonts-powerline`
 
 Finally, open up a new terminal and test that everything works. Sometimes,
-despite power-line fonts being properly installed, the triangle separator is
-still not shown. In this case, make sure that your `locale` is set to UTF-8 by
-editing `/etc/locale.conf` file (select your language but in UTF-8 format) and
-running `sudo locale-gen`.
+despite power-line fonts being properly installed, the triangle separator 
+for `fancy-bash-prompt.sh` (if installed) might still not show. In this case, 
+make sure that your `locale` is set to UTF-8 by editing `/etc/locale.conf` file 
+(select your language but in UTF-8 format) and running `sudo locale-gen`.
 [More info on locale](https://wiki.archlinux.org/index.php/locale).
 
 
