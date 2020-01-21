@@ -50,11 +50,11 @@ tools on [Yet Another Linux'n Electronics Blog](https://yalneb.blogspot.com/).
 ### Automatic setup
 
 The included [setup script](setup.sh) will guide you step by step through the
-process and let you choose what features to install. During the setup, you can
+process and let you choose what features to install. During this setup, you can
 choose to install synth-shell for your user only (recommended) or system-wide
 (superuser privileges required). To proceed,
 [open and play this link in a separate tab](https://www.youtube.com/embed/MpN91wHAr1k)
-and enter the following into your terminal or telnet session:
+and enter the following into your terminal:
 ```
 git clone --recursive https://github.com/andresgongora/synth-shell.git
 chmod +x synth-shell/setup.sh
@@ -80,18 +80,17 @@ running `sudo locale-gen`.
 
 ### Configuration/customization
 You can configure your scripts by modifying the corresponding configuration
-files. In addition to said files, you can also find configuration examples
-in the following folders depending on how you installed **synth-shell**:
+files. You can find them, along example configuration files, in the following
+folders depending on how you installed **synth-shell**:
 
-* Current user only: `~/.config/synth-shell/`
+* Current-user only: `~/.config/synth-shell/`
 * System wide: `~/etc/synth-shell/`
 
 
 
 ### Uninstallation
-It's hard to say goodbye, but we had good times together, didn't we? :) 
-Just run the setup script again as if to install it, 
-but choose `uninstall` when prompted.
+Run the setup script again (like during the installation), but choose 
+`uninstall` when prompted.
 
 
 
