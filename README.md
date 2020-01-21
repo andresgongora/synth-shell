@@ -7,9 +7,9 @@ combination of small bash scripts.
 
 - **System status report**:
   - Automatically printed in new terminal sessions (local, SSH, ...).
-  - Monitor your servers, RaspberryPis, and workstations.
+  - Monitor your servers, RaspberryPis, and workstations. All system info you
+    need at a glance (e.g. external IP address, CPU temperature, etc.).
   - Detect broken services or CPU hogs.
-  - All system info you might need at a glance.
   - Print your own ASCII logo every time you log in.
 
 - **Fancy bash prompt**:
