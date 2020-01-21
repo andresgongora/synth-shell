@@ -123,12 +123,12 @@ As for the git status info, `fancy-bash-prompt.sh` prints an additional, fourth
 separator with the name of the current branch and one of the following icons
 to indicate the state of the repository (can be changed in the config file):
 
-|              Upstream              | Local branch has no changes | Local branch is dirty |
-|:----------------------------------:|:---------------------------:|:---------------------:|
-|             Up to date             |                             |           !           |
-|      Ahead of upstream (push)      |              △              |           ▲           |
-|      Behind of upstream (pull)     |              ▽              |           ▼           |
-| Diverged from upstream (pull-push) |              ○              |           ●           |
+|          Local-Upstream          | Local branch has no changes | Local branch is dirty |
+|:--------------------------------:|:---------------------------:|:---------------------:|
+|            Up to date            |                             |           !           |
+|     Ahead (you have to push)     |              △              |           ▲           |
+|     Behind (you have to pull)    |              ▽              |           ▼           |
+| Diverged (you have to pull-push) |              ○              |           ●           |
 
 
 
