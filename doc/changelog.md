@@ -3,6 +3,8 @@
 <!--------------------------------------+-------------------------------------->
 
 - Better README.
+- Add alias scripts.
+- Add better-ls script.
 
 
 

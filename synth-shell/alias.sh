@@ -23,6 +23,7 @@
 
 
 
+
 ##==============================================================================
 ##	SIMPLE COMMAND OPTIONS
 ##==============================================================================
@@ -32,39 +33,6 @@ alias tree='\tree --dirsfirst -C'
 alias dmesg='\dmesg --color=auto --reltime --human --nopager --decode'
 alias free='\free -mht'
 
-
-
-
-
-##==============================================================================
-##	COMMAND OVERRIDES
-##==============================================================================
-
-## GET CURRENT FOLDER
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
-
-## BETTER LS
-BETTER_LS_FILE="$DIR/better-ls.sh"
-if [ -f $BETTER_LS_FILE ]; then
-	chmod +x "$BETTER_LS_FILE"
-        alias ls="$BETTER_LS_FILE"
-fi
-
-if [ -f /usr/bin/prettyping ]; then
-        alias ping='prettyping --nolegend' ## Replace ping with prettyping
-fi
-
-if [ -f /usr/bin/bat ]; then
-        alias cat='bat' ## Replace cat with bat
-fi
-
-
-## BETTER HISTORY
-BETTER_HISTORY_FILE="$DIR/better-history.sh"
-if [ -f $BETTER_HISTORY_FILE ]; then
-        source "$BETTER_HISTORY_FILE"
-fi
 
 
 
@@ -79,6 +47,33 @@ alias sudo='\sudo '
 if [ "$PS1" ]; then
 	complete -cf sudo
 fi
+
+
+
+
+
+
+##==============================================================================
+##	BETTER HISTORY
+##==============================================================================
+
+local blue="\033[0;34m" #Blue
+local nocolor="\033[0m"
+
+HISTTIMEFORMAT=`echo -e ${blue}[%F %T] $nocolor `
+export HISTSIZE=10000
+export HISTFILESIZE=50000
+HISTCONTROL=ignoreboth # don't put duplicate lines or lines starting with space in the history.
+
+
+
+## BETTER COMMAND HISTORY (CTRL+r) >>>>>>>UNDER CONSTRUCTION<<<<<<<<<<<<<<<<<<<<
+#if [ -f /usr/bin/fzf ]; then
+#        alias preview="fzf --preview 'bat --color \"always\" {}'"
+#        # add support for ctrl+o to open selected file in VS Code
+#        export FZF_DEFAULT_OPTS="--bind='ctrl-o:execute(code {})+abort'"
+#fi
+
 
 
 

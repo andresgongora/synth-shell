@@ -17,6 +17,17 @@ combination of small bash scripts.
   - Git statuses (requires pull/push, is dirty, etc.) if inside a directory that
     is part of a git repository.
   - Better separation between user input and command outputs.
+
+- **better ls**: an `ls -la` on steroids alternative.
+  
+- **alias**: add colors and a nicer behaviour to basic commands
+  - `grep`.
+  - `pacman`.
+  - `tree`.
+  - `dmesg`.
+  - `free`.
+  - `sudo`: autocomplete commands.
+  - `history`: more memory and a nicer format.
   
 - **More coming soon...**
 
@@ -129,6 +140,28 @@ to indicate the state of the repository (can be changed in the config file):
 |     Ahead (you have to push)     |              △              |           ▲           |
 |     Behind (you have to pull)    |              ▽              |           ▼           |
 | Diverged (you have to pull-push) |              ○              |           ●           |
+
+
+
+### better-ls.sh
+Makes `ls` print more text, but nicely formated. When called, `ls` will now list
+all files (`-la`), sort folders first, add colors to output, and list hidden
+files last after a quick separator. However, if you chose to call `ls` with your
+ own parameters (e.g. `ls -l`) it will revert to the default behaviour except
+for color and sorting options.
+
+
+
+### Alias
+
+- `grep` to `grep --color=auto`.
+- `pacman` to `pacman --color=auto`.
+- `tree` to `tree --dirsfirst -C`.
+- `dmesg` to `dmesg --color=auto --reltime --human --nopager --decode`.
+- `free` to `free -mht`.
+- `sudo` adds `complete -cf sudo` to atucomplete commands.
+- `history` various changes.
+
 
 
 

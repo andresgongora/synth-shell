@@ -176,29 +176,39 @@ installScript()
 
 
 		## COPY CONFIGURATION FILES
-		## - Create system config folder if there is none
-		## - Check if there is already some configuration in place
-		##   - If none, copy current configuration
-		##   - If there is, but different, copy with .new extension
-		## - Copy all examples files (overwrite old examples)
-		printInfo "Adding config files to $CONFIG_DIR"
+		## - Check if script has config file at all. If so:
+		##   - Create system config folder if there is none
+		##   - Check if there is already some configuration in place
+		##     - If none, copy current configuration
+		##     - If there is, but different, copy with .new extension
+		##   - If example folder exists
+		##     - Copy all examples files (overwrite old examples)
 		local sys_conf_file="${CONFIG_DIR}/${script_name}.config"
 		local conf_example_dir="${config_template_dir}/${script_name}.config.examples"
 		local conf_template="${config_template_dir}/${script_name}.config"
 
-		if [ ! -d $CONFIG_DIR ]; then
-			mkdir -p $CONFIG_DIR
-		fi
-	
-		if [ ! -f "$sys_conf_file" ]; then
-			cp -u "${conf_template}" "${sys_conf_file}"
-		elif ( ! cmp -s "$conf_template" "$sys_conf_file" ); then
-			cp -u "${conf_template}" "${sys_conf_file}.new"
-			printWarn "Old configuration file detected"
-			printText "New file written to ${sys_conf_file}.new"
-		fi
+		if [ -f $conf_template ]; then
 
-		cp -ur "$conf_example_dir" "${CONFIG_DIR}/"
+			printInfo "Adding config files to $CONFIG_DIR"			
+
+			if [ ! -d $CONFIG_DIR ]; then
+				mkdir -p $CONFIG_DIR
+			fi
+		
+			if [ ! -f "$sys_conf_file" ]; then
+				cp -u "${conf_template}" "${sys_conf_file}"
+			elif ( ! cmp -s "$conf_template" "$sys_conf_file" ); then
+				cp -u "${conf_template}" "${sys_conf_file}.new"
+				printWarn "Old configuration file detected"
+				printInfo "New file written to ${sys_conf_file}.new"
+			fi
+
+			if [ -d "$conf_example_dir" ]; then
+				printInfo "Adding example config files to ${CONFIG_DIR}"	
+				cp -ur "$conf_example_dir" "${CONFIG_DIR}/"
+			fi 
+
+		fi
 
 
 
@@ -233,20 +243,14 @@ installScript()
 ##
 installAll()
 {
-	local action=$(promptUser "Install status? (Y/n)" "" "yYnN" "y")
-	case "$action" in
-		""|y|Y )	installScript install "status" 
-				;;
-		*)		echo ""
-	esac
-
-
-	local action=$(promptUser "Install fancy-bash-prompt? (Y/n)" "" "yYnN" "y")
-	case "$action" in
-		""|y|Y )	installScript install "fancy-bash-prompt" 
-				;;
-		*)		echo ""
-	esac
+	for script in $SCRIPTS; do
+		local action=$(promptUser "Install ${script}? (Y/n)" "" "yYnN" "y")
+		case "$action" in
+			""|y|Y )	installScript install "${script}" 
+					;;
+			*)		echo ""
+		esac
+	done
 }
 
 
@@ -261,8 +265,9 @@ uninstallAll()
 		## RUN QUICK-UNINSTALLER
 		"$uninstaller"	
 	else
-		installScript uninstall "status"
-		installScript uninstall "fancy-bash-prompt"
+		for script in $SCRIPTS; do
+			installScript uninstall "$script"
+		done
 	fi
 }
 
@@ -374,6 +379,13 @@ promptUser()
 ##
 installer()
 {
+	local SCRIPTS="
+		status
+		fancy-bash-prompt
+		better-ls
+		alias
+		"
+
 	case "$1" in
 		install|uninstall)	installerSystem "$1";;
 		*)			promptUser;;
