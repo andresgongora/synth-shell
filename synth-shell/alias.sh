@@ -57,14 +57,17 @@ fi
 ##	BETTER HISTORY
 ##==============================================================================
 
-local blue="\033[0;34m" #Blue
-local nocolor="\033[0m"
+betterHistory()
+{
+	local blue="\033[0;34m"
+	local nocolor="\033[0m"
 
-HISTTIMEFORMAT=`echo -e ${blue}[%F %T] $nocolor `
-export HISTSIZE=10000
-export HISTFILESIZE=50000
-HISTCONTROL=ignoreboth # don't put duplicate lines or lines starting with space in the history.
-
+	export HISTTIMEFORMAT=`echo -e ${blue}[%F %T] $nocolor `
+	export HISTSIZE=10000
+	export HISTFILESIZE=50000
+	export HISTCONTROL=ignoreboth # don't put duplicate lines or lines starting with space in the history.
+}
+betterHistory
 
 
 ## BETTER COMMAND HISTORY (CTRL+r) >>>>>>>UNDER CONSTRUCTION<<<<<<<<<<<<<<<<<<<<

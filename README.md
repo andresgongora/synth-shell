@@ -27,7 +27,7 @@ combination of small bash scripts.
   - `dmesg`.
   - `free`.
   - `sudo`: autocomplete commands.
-  - `history`: more memory and a nicer format.
+  - `history`: nicer format and no duplicate (consecutively the same) commands.
   
 - **More coming soon...**
 
