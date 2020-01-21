@@ -119,6 +119,17 @@ For best results, consider installing (and telling your terminal to use)
 the `hack-ttf` font alongside the powerline-fonts (the later is required for
 the separators).
 
+As for the git status info, `fancy-bash-prompt.sh` prints an additional, fourth 
+separator with the name of the current branch and one of the following icons
+to indicate the state of the repository (can be changed in the config file):
+
+|                                    | Local branch has no changes | Local branch is dirty |
+|------------------------------------|:---------------------------:|:---------------------:|
+|                         Up to date |                             |           !           |
+|           Ahead of upstream (push) |              △              |           ▲           |
+|          Behind of upstream (pull) |              ▽              |           ▼           |
+| Diverged from upstream (pull-push) |              ○              |           ●           |
+
 
 
 <br/><br/>
