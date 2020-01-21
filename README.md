@@ -125,9 +125,9 @@ to indicate the state of the repository (can be changed in the config file):
 
 |              Upstream              | Local branch has no changes | Local branch is dirty |
 |------------------------------------|:---------------------------:|:---------------------:|
-|                         Up to date |                             |           !           |
-|           Ahead of upstream (push) |              △              |           ▲           |
-|          Behind of upstream (pull) |              ▽              |           ▼           |
+|             Up to date             |                             |           !           |
+|      Ahead of upstream (push)      |              △              |           ▲           |
+|      Behind of upstream (pull)     |              ▽              |           ▼           |
 | Diverged from upstream (pull-push) |              ○              |           ●           |
 
 
