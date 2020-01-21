@@ -224,7 +224,32 @@ installScript()
 		chmod +x "$uninstaller"
 
 
+
 		printSuccess "Script $script_name succesfully installed"
+
+
+		
+		## EXTRA NOTES DEPENDING ON SCRIPT
+		local optional_packages=""
+		if [ $script_name == "status" ]; then
+			local optional_packages="lm_sensors"
+		elif [ $script_name == "fancy-bash-prompt" ]; then
+			local optional_packages="powerline-fonts"
+		fi
+
+		if [ -n "$optional_packages" ]; then
+			printInfo "Consider installing the following packages as well." 
+			printInfo "The exact name might change between distributions:"
+			printText "$optional_packages"
+		fi
+
+
+		
+		## Print final separator
+		echo ""
+
+
+
 		;;
 
 
