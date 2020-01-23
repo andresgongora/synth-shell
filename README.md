@@ -234,7 +234,7 @@ scripts.
 
 And the name? That's quite easy. I spent most of my coding frenzy
 listening to [SynthWave](https://en.wikipedia.org/wiki/Synthwave) to feel like
-my idol, [Hackerman](https://www.youtube.com/watch?v=KEkrWRHCDQU).
+[Hackerman](https://www.youtube.com/watch?v=KEkrWRHCDQU).
 
 
 
