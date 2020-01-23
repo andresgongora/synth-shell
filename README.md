@@ -17,6 +17,17 @@ combination of small bash scripts.
   - Git statuses (requires pull/push, is dirty, etc.) if inside a directory that
     is part of a git repository.
   - Better separation between user input and command outputs.
+
+- **better ls**: an `ls -la` on steroids alternative.
+  
+- **alias**: add colors and a nicer behaviour to basic commands.
+  - `grep`.
+  - `pacman`.
+  - `tree`.
+  - `dmesg`.
+  - `free`.
+  - `sudo`: autocomplete commands.
+  - `history`: nicer format and no duplicate (consecutively the same) commands.
   
 - **More coming soon...**
 
@@ -39,19 +50,18 @@ tools on [Yet Another Linux'n Electronics Blog](https://yalneb.blogspot.com/).
 ### Automatic setup
 
 The included [setup script](setup.sh) will guide you step by step through the
-process and let you choose what features to install. During the setup, you can
+process and let you choose what features to install. During this setup, you can
 choose to install synth-shell for your user only (recommended) or system-wide
 (superuser privileges required). To proceed,
 [open and play this link in a separate tab](https://www.youtube.com/embed/MpN91wHAr1k)
-and enter the following into your terminal or telnet session:
+and enter the following into your terminal:
 ```
 git clone --recursive https://github.com/andresgongora/synth-shell.git
 chmod +x synth-shell/setup.sh
 synth-shell/setup.sh
 ```
 
-Once done, you can fire up a new terminal and enjoy the result. Note that for
-`fancy-bash-prompt.sh` you might also need
+Note that for `fancy-bash-prompt.sh` you might also need
 [power-line fonts](https://github.com/powerline/fonts). You can instal it
 as follows (the exact name of the package varies from distro to distro):
 
@@ -59,28 +69,27 @@ as follows (the exact name of the package varies from distro to distro):
 * Debian/Ubuntu: `sudo apt install fonts-powerline`
 
 Finally, open up a new terminal and test that everything works. Sometimes,
-despite power-line fonts being properly installed, the triangle separator is
-still not shown. In this case, make sure that your `locale` is set to UTF-8 by
-editing `/etc/locale.conf` file (select your language but in UTF-8 format) and
-running `sudo locale-gen`.
+despite power-line fonts being properly installed, the triangle separator 
+for `fancy-bash-prompt.sh` (if installed) might still not show. In this case, 
+make sure that your `locale` is set to UTF-8 by editing `/etc/locale.conf` file 
+(select your language but in UTF-8 format) and running `sudo locale-gen`.
 [More info on locale](https://wiki.archlinux.org/index.php/locale).
 
 
 
 ### Configuration/customization
 You can configure your scripts by modifying the corresponding configuration
-files. In addition to said files, you can also find configuration examples
-in the following folders depending on how you installed **synth-shell**:
+files. You can find them, along example configuration files, in the following
+folders depending on how you installed **synth-shell**:
 
-* Current user only: `~/.config/synth-shell/`
-* System wide: `~/etc/synth-shell/`
+* Current-user only: `~/.config/synth-shell/`
+* System wide: `/etc/synth-shell/`
 
 
 
 ### Uninstallation
-It's hard to say goodbye, but we had good times together, didn't we? :) 
-Just run the setup script again as if to install it, 
-but choose `uninstall` when prompted.
+Run the setup script again (like during the installation), but choose 
+`uninstall` when prompted.
 
 
 
@@ -119,6 +128,39 @@ For best results, consider installing (and telling your terminal to use)
 the `hack-ttf` font alongside the powerline-fonts (the later is required for
 the separators).
 
+As for the git status info, `fancy-bash-prompt.sh` prints an additional, fourth 
+separator with the name of the current branch and one of the following icons
+to indicate the state of the repository (can be changed in the config file):
+
+|          Local-Upstream          | Local branch has no changes | Local branch is dirty |
+|:--------------------------------:|:---------------------------:|:---------------------:|
+|            Up to date            |                             |           !           |
+|     Ahead (you have to push)     |              △              |           ▲           |
+|     Behind (you have to pull)    |              ▽              |           ▼           |
+| Diverged (you have to pull-push) |              ○              |           ●           |
+
+
+
+### better-ls.sh
+Makes `ls` print more text, but nicely formated. When called, `ls` will now list
+all files (`-la`), sort folders first, add colors to output, and list hidden
+files last after a quick separator. However, if you chose to call `ls` with your
+ own parameters (e.g. `ls -l`) it will revert to the default behaviour except
+for color and sorting options.
+
+
+
+### Alias
+
+- `grep` to `grep --color=auto`.
+- `pacman` to `pacman --color=auto`.
+- `tree` to `tree --dirsfirst -C`.
+- `dmesg` to `dmesg --color=auto --reltime --human --nopager --decode`.
+- `free` to `free -mht`.
+- `sudo` adds `complete -cf sudo` to atucomplete commands.
+- `history` various changes.
+
+
 
 
 <br/><br/>
@@ -130,7 +172,7 @@ the separators).
 <!--------------------------------------+-------------------------------------->
 
 This project is only possible thanks to the effort and passion of many, 
-including developers, testers, and of course, our beloved coffee vending machine.
+including developers, testers, and of course, our beloved coffee machine.
 You can find a detailed list of everyone involved in the development
 in [AUTHORS.md](AUTHORS.md). Thanks to all of you!
 
@@ -148,6 +190,8 @@ If you like this project and want to contribute, you are most welcome to do so.
   Take a look at the [issues](https://github.com/andresgongora/synth-shell/issues)
   for suggestions of where to start. Also, take a look at our 
   [coding style](coding_style.md).
+* Spread the word: telling your friends is the fastes way to get this code to
+  the people who might enjoy it!
 
 
 
@@ -180,17 +224,17 @@ used for system maintenance. In the beginning, they were simple aids to make my
 life easier, but as I progressively got the hang out of bash, I also wanted them
 to print some nice output to the terminal.
 
-Naturally, it didn't start the way you see it today. The content of most scripts
-were loose snippets from third parties that were somehow smashed together. They
-worked, but not exactly the way I wanted. So, over time I have rewritten all
-scripts from scratch, removed fluff, and teamed up with super-friendly and
-engaged [contributors](AUTHORS.md). The result is what you see today.
-I admit it, it's nothing fancy, but writing these scripts provided me with
-lots of joy.
+This repository was quite different at the beginning. The content of most
+scripts were loose snippets from third parties that were somehow smashed 
+together. They worked, but not exactly the way I wanted. So, over time I have 
+rewritten most scripts from scratch, removed fluff, and teamed up with 
+super-friendly and engaged [contributors](AUTHORS.md). The result is what you 
+see today. I admit it, it's nothing fancy. But it was real fun working on the 
+scripts.
 
 And the name? That's quite easy. I spent most of my coding frenzy
 listening to [SynthWave](https://en.wikipedia.org/wiki/Synthwave) to feel like
-[Hackerman](https://www.youtube.com/watch?v=KEkrWRHCDQU).
+my idol, [Hackerman](https://www.youtube.com/watch?v=KEkrWRHCDQU).
 
 
 

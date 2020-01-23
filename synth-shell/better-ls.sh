@@ -71,48 +71,48 @@
 ##	BETTER LS
 ##==============================================================================
 
-shopt -s extglob
-LS='ls'
+ls()
+{
+	echo "$@"
+	shopt -s extglob
+	local LS="$(which ls)"
 
 
-## IF NO ARGUMENTS PASSED -> run better ls version on current folder
-if [ $# -eq 0 ]; then
+	## IF NO ARGUMENTS PASSED -> run better ls version on current folder
+	if [ $# -eq 0 ]; then
 
-	## IF THE CURRENT FOLDER IS NOT EMPTY -> Display all
-	files=$($LS -U * 2> /dev/null | wc -l)	
-	if [ "$files" != "0" ]
-	then 
-		## List implied . and .., visible folders, then visible files
-		$LS -d {.,..,*} -lA --color=auto --human-readable \
-			--time-style=long-iso --group-directories-first;
+		## IF THE CURRENT FOLDER IS NOT EMPTY -> Display all
+		files=$($LS -U * 2> /dev/null | wc -l)	
+		if [ "$files" != "0" ]
+		then 
+			## List implied . and .., visible folders, then visible files
+			$LS -d {.,..,*} -lA --color=auto --human-readable \
+				--time-style=long-iso --group-directories-first;
 
 
-		## List hidden folders and files (only if they exist)
-		hidden_files=$($LS -U -d .!(|.) 2> /dev/null | wc -l)	
-		if [ "$hidden_files" != "0" ]
-		then
-			echo ""
-			$LS -d .!(|.) -l --color=auto --hide='..' \
-				--human-readable --time-style=long-iso \
-				--group-directories-first;
+			## List hidden folders and files (only if they exist)
+			hidden_files=$($LS -U -d .!(|.) 2> /dev/null | wc -l)	
+			if [ "$hidden_files" != "0" ]
+			then
+				echo ""
+				$LS -d .!(|.) -l --color=auto --hide='..' \
+					--human-readable --time-style=long-iso \
+					--group-directories-first;
+			fi
+
+		## IF THE CURRENT FOLDER IS EMPTY -> List . and ..
+		else
+			$LS -d {.,..,} -lA --color=auto --human-readable \
+				--time-style=long-iso --group-directories-first;
 		fi
 
-	## IF THE CURRENT FOLDER IS EMPTY -> List . and ..
+
+	## IF ARGUMENTS PASSED -> run standard ls but with some tweaks (eg: colors)		
 	else
-		$LS -d {.,..,} -lA --color=auto --human-readable \
-			--time-style=long-iso --group-directories-first;
+		$LS --color=auto --human-readable --time-style=long-iso \
+		    --group-directories-first "$@";	
 	fi
+}
 
-
-## IF ARGUMENTS PASSED -> run standard ls but with some tweaks (eg: colors)		
-else
-	$LS -la --color=auto --human-readable --time-style=long-iso \
-		--group-directories-first "$@";	
-fi
-
-
-
-unset LS
-exit 0
 ### EOF ###
 
