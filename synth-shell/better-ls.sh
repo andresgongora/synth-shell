@@ -73,7 +73,6 @@
 
 ls()
 {
-	echo "$@"
 	shopt -s extglob
 	local LS="$(which ls)"
 

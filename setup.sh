@@ -409,6 +409,7 @@ installer()
 		fancy-bash-prompt
 		better-ls
 		alias
+		better-cd
 		"
 
 	case "$1" in
