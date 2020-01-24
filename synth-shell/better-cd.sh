@@ -38,10 +38,6 @@
 ##==============================================================================
 
 
-
-
-GO_TO="$@"
-
 better_cd()
 {
 	read_key_input()        
@@ -158,7 +154,7 @@ better_cd()
 		while true; do
 
 			## GET CURRENT DIRECTORY TREE	
-			local dirs=$(/usr/bin/ls -F "${dir_base}" | /usr/bin/grep \/)
+			local dirs=$("ls" -F "${dir_base}" | "grep" \/)
 
 			readarray -t dir_array <<< "$dirs" ## Split array
 
@@ -169,7 +165,7 @@ better_cd()
 			print_submenu "${dir_array[@]}"
 
 			if [ $submenu_sel_key == "enter" ]; then
-				GO_TO=${dir_array[$submenu_sel_index]}
+				"cd" ${dir_array[$submenu_sel_index]}
 				break
 
 			elif [ $submenu_sel_key == "right" ]; then
@@ -179,14 +175,14 @@ better_cd()
 				local dir_base=$(echo "$dir_base" | sed -n 's/[^\/]*\/[^\/]*$//p')
 			fi
 		done
+		
+	else
+		"cd" $@
 	fi
-
-
-
 }
 
-better_cd $@
-cd $GO_TO
+alias cd='better_cd'
+
 
 
 ### EOF ###
