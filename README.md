@@ -32,6 +32,9 @@ combination of small bash scripts.
 - **More coming soon...**
 
 
+![Example with status.sh and fancy-bash-prompt.sh](doc/screenshot.png)
+
+
 All features are optional during installation and you can configure their 
 behaviour. Once set up, they are simply called from within you `.bashrc` file, 
 so they become part of any new session. You can find more details and similar 
@@ -100,9 +103,6 @@ Run the setup script again (like during the installation), but choose
 <!--------------------------------------+-------------------------------------->
 #                                    Overview
 <!--------------------------------------+-------------------------------------->
-
-![Example with status.sh and fancy-bash-prompt.sh](doc/screenshot.png)
-
 
 ### status.sh
 `status.sh` provides a summarized system report at a single glance every time
@@ -234,7 +234,7 @@ scripts.
 
 And the name? That's quite easy. I spent most of my coding frenzy
 listening to [SynthWave](https://en.wikipedia.org/wiki/Synthwave) to feel like
-my idol, [Hackerman](https://www.youtube.com/watch?v=KEkrWRHCDQU).
+[Hackerman](https://www.youtube.com/watch?v=KEkrWRHCDQU).
 
 
 
