@@ -2,7 +2,8 @@
 #                                     v2.3
 <!--------------------------------------+-------------------------------------->
 
--
+- Fix `better-ls` command to avoid error message on some terminal emulators. Thanks to @louddesignstudios and @omega100.
+- 
 
 
 
