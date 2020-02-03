@@ -40,7 +40,7 @@
 ##		Shows hidden directories
 ##		Shows hidden files
 ##	- else
-##		Runs with argument and sorts directories first
+##		Runs with argument, but sorts directories first and prints color
 ##
 ##
 ##
@@ -55,13 +55,13 @@
 ##		If zero there is no file. -U disables sorting for
 ##		shorter response times.
 ##
-##	hidden_files=$(/usr/bin/ls -U -d .!(|.) 2> /dev/null | wc -l)
-##		Same as above, but for '.!(|.)', which includes all
+##	hidden_files=$(/usr/bin/ls -U -d .[^.]* 2> /dev/null | wc -l)
+##		Same as above, but for '.[^.]*', which includes all
 ##		hidden files but ommits '.' and '..' .
 ##
-##	.!(|.)
-##		Anything starting with '.' and not followed by '|.',
-##		meaning either nothing or another '.' .
+##	.[^.]*
+##		Anything starting with '.', followed by one char that can not be
+##		'.', and then as many (or any) characters as wanted.
 ##
 
 
@@ -91,11 +91,11 @@ ls()
 
 
 			## List hidden folders and files (only if they exist)
-			hidden_files=$($LS -U -d .!(|.) 2> /dev/null | wc -l)	
+			hidden_files=$($LS -U -d .[^.]* 2> /dev/null | wc -l)	
 			if [ "$hidden_files" != "0" ]
 			then
 				echo ""
-				$LS -d .!(|.) -l --color=auto --hide='..' \
+				$LS -d .[^.]* -l --color=auto --hide='..' \
 					--human-readable --time-style=long-iso \
 					--group-directories-first;
 			fi
@@ -115,4 +115,5 @@ ls()
 }
 
 ### EOF ###
+
 
