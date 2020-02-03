@@ -40,7 +40,7 @@
 ##		Shows hidden directories
 ##		Shows hidden files
 ##	- else
-##		Runs with argument and sorts directories first
+##		Runs with argument, but sorts directories first and prints color
 ##
 ##
 ##
@@ -71,9 +71,8 @@
 ##	BETTER LS
 ##==============================================================================
 
-ls()
+function better_ls()
 {
-	echo "$@"
 	shopt -s extglob
 	local LS="$(which ls)"
 
@@ -114,5 +113,12 @@ ls()
 	fi
 }
 
+
+
+## Override default ls
+alias ls='better_ls'
+
+
 ### EOF ###
+
 
