@@ -71,9 +71,8 @@
 ##	BETTER LS
 ##==============================================================================
 
-function ls()
+function better_ls()
 {
-	echo "$@"
 	shopt -s extglob
 	local LS="$(which ls)"
 
@@ -113,6 +112,12 @@ function ls()
 		    --group-directories-first "$@";	
 	fi
 }
+
+
+
+## Override default ls
+alias ls='better_ls'
+
 
 ### EOF ###
 
