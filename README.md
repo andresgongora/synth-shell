@@ -77,6 +77,9 @@ for `fancy-bash-prompt.sh` (if installed) might still not show. In this case,
 make sure that your `locale` is set to UTF-8 by editing `/etc/locale.conf` file 
 (select your language but in UTF-8 format) and running `sudo locale-gen`.
 [More info on locale](https://wiki.archlinux.org/index.php/locale).
+Alternatively, try a different font in your terminal emulator. Some fonts
+do not support special characters. We get the best results with
+[hack-ttf](https://sourcefoundry.org/hack/).
 
 
 
