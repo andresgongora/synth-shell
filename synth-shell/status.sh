@@ -986,14 +986,14 @@ printHeader()
 
 
 	## PRINT ONLY WHAT FITS IN THE TERMINAL
-	if [ $(( $logo_cols + $info_cols )) -lt $term_cols ]; then
+	if [ $(( $logo_cols + $info_cols )) -le $term_cols ]; then
 		if $print_logo_right ; then
 			printTwoElementsSideBySide "$info" "$logo" "$print_cols_max"
 		else
 			printTwoElementsSideBySide "$logo" "$info" "$print_cols_max"
 		fi
 
-	elif [ $info_cols -lt $term_cols ]; then
+	elif [ $info_cols -le $term_cols ]; then
 		if $print_logo_right ; then
 			printTwoElementsSideBySide "$info" "" "$print_cols_max"
 		else
