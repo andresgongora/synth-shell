@@ -468,8 +468,8 @@ printInfoUptime()
 	                                s/ month/m/g;
 	                                s/ week/w/g;
 	                                s/ day/d/g;
-	                                s/ hour/h/g;
-	                                s/ minute/m/g')
+	                                s/ hour, /:/g;
+	                                s/ minute//g')
 	printInfo "Uptime" "$uptime"
 }
 
