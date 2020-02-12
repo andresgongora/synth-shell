@@ -905,41 +905,41 @@ printStatusInfo()
 	{
 		case $1 in
 		## 	INFO (TEXT ONLY)
-		##	NAME		FUNCTION
-			OS)		printInfoOS;;
-			KERNEL)		printInfoKernel;;
-			CPU)		printInfoCPU;;
-			GPU)		printInfoGPU;;
-			SHELL)		printInfoShell;;
-			DATE)		printInfoDate;;
-			UPTIME)		printInfoUptime;;
-			USER)		printInfoUser;;
-			NUMLOGGED)	printInfoNumLoggedIn;;
-			NAMELOGGED)	printInfoNameLoggedIn;;
-			LOCALIPV4)	printInfoLocalIPv4;;
-			EXTERNALIPV4)	printInfoExternalIPv4;;
-			SERVICES)	printInfoSystemctl;;
-			PALETTE_SMALL)	printInfoColorpaletteSmall;;
-			PALETTE)	printInfoColorpaletteFancy;;
-			SPACER)		printInfoSpacer;;
-			CPUUTILIZATION)	printInfoCPUUtilization;;
-			CPUTEMP)	printInfoCPUTemp;;
+		##	NAME            FUNCTION
+			OS)             printInfoOS;;
+			KERNEL)         printInfoKernel;;
+			CPU)            printInfoCPU;;
+			GPU)            printInfoGPU;;
+			SHELL)          printInfoShell;;
+			DATE)           printInfoDate;;
+			UPTIME)         printInfoUptime;;
+			USER)           printInfoUser;;
+			NUMLOGGED)      printInfoNumLoggedIn;;
+			NAMELOGGED)     printInfoNameLoggedIn;;
+			LOCALIPV4)      printInfoLocalIPv4;;
+			EXTERNALIPV4)   printInfoExternalIPv4;;
+			SERVICES)       printInfoSystemctl;;
+			PALETTE_SMALL)  printInfoColorpaletteSmall;;
+			PALETTE)        printInfoColorpaletteFancy;;
+			SPACER)         printInfoSpacer;;
+			CPUUTILIZATION) printInfoCPUUtilization;;
+			CPUTEMP)        printInfoCPUTemp;;
 
 		## 	USAGE MONITORS (BARS)
-		##	NAME		FUNCTION		AS %
-			SYSLOAD_MON)	printMonitorCPU;;
-			SYSLOAD_MON%)	printMonitorCPU		true;;
-			MEMORY_MON)	printMonitorRAM;;
-			MEMORY_MON%)	printMonitorRAM		true;;
-			SWAP_MON)	printMonitorSwap;;
-			SWAP_MON%)	printMonitorSwap 	true;;
-			HDDROOT_MON)	printMonitorHDD;;
-			HDDROOT_MON%)	printMonitorHDD 	true;;
-			HDDHOME_MON)	printMonitorHome;;
-			HDDHOME_MON%)	printMonitorHome 	true;;
-			CPUTEMP_MON)	printMonitorCPUTemp;;
+		##	NAME            FUNCTION               AS %
+			SYSLOAD_MON)    printMonitorCPU;;
+			SYSLOAD_MON%)   printMonitorCPU        true;;
+			MEMORY_MON)     printMonitorRAM;;
+			MEMORY_MON%)    printMonitorRAM        true;;
+			SWAP_MON)       printMonitorSwap;;
+			SWAP_MON%)      printMonitorSwap       true;;
+			HDDROOT_MON)    printMonitorHDD;;
+			HDDROOT_MON%)   printMonitorHDD        true;;
+			HDDHOME_MON)    printMonitorHome;;
+			HDDHOME_MON%)   printMonitorHome       true;;
+			CPUTEMP_MON)    printMonitorCPUTemp;;
 
-			*)		printInfo "Unknown" "Check your config";;
+			*)              printInfo "Unknown" "Check your config";;
 		esac
 	}
 
