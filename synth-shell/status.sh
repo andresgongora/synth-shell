@@ -462,7 +462,15 @@ printInfoDate()
 ##
 printInfoUptime()
 {
-	local uptime=$(uptime -p | sed 's/^[^,]*up *//g')
+	local uptime=$(uptime -p | sed 's/^[^,]*up *//g;
+	                                s/s//g;
+	                                s/ year/y/g;
+	                                s/ month/m/g;
+	                                s/ week/w/g;
+	                                s/ day/d/g;
+	                                s/ hour/h/g;
+	                                s/ minute/m/g'
+	              )
 	printInfo "Uptime" "$uptime"
 }
 
