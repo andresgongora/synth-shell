@@ -404,7 +404,7 @@ printInfoGPU()
 	## FOR ALL DETECTED IDs
 	## Get the GPU name, but trim all buzzwords away
 	echo -e "$gpu_id" | while read line ; do
-	   	local gpu=$(lspci  -v -s "$line" |\
+	   	local gpu=$(lspci -s "$line" |\
 		            head -n 1 |\
 		            sed 's/^.*: //g;s/(.*$//g;
 		                 s/Corporation//g;
