@@ -29,15 +29,13 @@ combination of small bash scripts.
   - `sudo`: autocomplete commands.
   - `history`: nicer format and no duplicate (consecutively the same) commands.
   
-- **More coming soon...**
-
 
 ![Example with status.sh and fancy-bash-prompt.sh](doc/screenshot.png)
 
 
-All features are optional during installation and you can configure their 
-behaviour. Once set up, they are simply called from within you `.bashrc` file, 
-so they become part of any new session. You can find more details and similar 
+All features are optional, and most can also be customized to your liking.
+Once installed, the scripts are called from within you `.bashrc` file and
+become part of the bash session. You can find more details and similar 
 tools on [Yet Another Linux'n Electronics Blog](https://yalneb.blogspot.com/).
 
 

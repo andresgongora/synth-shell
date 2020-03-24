@@ -1,8 +1,10 @@
 <!--------------------------------------+-------------------------------------->
-#                                     v2.3
+#                                     NEXT
 <!--------------------------------------+-------------------------------------->
 
--
+- Fix `better-ls` command to avoid error message on some terminal emulators. Thanks to @louddesignstudios and @omega100.
+- make uptime format shorter.
+- 
 
 
 

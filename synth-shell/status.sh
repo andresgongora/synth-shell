@@ -462,7 +462,14 @@ printInfoDate()
 ##
 printInfoUptime()
 {
-	local uptime=$(uptime -p | sed 's/^[^,]*up *//g')
+	local uptime=$(uptime -p | sed 's/^[^,]*up *//g;
+	                                s/s//g;
+	                                s/ year/y/g;
+	                                s/ month/m/g;
+	                                s/ week/w/g;
+	                                s/ day/d/g;
+	                                s/ hour, /:/g;
+	                                s/ minute//g')
 	printInfo "Uptime" "$uptime"
 }
 
@@ -911,41 +918,41 @@ printStatusInfo()
 	{
 		case $1 in
 		## 	INFO (TEXT ONLY)
-		##	NAME		FUNCTION
-			OS)		printInfoOS;;
-			KERNEL)		printInfoKernel;;
-			CPU)		printInfoCPU;;
-			GPU)		printInfoGPU;;
-			SHELL)		printInfoShell;;
-			DATE)		printInfoDate;;
-			UPTIME)		printInfoUptime;;
-			USER)		printInfoUser;;
-			NUMLOGGED)	printInfoNumLoggedIn;;
-			NAMELOGGED)	printInfoNameLoggedIn;;
-			LOCALIPV4)	printInfoLocalIPv4;;
-			EXTERNALIPV4)	printInfoExternalIPv4;;
-			SERVICES)	printInfoSystemctl;;
-			PALETTE_SMALL)	printInfoColorpaletteSmall;;
-			PALETTE)	printInfoColorpaletteFancy;;
-			SPACER)		printInfoSpacer;;
-			CPUUTILIZATION)	printInfoCPUUtilization;;
-			CPUTEMP)	printInfoCPUTemp;;
+		##	NAME            FUNCTION
+			OS)             printInfoOS;;
+			KERNEL)         printInfoKernel;;
+			CPU)            printInfoCPU;;
+			GPU)            printInfoGPU;;
+			SHELL)          printInfoShell;;
+			DATE)           printInfoDate;;
+			UPTIME)         printInfoUptime;;
+			USER)           printInfoUser;;
+			NUMLOGGED)      printInfoNumLoggedIn;;
+			NAMELOGGED)     printInfoNameLoggedIn;;
+			LOCALIPV4)      printInfoLocalIPv4;;
+			EXTERNALIPV4)   printInfoExternalIPv4;;
+			SERVICES)       printInfoSystemctl;;
+			PALETTE_SMALL)  printInfoColorpaletteSmall;;
+			PALETTE)        printInfoColorpaletteFancy;;
+			SPACER)         printInfoSpacer;;
+			CPUUTILIZATION) printInfoCPUUtilization;;
+			CPUTEMP)        printInfoCPUTemp;;
 
 		## 	USAGE MONITORS (BARS)
-		##	NAME		FUNCTION		AS %
-			SYSLOAD_MON)	printMonitorCPU;;
-			SYSLOAD_MON%)	printMonitorCPU		true;;
-			MEMORY_MON)	printMonitorRAM;;
-			MEMORY_MON%)	printMonitorRAM		true;;
-			SWAP_MON)	printMonitorSwap;;
-			SWAP_MON%)	printMonitorSwap 	true;;
-			HDDROOT_MON)	printMonitorHDD;;
-			HDDROOT_MON%)	printMonitorHDD 	true;;
-			HDDHOME_MON)	printMonitorHome;;
-			HDDHOME_MON%)	printMonitorHome 	true;;
-			CPUTEMP_MON)	printMonitorCPUTemp;;
+		##	NAME            FUNCTION               AS %
+			SYSLOAD_MON)    printMonitorCPU;;
+			SYSLOAD_MON%)   printMonitorCPU        true;;
+			MEMORY_MON)     printMonitorRAM;;
+			MEMORY_MON%)    printMonitorRAM        true;;
+			SWAP_MON)       printMonitorSwap;;
+			SWAP_MON%)      printMonitorSwap       true;;
+			HDDROOT_MON)    printMonitorHDD;;
+			HDDROOT_MON%)   printMonitorHDD        true;;
+			HDDHOME_MON)    printMonitorHome;;
+			HDDHOME_MON%)   printMonitorHome       true;;
+			CPUTEMP_MON)    printMonitorCPUTemp;;
 
-			*)		printInfo "Unknown" "Check your config";;
+			*)              printInfo "Unknown" "Check your config";;
 		esac
 	}
 
@@ -987,14 +994,14 @@ printHeader()
 
 
 	## PRINT ONLY WHAT FITS IN THE TERMINAL
-	if [ $(( $logo_cols + $info_cols )) -lt $term_cols ]; then
+	if [ $(( $logo_cols + $info_cols )) -le $term_cols ]; then
 		if $print_logo_right ; then
 			printTwoElementsSideBySide "$info" "$logo" "$print_cols_max"
 		else
 			printTwoElementsSideBySide "$logo" "$info" "$print_cols_max"
 		fi
 
-	elif [ $info_cols -lt $term_cols ]; then
+	elif [ $info_cols -le $term_cols ]; then
 		if $print_logo_right ; then
 			printTwoElementsSideBySide "$info" "" "$print_cols_max"
 		else
