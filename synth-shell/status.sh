@@ -586,6 +586,12 @@ printInfoExternalIPv4()
 		           o-o.myaddr.l.google.com @ns1.google.com |\
 		           awk -F\" '{print $2}')
 
+	elif ( which drill > /dev/null 2>&1 ); then
+		local ip=$(drill +time=3 +tries=1 TXT -4 +short \
+		           o-o.myaddr.l.google.com @ns1.google.com |\
+		           grep IN | tail -n 1 | cut -f5 -s |\
+		           awk -F\" '{print $2}')
+
 	elif ( which nslookup > /dev/null 2>&1 ); then
 		local ip=$(nslookup -timeout=3 -q=txt \
 		           o-o.myaddr.l.google.com 216.239.32.10 |\
