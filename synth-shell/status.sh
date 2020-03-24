@@ -986,11 +986,6 @@ printHeader()
 	local info_cols=$(getTextNumCols "$info")
 
 
-	## PRINT TOP SPACER
-	if $clear_before_print; then clear; fi
-	if $print_extra_new_line_top; then echo ""; fi
-
-
 	## PRINT ONLY WHAT FITS IN THE TERMINAL
 	if [ $(( $logo_cols + $info_cols )) -lt $term_cols ]; then
 		if $print_logo_right ; then
@@ -1007,9 +1002,6 @@ printHeader()
 		fi
 	fi
 
-
-	## PRINT BOTTOM SPACER
-	if $print_extra_new_line_bot; then echo ""; fi
 }
 
 
@@ -1041,8 +1033,8 @@ printSystemctl()
 
 	if [ "$systcl_num_failed" -ne "0" ]; then
 		local failed=$(systemctl --failed | awk '/UNIT/,/^$/')
-		printf "${fc_crit}SYSTEMCTL FAILED SERVICES:\n"
-		printf "${fc_info}${failed}${fc_none}\n\n"
+		printf "\n${fc_crit}SYSTEMCTL FAILED SERVICES:\n"
+		printf "${fc_info}${failed}${fc_none}\n"
 
 	fi
 }
@@ -1096,9 +1088,9 @@ printHogsCPU()
 
 
 		## PRINT WITH FORMAT
-		printf "${fc_crit}SYSTEM LOAD:${fc_info}  ${load}\n"
+		printf "\n${fc_crit}SYSTEM LOAD:${fc_info}  ${load}\n"
 		printf "${fc_crit}$header${fc_none}\n"
-		printf "${fc_info}${procs}${fc_none}\n\n"
+		printf "${fc_info}${procs}${fc_none}\n"
 	fi
 }
 
@@ -1152,10 +1144,10 @@ printHogsMemory()
 			      awk '{$2=int($2/1024)"MB";}
 		                   {printf("%5s%8s%8s\t%s\n", $1, $2, $3, $4)}')
 
-		printf "${fc_crit}MEMORY:\t "
+		printf "\n${fc_crit}MEMORY:\t "
 		printf "${fc_info}Only ${available} MB of RAM available!!\n"
 		printf "${fc_crit}    %%\t SIZE\t  PID\tCOMMAND\n"
-		printf "${fc_info}${procs}${fc_none}\n\n"
+		printf "${fc_info}${procs}${fc_none}\n"
 	fi
 }
 
@@ -1246,7 +1238,7 @@ local print_cpu_hogs=true
 local print_memory_hogs=true
 local clear_before_print=false
 local print_extra_new_line_top=true
-local print_extra_new_line_bot=true
+local print_extra_new_line_bot=false
 
 
 ## LOAD USER CONFIGURATION
@@ -1272,6 +1264,12 @@ local fc_none=$(getFormatCode -e reset)
 
 
 
+## PRINT TOP SPACER
+if $clear_before_print; then clear; fi
+if $print_extra_new_line_top; then echo ""; fi
+
+
+
 ## PRINT STATUS ELEMENTS
 printHeader
 printLastLogins
@@ -1279,6 +1277,10 @@ printSystemctl
 printHogsCPU
 printHogsMemory
 
+
+	
+## PRINT BOTTOM SPACER
+if $print_extra_new_line_bot; then echo ""; fi
 
 
 
