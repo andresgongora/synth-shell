@@ -551,12 +551,12 @@ printInfoLocalIPv4()
 	if   ( which ip > /dev/null 2>&1 ); then
 		local ip=$($(which ip) -family inet addr show |\
 		           grep -oP "$grep_reggex" |\
-		           sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
+		           sed '/127.0.0.1/d;:a;N;$!ba;s/\n/, /g')
 
 	elif ( which ifconfig > /dev/null 2>&1 ); then
 		local ip=$($(which ifconfig) |\
 		           grep -oP "$grep_reggex"|\
-		           sed '/127.0.0.1/d;:a;N;$!ba;s/\n/,/g')
+		           sed '/127.0.0.1/d;:a;N;$!ba;s/\n/, /g')
 	else
 		local result="Error"
 	fi
