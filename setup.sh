@@ -52,7 +52,7 @@ installScript()
 
 	## EXTERNAL VARIABLES
 	if [ -z $INSTALL_DIR ]; then echo "INSTALL_DIR not set"; exit 1; fi
-	if [ -z $BASHRC ];      then echo "BASHRC not set";      exit 1; fi
+	if [ -z $RC_FILE ];      then echo "RC_FILE not set";      exit 1; fi
 	if [ -z $CONFIG_DIR ];  then echo "CONFIG_DIR not set";  exit 1; fi
 
 
@@ -123,8 +123,8 @@ installScript()
 
 	uninstall)
 		## REMOVE HOOK AND SCRIPT
-		printInfo "Removed $script_name hook from $BASHRC"
-		editTextFile "$BASHRC" delete "$hook"
+		printInfo "Removed $script_name hook from $RC_FILE"
+		editTextFile "$RC_FILE" delete "$hook"
 		if [ -f $script ]; then rm $script; fi
 		;;
 
@@ -170,8 +170,8 @@ installScript()
 
 
 		## ADD HOOK TO /etc/bash.bashrc
-		printInfo "Adding $script_name hook to $BASHRC"
-		editTextFile "$BASHRC" append "$hook"
+		printInfo "Adding $script_name hook to $RC_FILE"
+		editTextFile "$RC_FILE" append "$hook"
 
 
 
@@ -219,7 +219,7 @@ installScript()
 			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$uninstaller"
 		editTextFile "$uninstaller" append "rm -rf ${CONFIG_DIR}"
 		echo "hook=\"$hook\"" >> "$uninstaller"
-		echo "editTextFile \"$BASHRC\" delete \"\$hook\"" >> "$uninstaller"
+		echo "editTextFile \"$RC_FILE\" delete \"\$hook\"" >> "$uninstaller"
 		echo "unset hook" >> "$uninstaller"
 		chmod +x "$uninstaller"
 
@@ -309,7 +309,7 @@ installerSystem()
 	local option=$1
 	local INSTALL_DIR="/usr/local/bin" 
 	local CONFIG_DIR="/etc/synth-shell"
-	local BASHRC="/etc/bash.bashrc"
+	local RC_FILE="/etc/bash.bashrc"
 
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 	source "$dir/bash-tools/bash-tools/user_io.sh"
@@ -343,10 +343,20 @@ installerUser()
 {
 	local option=$1
 	local INSTALL_DIR="${HOME}/.config/synth-shell" 
-	local CONFIG_DIR="${HOME}/.config/synth-shell" 
-	local BASHRC="${HOME}/.bashrc" 
+	local CONFIG_DIR="${HOME}/.config/synth-shell"
+	local user_shell=$(getShellName)
+
 
 	printInfo "Running for user $USER"
+
+
+	case "$user_shell" in
+		bash)		local RC_FILE="${HOME}/.bashrc" ;;
+		zsh)		local RC_FILE="${HOME}/.zshrc" ;;
+		*)		local RC_FILE="${HOME}/.bashrc"
+				printInfo "Could not determine user shell. I will install the scripts into $RC_FILE"
+	esac
+
 
 	case "$option" in
 		uninstall)	printInfo "Uninstalling synth-shell"
@@ -378,6 +388,7 @@ promptUser()
 {
 	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 	source "$dir/bash-tools/bash-tools/user_io.sh"
+	source "$dir/bash-tools/bash-tools/shell.sh"
 	printHeader "Installation wizard for synth-shell"
 
 	local action=$(promptUser "Would you like to install or uninstall synth-shell?" "[i] install / [u] uninstall. Default i" "iIuU" "i")

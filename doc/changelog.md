@@ -6,6 +6,7 @@
 - make uptime format shorter.
 - Avoid printing error caused by lspci.
 - Moved new lines and layout of `status.sh` a bit.
+- Add support in the `setup.sh` script for `zsh`. Thanks to @andresjose42
 
 
 
