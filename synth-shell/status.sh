@@ -720,7 +720,7 @@ printInfoCPUTemp()
 	if ( which sensors > /dev/null 2>&1 ); then
 
 		## GET VALUES
-		local temp_line=$(sensors |\
+		local temp_line=$(sensors 2>/dev/null |\
 		                  grep Core |\
 		                  head -n 1 |\
 		                  sed 's/^.*:[ \t]*//g;s/[\(\),]//g')
