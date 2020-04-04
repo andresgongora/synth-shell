@@ -197,10 +197,10 @@ installScript()
 		
 			if [ ! -f "$sys_conf_file" ]; then
 				cp -u "${conf_template}" "${sys_conf_file}"
-			elif ( ! cmp -s "$conf_template" "$sys_conf_file" ); then
-				cp -u "${conf_template}" "${sys_conf_file}.new"
-				printWarn "Old configuration file detected"
-				printInfo "New file written to ${sys_conf_file}.new"
+			#elif ( ! cmp -s "$conf_template" "$sys_conf_file" ); then
+			#	cp -u "${conf_template}" "${sys_conf_file}.new"
+			#	printWarn "Old configuration file detected"
+			#	printInfo "New file written to ${sys_conf_file}.new"
 			fi
 
 			if [ -d "$conf_example_dir" ]; then
