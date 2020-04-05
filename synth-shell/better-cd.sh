@@ -40,7 +40,7 @@
 ##		Shows hidden directories
 ##		Shows hidden files
 ##	- else
-##		Runs with argument, but sorts directories first and prints color
+##		Runs with argument and sorts directories first
 ##
 ##
 ##
@@ -55,13 +55,13 @@
 ##		If zero there is no file. -U disables sorting for
 ##		shorter response times.
 ##
-##	hidden_files=$(/usr/bin/ls -U -d .[^.]* 2> /dev/null | wc -l)
-##		Same as above, but for '.[^.]*', which includes all
+##	hidden_files=$(/usr/bin/ls -U -d .!(|.) 2> /dev/null | wc -l)
+##		Same as above, but for '.!(|.)', which includes all
 ##		hidden files but ommits '.' and '..' .
 ##
-##	.[^.]*
-##		Anything starting with '.', followed by one char that can not be
-##		'.', and then as many (or any) characters as wanted.
+##	.!(|.)
+##		Anything starting with '.' and not followed by '|.',
+##		meaning either nothing or another '.' .
 ##
 
 
@@ -71,54 +71,40 @@
 ##	BETTER LS
 ##==============================================================================
 
-function better_ls()
+ls()
 {
+	echo "$@"
 	shopt -s extglob
 	local LS="$(which ls)"
 
 
 	## IF NO ARGUMENTS PASSED -> run better ls version on current folder
-	## OR IF ARGUMENT IS A PATH -> run better ls version on specified folder
-	if [ $# -eq 0 -o -e "$1" ]; then
-
-		## SPECIFI DIR
-		## If $1 exists, use that, else fallback to current dir
-		## to avoid messy output, cd to $dir
-		local dir=${1:-"."}
-		local current_pwd="$PWD"
-		'cd' "$dir"
-
+	if [ $# -eq 0 ]; then
 
 		## IF THE CURRENT FOLDER IS NOT EMPTY -> Display all
-		files=$($LS -U $dir/* 2> /dev/null | wc -l)	
+		files=$($LS -U * 2> /dev/null | wc -l)	
 		if [ "$files" != "0" ]
 		then 
-			## LIST DIR AND PARENT
-			## - Convert dir name
-			## - Check that not at /, because there is no parent
+			## List implied . and .., visible folders, then visible files
 			$LS -d {.,..,*} -lA --color=auto --human-readable \
 				--time-style=long-iso --group-directories-first;
 
 
 			## List hidden folders and files (only if they exist)
-			hidden_files=$($LS -U -d .[^.]* 2> /dev/null | wc -l)	
+			hidden_files=$($LS -U -d .!(|.) 2> /dev/null | wc -l)	
 			if [ "$hidden_files" != "0" ]
 			then
 				echo ""
-				$LS -d .[^.]* -l --color=auto --hide='..' \
+				$LS -d .!(|.) -l --color=auto --hide='..' \
 					--human-readable --time-style=long-iso \
 					--group-directories-first;
 			fi
 
-		## IF THE TARGET DIR IS EMPTY -> List . and ..
+		## IF THE CURRENT FOLDER IS EMPTY -> List . and ..
 		else
 			$LS -d {.,..,} -lA --color=auto --human-readable \
 				--time-style=long-iso --group-directories-first;
 		fi
-
-
-		## RESTORE PWD
-		'cd' "$current_pwd"
 
 
 	## IF ARGUMENTS PASSED -> run standard ls but with some tweaks (eg: colors)		
@@ -128,10 +114,5 @@ function better_ls()
 	fi
 }
 
-
-
-## Override default ls
-alias ls='better_ls'
-
-
 ### EOF ###
+
