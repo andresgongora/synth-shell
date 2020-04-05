@@ -549,28 +549,22 @@ printInfoLocalIPv4()
 
 
 	if   ( which ip > /dev/null 2>&1 ); then
-		local ip=$($(which ip) -family inet addr show |\
+		local ip=$('ip' -family inet addr show |\
 		           grep -oP "$grep_reggex" |\
 		           sed '/127.0.0.1/d;:a;N;$!ba;s/\n/, /g')
 
 	elif ( which ifconfig > /dev/null 2>&1 ); then
-		local ip=$($(which ifconfig) |\
+		local ip=$('ifconfig' |\
 		           grep -oP "$grep_reggex"|\
 		           sed '/127.0.0.1/d;:a;N;$!ba;s/\n/, /g')
 	else
-		local result="Error"
+		local ip="N/A"
 	fi
 
 
-	## FIX IP FORMAT
+	## FIX IP FORMAT AND RETURN
 	## Add extra space after commas for readibility
-	local result=$(echo "$result" | sed 's/,/, /g')
-
-
-	## PRINT LOCAL IPs
-	## Returns "N/A" if actual query result is empty,
-	## and returns "Error" if no programs found
-	[ $ip ] || local ip="N/A"
+	local ip=$(echo "$ip" | sed 's/,/, /g')
 	printInfo "Local IPv4" "$ip"
 }
 
@@ -610,13 +604,10 @@ printInfoExternalIPv4()
 	elif ( which wget > /dev/null 2>&1 ); then
 		local ip=$(wget -q -O - https://api.ipify.org)
 	else
-		local result="Error"
+		local result="N/A"
 	fi
 
 
-	## Returns "N/A" if actual query result is empty,
-	## and returns "Error" if no programs found
-	[ $ip ] || local ip="N/A"
 	printInfo "External IPv4" "$ip"
 }
 
