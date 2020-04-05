@@ -2,7 +2,7 @@
 
 ##  +-----------------------------------+-----------------------------------+
 ##  |                                                                       |
-##  | Copyright (c) 2018-2020, Andres Gongora <mail@andresgongora.com>.     |
+##  | Copyright (c) 2020, Andres Gongora <mail@andresgongora.com>.          |
 ##  |                                                                       |
 ##  | This program is free software: you can redistribute it and/or modify  |
 ##  | it under the terms of the GNU General Public License as published by  |
@@ -23,96 +23,167 @@
 
 ##
 ##	DESCRIPTION:
-##	Overrides 'ls' command to be more useful/easier to read. The following
-##	main modifications are applied:
-##	- Colorized
-##	- Human readable output
-##	- Long timestamp
+##	Overrides 'cd' command to either work as usual if a directory is
+##	specified, or to offer a quick navigation menu if none is specified.
+##	Example:
+##	cd /home/ ## takes you to /home
+##	cd        ## brings up the navigation menu
 ##
 ##
-##
-##
-##	HOW IF WORKS:
-##	- If no arguments passed
-##		Show . and ..
-##		Shows directories
-##		Shows visible files
-##		Shows hidden directories
-##		Shows hidden files
-##	- else
-##		Runs with argument and sorts directories first
-##
-##
-##
-##
-##	DEV NOTES:
-##
-## 	shopt -s extglob 
-##		This must be enabled for extglob wildcards to work (eg !).
-##
-## 	files=$(/usr/bin/ls -U * 2> /dev/null | wc -l)
-##		Create a list of all files in '*' and count it with wc -l
-##		If zero there is no file. -U disables sorting for
-##		shorter response times.
-##
-##	hidden_files=$(/usr/bin/ls -U -d .!(|.) 2> /dev/null | wc -l)
-##		Same as above, but for '.!(|.)', which includes all
-##		hidden files but ommits '.' and '..' .
-##
-##	.!(|.)
-##		Anything starting with '.' and not followed by '|.',
-##		meaning either nothing or another '.' .
-##
-
 
 
 
 ##==============================================================================
-##	BETTER LS
+##	BETTER CD
 ##==============================================================================
 
-ls()
+
+better_cd()
 {
-	echo "$@"
-	shopt -s extglob
-	local LS="$(which ls)"
+	read_key_input()        
+	{ 
+		local esc=$( printf "\033")
+
+		read -s -n 1 key 2>/dev/null >&2
+		if [[ $key = ""     ]]; then echo "enter"; fi;
+		if [[ $key = $esc ]]; then 
+			read -s -n 2 key 2>/dev/null >&2
+			if [[ $key = [A ]]; then echo "up"; fi
+			if [[ $key = [B ]]; then echo "down"; fi
+			if [[ $key = [C ]]; then echo "right"; fi
+			if [[ $key = [D ]]; then echo "left"; fi
+		fi
+	}
 
 
-	## IF NO ARGUMENTS PASSED -> run better ls version on current folder
-	if [ $# -eq 0 ]; then
 
-		## IF THE CURRENT FOLDER IS NOT EMPTY -> Display all
-		files=$($LS -U * 2> /dev/null | wc -l)	
-		if [ "$files" != "0" ]
-		then 
-			## List implied . and .., visible folders, then visible files
-			$LS -d {.,..,*} -lA --color=auto --human-readable \
-				--time-style=long-iso --group-directories-first;
+	local submenu_sel_index=""
+	local submenu_sel_key=""
+	print_submenu()
+	{
+		## Todo: comprobnar que options no está vacio
 
-
-			## List hidden folders and files (only if they exist)
-			hidden_files=$($LS -U -d .!(|.) 2> /dev/null | wc -l)	
-			if [ "$hidden_files" != "0" ]
-			then
-				echo ""
-				$LS -d .!(|.) -l --color=auto --hide='..' \
-					--human-readable --time-style=long-iso \
-					--group-directories-first;
-			fi
-
-		## IF THE CURRENT FOLDER IS EMPTY -> List . and ..
-		else
-			$LS -d {.,..,} -lA --color=auto --human-readable \
-				--time-style=long-iso --group-directories-first;
+		
+		local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+		if [ "$(type -t getFormatCode)" != 'function' ]; then
+			source "$dir/../bash-tools/bash-tools/print_utils.sh"
+		fi
+		if [ "$(type -t getFormatCode)" != 'function' ]; then
+			source "$dir/../bash-tools/bash-tools/color.sh"
 		fi
 
 
-	## IF ARGUMENTS PASSED -> run standard ls but with some tweaks (eg: colors)		
+		eraseLines()
+		{
+			local num_lines=$1
+			moveCursorUp $num_lines
+			local i=$num_lines
+			while [ $i -gt 0 ]; do
+				printf "\e[K\n"
+				local i=$(($i - 1))
+			done
+			moveCursorUp $num_lines
+		}
+
+
+
+		## SETUP
+		local options_array=("$@")
+		local index=0
+		local num_options="$#"
+		local last_index=$(($num_options -1))
+
+
+		## COLOR CONFIGURATION
+		local no_color=$(getFormatCode -e reset)
+		local text_format=$(getFormatCode -e reverse)
+
+
+		local loop=true
+		while $loop; do
+
+			## PRINT OPTIONS AND HIGHLIGH USER SELECTION
+			for i in ${!options_array[@]}; do
+				if [[ $index == $i ]]; then
+					printf "${text_format}${options_array[$i]}${no_color}\n"
+				else
+					echo "${options_array[$i]}"
+				fi
+			done
+
+			
+			## READ USER KEY
+			local user_key=$(read_key_input)
+			if [ $user_key == "up" ]; then
+				if [ $index -gt 0 ]; then
+					local index=$((index - 1))
+					
+				fi
+
+			elif [ $user_key == "down" ]; then
+				if [ $index -lt $last_index ]; then
+					local index=$((index + 1))
+					
+				fi
+
+			else
+				submenu_sel_index="$index"
+				submenu_sel_key="$user_key"
+				local loop=false
+
+			fi
+
+
+			## CLEAR OUTPUT
+			eraseLines $num_options
+
+
+			
+
+
+		done
+	}
+
+
+
+	## IF NO ARGUMENTS PASSED -> run better cd version on current folder
+	if [ $# -eq 0 ]; then
+		# USER SELECTION
+		local dir_base="$PWD/"
+		
+		while true; do
+
+			## GET CURRENT DIRECTORY TREE	
+			local dirs=$("ls" -F "${dir_base}" | "grep" \/)
+
+			readarray -t dir_array <<< "$dirs" ## Split array
+
+			for i in ${!dir_array[@]}; do
+				dir_array[$i]="${dir_base}${dir_array[$i]}"
+			done
+
+			print_submenu "${dir_array[@]}"
+
+			if [ $submenu_sel_key == "enter" ]; then
+				"cd" ${dir_array[$submenu_sel_index]}
+				break
+
+			elif [ $submenu_sel_key == "right" ]; then
+				local dir_base="${dir_array[$submenu_sel_index]}"
+
+			elif [ $submenu_sel_key == "left" ]; then
+				local dir_base=$(echo "$dir_base" | sed -n 's/[^\/]*\/[^\/]*$//p')
+			fi
+		done
+		
 	else
-		$LS --color=auto --human-readable --time-style=long-iso \
-		    --group-directories-first "$@";	
+		"cd" $@
 	fi
 }
+
+alias cd='better_cd'
+
+
 
 ### EOF ###
 
