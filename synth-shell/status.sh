@@ -1175,8 +1175,66 @@ fi
 ## DEFAULT CONFIGURATION
 ## WARNING! Do not edit directly, use configuration files instead
 
+
+## LOGO
+if [ -z ${logo+x} ]; then
+local distro=$(cat /etc/os-release | grep "ID=" | sed 's/ID=//g')
+if [ $USER == "root" ]; then
+local logo="\e[1;31m          / \\\\ 
+         // \\\\\\\\ 
+        //   \\\\\\\\ 
+       //     \\\\\\\\ 
+      //  \e[5;39m███\e[25;31m  \\\\\\\\ 
+     //   \e[5;39m███\e[25;31m   \\\\\\\\ 
+    //    \e[5;39m███\e[25;31m    \\\\\\\\ 
+   //             \\\\\\\\ 
+  //      \e[5;39m███\e[25;31m      \\\\\\\\ 
+ //                 \\\\\\\\ 
+//===================\\\\\\\\
+
+        WARNING!
+     ROOT ACCOUNT!"
+	 
+
+elif [ "$distro" == "manjaro" ]; then
+local logo="██████████████  ██████
+██████████████  ██████
+██████████████  ██████
+██████          ██████
+██████  ██████  ██████
+██████  ██████  ██████
+██████  ██████  ██████
+██████  ██████  ██████
+██████  ██████  ██████
+██████  ██████  ██████
+██████  ██████  ██████"
+
+
+elif [ "$distro" == "arch" ]; then
+local logo="                .         
+\e[0;94m                #
+\e[0;94m               ###
+\e[0;94m              #####
+\e[0;94m              ######
+\e[0;94m             ; #####;
+\e[0;94m            +##.#####
+\e[0;94m           +##########
+\e[0;94m          ######\e[0;34m#####\e[0;94m##;
+\e[0;94m         ###\e[0;34m############\e[0;94m+
+\e[0;94m        #\e[0;34m######   #######
+\e[0;34m      .######;     ;###;\`\".
+\e[0;34m     .#######;     ;#####.
+\e[0;34m     #########.   .########\`
+\e[0;34m    ######\'           \'######
+\e[0;34m   ;####                 ####;
+\e[0;34m   ##\'                     \'##
+\e[0;34m  #\'                         \`# 
+\e[0;34m '                            \`  "
+
+
+else
 local logo="
-        -oydNMMMMNdyo-
+	-oydNMMMMNdyo-
      -yNMMMMMMMMMMMMMMNy-
    .hMMMMMMmhsooshmMMMMMMh.
   :NMMMMmo.        .omMMMMN:
@@ -1189,8 +1247,11 @@ local logo="
   :NMMMMmo.       .yMMMMy.
    .hMMMMMMmhsoo-   .yMMMy
      -yNMMMMMMMMMy-   .o-
-        -oydNMMMMNd/
+	-oydNMMMMNd/
 "
+fi
+fi
+
 
 local print_info="
 	OS
