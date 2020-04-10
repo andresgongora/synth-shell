@@ -1,3 +1,9 @@
 [submodule "bash-tools"]
 	path = bash-tools
 	url = https://github.com/andresgongora/bash-tools.git
+[submodule "synth-shell/synth-shell-status"]
+	path = synth-shell/synth-shell-status
+	url = git@github.com:andresgongora/synth-shell-status.git
+[submodule "synth-shell/synth-shell-greeter"]
+	path = synth-shell/synth-shell-greeter
+	url = git@github.com:andresgongora/synth-shell-greeter.git
