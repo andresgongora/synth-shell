@@ -52,7 +52,7 @@ installScript()
 
 	## EXTERNAL VARIABLES
 	if [ -z $INSTALL_DIR ]; then echo "INSTALL_DIR not set"; exit 1; fi
-	if [ -z $RC_FILE ];      then echo "RC_FILE not set";      exit 1; fi
+	if [ -z $RC_FILE ];     then echo "RC_FILE not set";     exit 1; fi
 	if [ -z $CONFIG_DIR ];  then echo "CONFIG_DIR not set";  exit 1; fi
 
 
@@ -149,66 +149,72 @@ installScript()
 		echo -e "${script_header}" >> ${script}
 
 
+		## WARNING!! UGLY PATCH, WORK IN PROGRESS
+		if [ "$script_name" == "synth-shell-greeter" ]; then
+			printInfo "WARNING: TEMPORAL CODE PATCH $script $CONFIG_DIR"
+			echo "${dir}/synth-shell/synth-shell-greeter/setup.sh"
+			"${dir}/synth-shell/synth-shell-greeter/setup.sh" "$script" "$CONFIG_DIR"
+			echo "XXX"
+		
+		else
+			## ADD CONTENT TO SCRIPT FILE
+			## - Add common scripts TODO: Make this configurable	
+			## - Add actual script
+			## - Remove common functions from environment
+			cat "${dir}/bash-tools/bash-tools/load_config.sh" |\
+				sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
+			cat "${dir}/bash-tools/bash-tools/color.sh" |\
+				sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
+			cat "${dir}/bash-tools/bash-tools/shorten_path.sh" |\
+				sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
+			cat "${dir}/bash-tools/bash-tools/print_utils.sh" |\
+				sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
+			cat "$source_script" |\
+				sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
+			#echo "unset loadConfigFile" >> "$script"
+			#echo "unset getFormatCode" >> "$script"
 
-		## ADD CONTENT TO SCRIPT FILE
-		## - Add common scripts TODO: Make this configurable	
-		## - Add actual script
-		## - Remove common functions from environment
-		cat "${dir}/bash-tools/bash-tools/load_config.sh" |\
-			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
-		cat "${dir}/bash-tools/bash-tools/color.sh" |\
-			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
-		cat "${dir}/bash-tools/bash-tools/shorten_path.sh" |\
-			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
-		cat "${dir}/bash-tools/bash-tools/print_utils.sh" |\
-			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
-		cat "$source_script" |\
-			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$script"
-		#echo "unset loadConfigFile" >> "$script"
-		#echo "unset getFormatCode" >> "$script"
 
 
+			## COPY CONFIGURATION FILES
+			## - Check if script has config file at all. If so:
+			##   - Create system config folder if there is none
+			##   - Check if there is already some configuration in place
+			##     - If none, copy current configuration
+			##     - If there is, but different, copy with .new extension
+			##   - If example folder exists
+			##     - Copy all examples files (overwrite old examples)
+			local sys_conf_file="${CONFIG_DIR}/${script_name}.config"
+			local conf_example_dir="${config_template_dir}/${script_name}.config.examples"
+			local conf_template="${config_template_dir}/${script_name}.config"
+
+			if [ -f $conf_template ]; then
+
+				printInfo "Adding config files to $CONFIG_DIR"			
+
+				if [ ! -d $CONFIG_DIR ]; then
+					mkdir -p $CONFIG_DIR
+				fi
+			
+				if [ ! -f "$sys_conf_file" ]; then
+					cp -u "${conf_template}" "${sys_conf_file}"
+				#elif ( ! cmp -s "$conf_template" "$sys_conf_file" ); then
+				#	cp -u "${conf_template}" "${sys_conf_file}.new"
+				#	printWarn "Old configuration file detected"
+				#	printInfo "New file written to ${sys_conf_file}.new"
+				fi
+
+				if [ -d "$conf_example_dir" ]; then
+					printInfo "Adding example config files to ${CONFIG_DIR}"	
+					cp -ur "$conf_example_dir" "${CONFIG_DIR}/"
+				fi 
+
+			fi
+		fi
 
 		## ADD HOOK TO /etc/bash.bashrc
 		printInfo "Adding $script_name hook to $RC_FILE"
 		editTextFile "$RC_FILE" append "$hook"
-
-
-
-		## COPY CONFIGURATION FILES
-		## - Check if script has config file at all. If so:
-		##   - Create system config folder if there is none
-		##   - Check if there is already some configuration in place
-		##     - If none, copy current configuration
-		##     - If there is, but different, copy with .new extension
-		##   - If example folder exists
-		##     - Copy all examples files (overwrite old examples)
-		local sys_conf_file="${CONFIG_DIR}/${script_name}.config"
-		local conf_example_dir="${config_template_dir}/${script_name}.config.examples"
-		local conf_template="${config_template_dir}/${script_name}.config"
-
-		if [ -f $conf_template ]; then
-
-			printInfo "Adding config files to $CONFIG_DIR"			
-
-			if [ ! -d $CONFIG_DIR ]; then
-				mkdir -p $CONFIG_DIR
-			fi
-		
-			if [ ! -f "$sys_conf_file" ]; then
-				cp -u "${conf_template}" "${sys_conf_file}"
-			#elif ( ! cmp -s "$conf_template" "$sys_conf_file" ); then
-			#	cp -u "${conf_template}" "${sys_conf_file}.new"
-			#	printWarn "Old configuration file detected"
-			#	printInfo "New file written to ${sys_conf_file}.new"
-			fi
-
-			if [ -d "$conf_example_dir" ]; then
-				printInfo "Adding example config files to ${CONFIG_DIR}"	
-				cp -ur "$conf_example_dir" "${CONFIG_DIR}/"
-			fi 
-
-		fi
 
 
 
@@ -416,19 +422,16 @@ promptUser()
 installer()
 {
 	local SCRIPTS="
-		status
+		synth-shell-greeter
 		fancy-bash-prompt
 		better-ls
 		alias
 		"
 
-	case "$1" in
-		install|uninstall)	installerSystem "$1";;
-		*)			promptUser;;
-	esac
+	promptUser
 }
 
-installer $1
+installer
 
 
 
