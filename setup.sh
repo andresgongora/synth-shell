@@ -154,7 +154,12 @@ installScript()
 			printInfo "WARNING: TEMPORAL CODE PATCH $script $CONFIG_DIR"
 			echo "${dir}/synth-shell/synth-shell-greeter/setup.sh"
 			"${dir}/synth-shell/synth-shell-greeter/setup.sh" "$script" "$CONFIG_DIR"
-			echo "XXX"
+
+		elif [ "$script_name" == "synth-shell-prompt" ]; then
+			printInfo "WARNING: TEMPORAL CODE PATCH $script $CONFIG_DIR"
+			echo "${dir}/synth-shell/synth-shell-prompt/setup.sh"
+			"${dir}/synth-shell/synth-shell-prompt/setup.sh" "$script" "$CONFIG_DIR"
+
 		
 		else
 			## ADD CONTENT TO SCRIPT FILE
@@ -423,7 +428,7 @@ installer()
 {
 	local SCRIPTS="
 		synth-shell-greeter
-		fancy-bash-prompt
+		synth-shell-prompt
 		better-ls
 		alias
 		"
