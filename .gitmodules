@@ -4,3 +4,6 @@
 [submodule "synth-shell/synth-shell-greeter"]
 	path = synth-shell/synth-shell-greeter
 	url = https://github.com/andresgongora/synth-shell-greeter.git
+[submodule "synth-shell/synth-shell-prompt"]
+	path = synth-shell/synth-shell-prompt
+	url = https://github.com/andresgongora/synth-shell-prompt.git
