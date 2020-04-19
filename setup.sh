@@ -25,6 +25,18 @@
 
 
 
+##==============================================================================
+##	DEPENDENCIES
+##==============================================================================
+[ "$(type -t include)" != 'function' ]&&{ include(){ { [ -z "$_IR" ]&&_IR="$PWD"&&cd $(dirname "${BASH_SOURCE[0]}")&&include "$1"&&cd "$_IR"&&unset _IR;}||{ local d=$PWD&&cd "$(dirname "$PWD/$1")"&&. "$(basename "$1")"&&cd "$d";}||{ echo "Include failed $PWD->$1"&&exit 1;};};}
+
+include 'bash-tools/bash-tools/user_io.sh'
+include 'bash-tools/bash-tools/shell.sh'
+
+
+
+
+
 
 ##==============================================================================
 ##	FUNCTIONS
@@ -151,13 +163,11 @@ installScript()
 
 		## WARNING!! UGLY PATCH, WORK IN PROGRESS
 		if [ "$script_name" == "synth-shell-greeter" ]; then
-			printInfo "WARNING: TEMPORAL CODE PATCH $script $CONFIG_DIR"
-			echo "${dir}/synth-shell/synth-shell-greeter/setup.sh"
+			printInfo "Installing as $script"
 			"${dir}/synth-shell/synth-shell-greeter/setup.sh" "$script" "$CONFIG_DIR"
 
 		elif [ "$script_name" == "synth-shell-prompt" ]; then
-			printInfo "WARNING: TEMPORAL CODE PATCH $script $CONFIG_DIR"
-			echo "${dir}/synth-shell/synth-shell-prompt/setup.sh"
+			printInfo "Installing as $script"
 			"${dir}/synth-shell/synth-shell-prompt/setup.sh" "$script" "$CONFIG_DIR"
 
 		
@@ -395,11 +405,15 @@ installerUser()
 ##	SYSTEM WIDE INSTALL:	Will add code to system and hooks to
 ##	                    	/etc/bash.bashrc file.
 ##
-promptUser()
+installer()
 {
-	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-	source "$dir/bash-tools/bash-tools/user_io.sh"
-	source "$dir/bash-tools/bash-tools/shell.sh"
+	local SCRIPTS="
+		synth-shell-greeter
+		synth-shell-prompt
+		better-ls
+		alias
+		"
+
 	printHeader "Installation wizard for synth-shell"
 
 	local action=$(promptUser "Would you like to install or uninstall synth-shell?" "[i] install / [u] uninstall. Default i" "iIuU" "i")
@@ -417,23 +431,7 @@ promptUser()
 		s|S )		sudo bash -c "bash $0 $install_option" ;;
 		*)		printError "Invalid option"; exit 1
 	esac
-}
 
-
-
-
-##------------------------------------------------------------------------------
-##
-installer()
-{
-	local SCRIPTS="
-		synth-shell-greeter
-		synth-shell-prompt
-		better-ls
-		alias
-		"
-
-	promptUser
 }
 
 installer
