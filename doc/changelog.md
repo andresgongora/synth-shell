@@ -4,7 +4,9 @@
 
 - Fix `better-ls` command to avoid error message on some terminal emulators. Thanks to @louddesignstudios and @omega100.
 - make uptime format shorter.
-- 
+- Avoid printing error caused by lspci.
+- Moved new lines and layout of `status.sh` a bit.
+- Add support in the `setup.sh` script for `zsh`. Thanks to @andresjose42
 
 
 

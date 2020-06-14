@@ -78,13 +78,16 @@ function better_ls()
 
 
 	## IF NO ARGUMENTS PASSED -> run better ls version on current folder
+	## OR IF ARGUMENT IS A PATH -> run better ls version on specified folder
 	if [ $# -eq 0 ]; then
 
 		## IF THE CURRENT FOLDER IS NOT EMPTY -> Display all
 		files=$($LS -U * 2> /dev/null | wc -l)	
 		if [ "$files" != "0" ]
 		then 
-			## List implied . and .., visible folders, then visible files
+			## LIST DIR AND PARENT
+			## - Convert dir name
+			## - Check that not at /, because there is no parent
 			$LS -d {.,..,*} -lA --color=auto --human-readable \
 				--time-style=long-iso --group-directories-first;
 
@@ -99,11 +102,30 @@ function better_ls()
 					--group-directories-first;
 			fi
 
-		## IF THE CURRENT FOLDER IS EMPTY -> List . and ..
+		## IF THE TARGET DIR IS EMPTY -> List . and ..
 		else
 			$LS -d {.,..,} -lA --color=auto --human-readable \
 				--time-style=long-iso --group-directories-first;
 		fi
+
+		
+
+	## IF ARGUMENT IS A SINGLE PATH
+	## Move to target dir
+	## Call recursively with no arguments
+	## Restore dir
+	elif [ $# -eq 1 -a -d "$1" ]; then
+		local current_pwd="$PWD"
+		'cd' "$1/"
+		better_ls
+		'cd' "$current_pwd"
+
+
+
+	## IF ARGUMENT IS A SINGLE FILE
+	elif [ $# -eq 1 -a -f "$1" ]; then
+		$LS -l --color=auto --human-readable --time-style=long-iso "$1"
+
 
 
 	## IF ARGUMENTS PASSED -> run standard ls but with some tweaks (eg: colors)		
@@ -120,5 +142,3 @@ alias ls='better_ls'
 
 
 ### EOF ###
-
-
