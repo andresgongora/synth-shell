@@ -85,7 +85,6 @@ installScript()
 	"\n"\
 	"##-----------------------------------------------------\n"\
 	"## ${script_name}\n"\
-	"## Added by synth-shell\n"\
 	"## https://github.com/andresgongora/synth-shell/\n"\
 	"if [ -f ${script} ]; then\n"\
 	"\tsource ${script}\n"\
