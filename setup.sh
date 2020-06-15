@@ -331,9 +331,6 @@ installerSystem()
 	local CONFIG_DIR="/etc/synth-shell"
 	local RC_FILE="/etc/bash.bashrc"
 
-	local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-	source "$dir/bash-tools/bash-tools/user_io.sh"
-
 	if [ $(id -u) -ne 0 ]; then 
 		printError "Please run as root"
 		exit
@@ -413,27 +410,31 @@ installer()
 		alias
 		"
 
-	printHeader "Installation wizard for synth-shell"
+	if [ "$#" -eq 0 ]; then
+		printHeader "Installation wizard for synth-shell"
 
-	local action=$(promptUser "Would you like to install or uninstall synth-shell?" "[i] install / [u] uninstall. Default i" "iIuU" "i")
-	case "$action" in
-		""|i|I )	local install_option="install" ;;
-		u|U )		local install_option="uninstall" ;;
-		*)		printError "Invalid option"; exit 1
-	esac
+		local action=$(promptUser "Would you like to install or uninstall synth-shell?" "[i] install / [u] uninstall. Default i" "iIuU" "i")
+		case "$action" in
+			""|i|I )	local install_option="install" ;;
+			u|U )		local install_option="uninstall" ;;
+			*)		printError "Invalid option"; exit 1
+		esac
 
 
-
-	local action=$(promptUser "Would you like to install it for your current user only (recommended),\n\tor system wide (requires elevated privileges)?" "[u] current user only / [s] system wide install. Default u" "uUsS" "u")
-	case "$action" in
-		""|u|U )	installerUser   $install_option ;;
-		s|S )		sudo bash -c "bash $0 $install_option" ;;
-		*)		printError "Invalid option"; exit 1
-	esac
-
+		local action=$(promptUser "Would you like to install it for your current user only (recommended),\n\tor system wide (requires elevated privileges)?" "[u] current user only / [s] system wide install. Default u" "uUsS" "u")
+		case "$action" in
+			""|u|U )	installerUser $install_option ;;
+			s|S )		sudo bash -c "bash $0 $install_option" ;;
+			*)		printError "Invalid option"; exit 1
+		esac
+		
+	else	
+		installerSystem $1
+	
+	fi
 }
 
-installer
+installer "$@"
 
 
 
