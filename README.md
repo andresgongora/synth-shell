@@ -59,7 +59,8 @@ and enter the following into your terminal:
 ```
 git clone --recursive https://github.com/andresgongora/synth-shell.git
 chmod +x synth-shell/setup.sh
-synth-shell/setup.sh
+cd synth-shell
+./setup.sh
 ```
 
 Note that for `fancy-bash-prompt.sh` you might also need
