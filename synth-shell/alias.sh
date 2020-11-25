@@ -51,35 +51,4 @@ fi
 
 
 
-
-
-##==============================================================================
-##	BETTER HISTORY
-##==============================================================================
-
-betterHistory()
-{
-	local blue="\033[0;34m"
-	local nocolor="\033[0m"
-
-	export HISTTIMEFORMAT=`echo -e ${blue}[%F %T] $nocolor `
-	export HISTSIZE=10000
-	export HISTFILESIZE=50000
-	export HISTCONTROL=ignoreboth # don't put duplicate lines or lines starting with space in the history.
-}
-betterHistory
-
-
-## BETTER COMMAND HISTORY (CTRL+r) >>>>>>>UNDER CONSTRUCTION<<<<<<<<<<<<<<<<<<<<
-#if [ -f /usr/bin/fzf ]; then
-#        alias preview="fzf --preview 'bat --color \"always\" {}'"
-#        # add support for ctrl+o to open selected file in VS Code
-#        export FZF_DEFAULT_OPTS="--bind='ctrl-o:execute(code {})+abort'"
-#fi
-
-
-
-
-
-
 ### EOF ###
