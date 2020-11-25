@@ -85,12 +85,11 @@ function better_ls()
 		files=$($LS -U * 2> /dev/null | wc -l)	
 		if [ "$files" != "0" ]
 		then 
-			## LIST DIR AND PARENT
+			## LIST PARENTS, DIRS, AND FILES
 			## - Convert dir name
 			## - Check that not at /, because there is no parent
-			$LS -d {.,..,*} -lA --color=auto --human-readable \
-				--time-style=long-iso --group-directories-first;
-
+			$LS -d {.,..,./-*,*} -lA --color=auto --human-readable \
+				--time-style=long-iso --group-directories-first;			
 
 			## List hidden folders and files (only if they exist)
 			hidden_files=$($LS -U -d .[^.]* 2> /dev/null | wc -l)	
