@@ -262,7 +262,7 @@ listening to [SynthWave](https://en.wikipedia.org/wiki/Synthwave) to feel like
 #                                    License
 <!--------------------------------------+-------------------------------------->
 
-Copyright (c) 2014-2020, Andres Gongora - www.andresgongora.com
+Copyright (c) 2014-2021, Andres Gongora - www.andresgongora.com
 
 * This software is released under a GPLv3 license.
   Read [license-GPLv3.txt](LICENSE),
