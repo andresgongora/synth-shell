@@ -85,10 +85,11 @@ installScript()
 	"\n"\
 	"##-----------------------------------------------------\n"\
 	"## ${script_name}\n"\
-	"## https://github.com/andresgongora/synth-shell/\n"\
-	"if [ -f ${script} ]; then\n"\
+	"if [ -f ${script} ] && [ -n \"\$( echo \$- | grep i )\" ]; then\n"\
 	"\tsource ${script}\n"\
 	"fi")
+	
+	
 
 	local script_header=$(printf '%s'\
 	"##!/bin/bash\n"\
@@ -224,24 +225,25 @@ installScript()
 				fi 
 
 			fi
+			
+			## ADD HOOK TO /etc/bash.bashrc
+			printInfo "Adding $script_name hook to $RC_FILE"
+			editTextFile "$RC_FILE" append "$hook"
 		fi
-
-		## ADD HOOK TO /etc/bash.bashrc
-		printInfo "Adding $script_name hook to $RC_FILE"
-		editTextFile "$RC_FILE" append "$hook"
 
 
 
 		## ADD QUICK-UNINSTALLER
-		printInfo "Adding quick uninstaller as $uninstaller"
-		editTextFile "$uninstaller" append "$script_header"
-		cat "$edit_text_file_script" |\
-			sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$uninstaller"
-		editTextFile "$uninstaller" append "rm -rf ${CONFIG_DIR}"
-		echo "hook=\"$hook\"" >> "$uninstaller"
-		echo "editTextFile \"$RC_FILE\" delete \"\$hook\"" >> "$uninstaller"
-		echo "unset hook" >> "$uninstaller"
-		chmod +x "$uninstaller"
+		## TODO: FIX
+		#printInfo "Adding quick uninstaller as $uninstaller"
+		#editTextFile "$uninstaller" append "$script_header"
+		#cat "$edit_text_file_script" |\
+		#	sed 's/^#.*$//g;s/[ \t][ \t]*#.*$//g;/^[ \t]*$/d' >> "$uninstaller"
+		#editTextFile "$uninstaller" append "rm -rf ${CONFIG_DIR}"
+		#echo "hook=\"$hook\"" >> "$uninstaller"
+		#echo "editTextFile \"$RC_FILE\" delete \"\$hook\"" >> "$uninstaller"
+		#echo "unset hook" >> "$uninstaller"
+		#chmod +x "$uninstaller"
 
 
 
