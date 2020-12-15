@@ -92,24 +92,19 @@ folders depending on how you installed **synth-shell**:
 
 
 ### Uninstallation
-~~Run the setup script again (like during the installation), but choose 
-`uninstall` when prompted.~~
-**WARNING:** the script is undergoing major changes. The only way to push
-forward and get everything fixed, without confusing all users, is to merge
-all changes in the repo and, as a consequence, disable some of the
-functionalities of the script until everything can be fixed. The automatic
-uninstall might not properly work. To remove the script, simple remove the
-bottom lines reffering to synth-shell in your `~/.bashrc` file with
-your favorite text editor. For example:
+1. Edit `~/.bashrc` and remove the lines reffering to synth-shell, usually
+at the bottom of the file. If you want to temporaly disable the script, you can
+just comment them by placing `#` in front.
 ```
 nano ~/.bashrc
 ```
-Lastly, remove all files pertaining to synth-shell like so (change dir if
-installed globaly):
+
+2. Remove the folder containing the script, usually in your home folder under 
+`~/.config/synth-shell/`.
 ```
 rm -r ~/.config/synth-shell/
 ```
-Sorry for the inconvenience. This should be fixed very soon.
+
 
 
 <br/><br/>
