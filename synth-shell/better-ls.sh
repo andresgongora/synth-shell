@@ -88,7 +88,7 @@ function better_ls()
 			## LIST PARENTS, DIRS, AND FILES
 			## - Convert dir name
 			## - Check that not at /, because there is no parent
-			$LS -d {.,..,./.*,*} -lA --color=auto --human-readable \
+			$LS -d {.,..,*} -lA --color=auto --human-readable \
 				--time-style=long-iso --group-directories-first;			
 
 			## List hidden folders and files (only if they exist)
