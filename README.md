@@ -93,8 +93,8 @@ folders depending on how you installed **synth-shell**:
 
 
 ### Uninstallation
-1. Edit `~/.bashrc` and remove the lines reffering to synth-shell, usually
-at the bottom of the file. If you want to temporaly disable the script, you can
+1. Edit `~/.bashrc` and remove the lines referring to synth-shell, usually
+at the bottom of the file. If you want to temporarily disable the script, you can
 just comment them by placing `#` in front.
 ```
 nano ~/.bashrc
@@ -154,10 +154,10 @@ to indicate the state of the repository (can be changed in the config file):
 
 
 ### better-ls.sh
-Makes `ls` print more text, but nicely formated. When called, `ls` will now list
+Makes `ls` print more text, but nicely formatted. When called, `ls` will now list
 all files (`-la`), sort folders first, add colors to output, and list hidden
 files last after a quick separator. However, if you chose to call `ls` with your
- own parameters (e.g. `ls -l`) it will revert to the default behaviour except
+ own parameters (e.g. `ls -l`) it will revert to the default behavior except
 for color and sorting options.
 
 
@@ -169,7 +169,7 @@ for color and sorting options.
 - `tree` to `tree --dirsfirst -C`.
 - `dmesg` to `dmesg --color=auto --reltime --human --nopager --decode`.
 - `free` to `free -mht`.
-- `sudo` adds `complete -cf sudo` to atucomplete commands.
+- `sudo` adds `complete -cf sudo` to auto-complete commands.
 - `history` various changes.
 
 
@@ -201,8 +201,8 @@ If you like this project and want to contribute, you are most welcome to do so.
 * Become a developer: fork this repo and become an active developer!
   Take a look at the [issues](https://github.com/andresgongora/synth-shell/issues)
   for suggestions of where to start. Also, take a look at our 
-  [coding style](coding_style.md).
-* Spread the word: telling your friends is the fastes way to get this code to
+  [coding style](/doc/coding_style.md).
+* Spread the word: telling your friends is the fastest way to get this code to
   the people who might enjoy it!
 
 
