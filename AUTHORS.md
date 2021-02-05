@@ -26,6 +26,10 @@ You may add your name, email, a link to your personal web-site/blog/profile
 	www.andresgongora.com  
 	Main developer
 
+
+*	**mcgillij**  
+	2021 - Updates to Synth-Shell prompt and proofreading
+
 	
 *	**Sami Olmari**  
 	<sami@olmari.fi>  
