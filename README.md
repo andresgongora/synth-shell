@@ -63,9 +63,7 @@ cd synth-shell
 ./setup.sh
 ```
 
-Note that for `fancy-bash-prompt.sh` you might also need
-[power-line fonts](https://github.com/powerline/fonts). You can instal it
-as follows (the exact name of the package varies from distro to distro):
+Note that for `fancy-bash-prompt.sh` you might also need to have the [power-line fonts](https://github.com/powerline/fonts) package installed. You can install the package as follows (the exact name of the package varies from distro to distro):
 
 * ArchLinux: `sudo pacman -S powerline-fonts`
 * Debian/Ubuntu: `sudo apt install fonts-powerline`
@@ -84,8 +82,7 @@ do not support special characters. We get the best results with
 
 ### Configuration/customization
 You can configure your scripts by modifying the corresponding configuration
-files. You can find them, along example configuration files, in the following
-folders depending on how you installed **synth-shell**:
+files. You can find them, along the example configuration files, in the following directories, (depending on where you installed **synth-shell**):
 
 * Current-user only: `~/.config/synth-shell/`
 * System wide: `/etc/synth-shell/`
@@ -126,7 +123,7 @@ with how awesome you are.
 
 Feel free to customize your status report through the many available options
 in `~/.config/synth-shell/status.config` (user-only install) or
-`/etc/synth-shell/status.config` (system-wide install),or by replacing their
+`/etc/synth-shell/status.config` (system-wide install), or by replacing their
 content with the examples files you can find under the same directory.
 
 ![status configuration options](doc/status_config_preview.png)
@@ -195,7 +192,7 @@ If you like this project and want to contribute, you are most welcome to do so.
 ### Help us improve
 
 * [Report a bug](https://github.com/andresgongora/synth-shell/issues/new/choose): 
-  if you notice that something is not right, tell us. We'll try to fix it ASAP.
+  if you notice that something isn't working properly, tell us. We'll try to fix it ASAP.
 * Suggest an idea you would like to see in the next release: send us
   and email or open an [issue](https://github.com/andresgongora/synth-shell/issues)!
 * Become a developer: fork this repo and become an active developer!
@@ -217,7 +214,7 @@ There are two branches in this repository:
 * **develop**: this branch contains all the new features and most recent 
   contributions. It is always _stable_, in the sense that you can use it
   without major inconveniences. 
-  However, it's very prone to undetected bugs and it might be subject to major
+  However, it's very prone to have undetected bugs and it might be subject to major
   unannounced changes. If you want to contribute, this is the branch 
   you should pull-request to.
 
