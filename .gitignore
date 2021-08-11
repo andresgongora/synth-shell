@@ -2,3 +2,4 @@
 *.test
 test.sh
 *_conflict*
+permissions.sh
