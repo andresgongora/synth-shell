@@ -2,7 +2,7 @@
 
 ##  +-----------------------------------+-----------------------------------+
 ##  |                                                                       |
-##  | Copyright (c) 2019-2020, Andres Gongora <mail@andresgongora.com>.     |
+##  | Copyright (c) 2019-2021, Andres Gongora <mail@andresgongora.com>.     |
 ##  |                                                                       |
 ##  | This program is free software: you can redistribute it and/or modify  |
 ##  | it under the terms of the GNU General Public License as published by  |
@@ -58,7 +58,7 @@ installScript()
 {
 	## ARGUMENTS
 	local operation=$1
-	local script_name=$2	
+	local script_name=$2
 
 
 
@@ -88,15 +88,15 @@ installScript()
 	"if [ -f ${script} ] && [ -n \"\$( echo \$- | grep i )\" ]; then\n"\
 	"\tsource ${script}\n"\
 	"fi")
-	
-	
+
+
 
 	local script_header=$(printf '%s'\
 	"##!/bin/bash\n"\
 	"\n"\
 	"##  +-----------------------------------+-----------------------------------+\n"\
 	"##  |                                                                       |\n"\
-	"##  | Copyright (c) 2014-2019, https://github.com/andresgongora/synth-shell |\n"\
+	"##  | Copyright (c) 2014-2021, https://github.com/andresgongora/synth-shell |\n"\
 	"##  | Visit the above URL for details of license and authorship.            |\n"\
 	"##  |                                                                       |\n"\
 	"##  | This program is free software: you can redistribute it and/or modify  |\n"\
@@ -129,7 +129,7 @@ installScript()
 	"##\n\n\n")
 
 
-	
+
 	## INSTALL/UNINSTALL
 	case "$operation" in
 
@@ -151,7 +151,7 @@ installScript()
 
 
 
-		## CREATE EMPTY SCRIPT FILE	
+		## CREATE EMPTY SCRIPT FILE
 		printInfo "Creating file $script"
 		if [ -f $script ]; then
 			rm $script
@@ -170,10 +170,10 @@ installScript()
 			printInfo "Installing as $script"
 			"${dir}/synth-shell/synth-shell-prompt/setup.sh" "$script" "$CONFIG_DIR"
 
-		
+
 		else
 			## ADD CONTENT TO SCRIPT FILE
-			## - Add common scripts TODO: Make this configurable	
+			## - Add common scripts TODO: Make this configurable
 			## - Add actual script
 			## - Remove common functions from environment
 			cat "${dir}/bash-tools/bash-tools/load_config.sh" |\
@@ -205,12 +205,12 @@ installScript()
 
 			if [ -f $conf_template ]; then
 
-				printInfo "Adding config files to $CONFIG_DIR"			
+				printInfo "Adding config files to $CONFIG_DIR"
 
 				if [ ! -d $CONFIG_DIR ]; then
 					mkdir -p $CONFIG_DIR
 				fi
-			
+
 				if [ ! -f "$sys_conf_file" ]; then
 					cp -u "${conf_template}" "${sys_conf_file}"
 				#elif ( ! cmp -s "$conf_template" "$sys_conf_file" ); then
@@ -220,12 +220,12 @@ installScript()
 				fi
 
 				if [ -d "$conf_example_dir" ]; then
-					printInfo "Adding example config files to ${CONFIG_DIR}"	
+					printInfo "Adding example config files to ${CONFIG_DIR}"
 					cp -ur "$conf_example_dir" "${CONFIG_DIR}/"
-				fi 
+				fi
 
 			fi
-			
+
 			## ADD HOOK TO /etc/bash.bashrc
 			printInfo "Adding $script_name hook to $RC_FILE"
 			editTextFile "$RC_FILE" append "$hook"
@@ -250,7 +250,7 @@ installScript()
 		printSuccess "Script $script_name succesfully installed"
 
 
-		
+
 		## EXTRA NOTES DEPENDING ON SCRIPT
 		local optional_packages=""
 		if [ $script_name == "status" ]; then
@@ -260,13 +260,13 @@ installScript()
 		fi
 
 		if [ -n "$optional_packages" ]; then
-			printInfo "Consider installing the following packages as well." 
+			printInfo "Consider installing the following packages as well."
 			printInfo "The exact name might change between distributions:"
 			printText "$optional_packages"
 		fi
 
 
-		
+
 		## Print final separator
 		echo ""
 
@@ -293,7 +293,7 @@ installAll()
 	for script in $SCRIPTS; do
 		local action=$(promptUser "Install ${script}? (Y/n)" "" "yYnN" "y")
 		case "$action" in
-			""|y|Y )	installScript install "${script}" 
+			""|y|Y )	installScript install "${script}"
 					;;
 			*)		echo ""
 		esac
@@ -310,7 +310,7 @@ uninstallAll()
 	local uninstaller="${INSTALL_DIR}/uninstall.sh"
 	if [ -f "$uninstaller" ]; then
 		## RUN QUICK-UNINSTALLER
-		"$uninstaller"	
+		"$uninstaller"
 	else
 		for script in $SCRIPTS; do
 			installScript uninstall "$script"
@@ -329,11 +329,11 @@ uninstallAll()
 installerSystem()
 {
 	local option=$1
-	local INSTALL_DIR="/usr/local/bin" 
+	local INSTALL_DIR="/usr/local/bin"
 	local CONFIG_DIR="/etc/synth-shell"
 	local RC_FILE="/etc/bash.bashrc"
 
-	if [ $(id -u) -ne 0 ]; then 
+	if [ $(id -u) -ne 0 ]; then
 		printError "Please run as root"
 		exit
 	fi
@@ -361,7 +361,7 @@ installerSystem()
 installerUser()
 {
 	local option=$1
-	local INSTALL_DIR="${HOME}/.config/synth-shell" 
+	local INSTALL_DIR="${HOME}/.config/synth-shell"
 	local CONFIG_DIR="${HOME}/.config/synth-shell"
 	local user_shell=$(getShellName)
 
@@ -430,15 +430,11 @@ installer()
 			s|S )		sudo bash -c "bash $0 $install_option" ;;
 			*)		printError "Invalid option"; exit 1
 		esac
-		
-	else	
+
+	else
 		installerSystem $1
-	
+
 	fi
 }
 
 installer "$@"
-
-
-
-
