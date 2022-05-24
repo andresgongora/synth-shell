@@ -74,7 +74,7 @@
 function better_ls()
 {
 	shopt -s extglob
-	local LS="$(which ls)"
+	local LS="$(which --skip-alias ls)"
 
 
 	## IF NO ARGUMENTS PASSED -> run better ls version on current folder
