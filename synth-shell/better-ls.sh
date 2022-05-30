@@ -47,7 +47,7 @@
 ##
 ##	DEV NOTES:
 ##
-## 	shopt -s extglob 
+## 	shopt -s extglob
 ##		This must be enabled for extglob wildcards to work (eg !).
 ##
 ## 	files=$(/usr/bin/ls -U * 2> /dev/null | wc -l)
@@ -74,7 +74,7 @@
 function better_ls()
 {
 	shopt -s extglob
-	local LS="$(which --skip-alias ls)"
+	local LS="$(type -P ls)"
 
 
 	## IF NO ARGUMENTS PASSED -> run better ls version on current folder
