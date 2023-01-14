@@ -82,17 +82,17 @@ function better_ls()
 	if [ $# -eq 0 ]; then
 
 		## IF THE CURRENT FOLDER IS NOT EMPTY -> Display all
-		files=$($LS -U * 2> /dev/null | wc -l)	
+		files=$($LS -U . 2> /dev/null | wc -l)
 		if [ "$files" != "0" ]
-		then 
+		then
 			## LIST PARENTS, DIRS, AND FILES
 			## - Convert dir name
 			## - Check that not at /, because there is no parent
 			$LS -d {.,..,*} -lA --color=auto --human-readable \
-				--time-style=long-iso --group-directories-first;			
+				--time-style=long-iso --group-directories-first;
 
 			## List hidden folders and files (only if they exist)
-			hidden_files=$($LS -U -d .[^.]* 2> /dev/null | wc -l)	
+			hidden_files=$($LS -U -d .[^.]* 2> /dev/null | wc -l)
 			if [ "$hidden_files" != "0" ]
 			then
 				echo ""
@@ -107,7 +107,7 @@ function better_ls()
 				--time-style=long-iso --group-directories-first;
 		fi
 
-		
+
 
 	## IF ARGUMENT IS A SINGLE PATH
 	## Move to target dir
@@ -127,10 +127,10 @@ function better_ls()
 
 
 
-	## IF ARGUMENTS PASSED -> run standard ls but with some tweaks (eg: colors)		
+	## IF ARGUMENTS PASSED -> run standard ls but with some tweaks (eg: colors)
 	else
 		$LS --color=auto --human-readable --time-style=long-iso \
-		    --group-directories-first "$@";	
+		    --group-directories-first "$@";
 	fi
 }
 
