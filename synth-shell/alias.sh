@@ -2,7 +2,7 @@
 
 ##  +-----------------------------------+-----------------------------------+
 ##  |                                                                       |
-##  | Copyright (c) 2019-2020, Andres Gongora <mail@andresgongora.com>.     |
+##  | Copyright (c) 2019-2023, Andres Gongora <mail@andresgongora.com>.     |
 ##  |                                                                       |
 ##  | This program is free software: you can redistribute it and/or modify  |
 ##  | it under the terms of the GNU General Public License as published by  |
@@ -32,6 +32,35 @@ alias pacman='\pacman --color=auto'
 alias tree='\tree --dirsfirst -C'
 alias dmesg='\dmesg --color=auto --reltime --human --nopager --decode'
 alias free='\free -mht'
+alias take='[ -d $1 ] || \mkdir -p $1 $$ cd $1'
+
+
+
+
+
+
+##==============================================================================
+##	HELPER FUNCTIONS
+##==============================================================================
+
+## take
+## create and cd into directory
+function take() { { [ -d $1 ] || mkdir -p $1; } && cd $1 ; }
+
+
+
+## runbg
+## run command in background and print all the output only once when done
+## todo: do I want to run in in a separate thread and release the terminal?
+##       or do I just want to apply some niceness? Them, why not let it print
+##       directly to the terminal?
+#function runbg() {
+#    local cmd=$@
+#	local bgcmd="nice ${cmd}"
+#    echo "Running in background: ${cmd}"
+#	local exit_status=$($bgcmd)
+#	echo "${exit_status}"
+#}
 
 
 
