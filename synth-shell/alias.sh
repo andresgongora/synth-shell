@@ -32,7 +32,6 @@ alias pacman='\pacman --color=auto'
 alias tree='\tree --dirsfirst -C'
 alias dmesg='\dmesg --color=auto --reltime --human --nopager --decode'
 alias free='\free -mht'
-alias take='[ -d $1 ] || \mkdir -p $1 $$ cd $1'
 
 
 
@@ -45,7 +44,7 @@ alias take='[ -d $1 ] || \mkdir -p $1 $$ cd $1'
 
 ## take
 ## create and cd into directory
-function take() { { [ -d $1 ] || mkdir -p $1; } && cd $1 ; }
+#function take() { { [ -d $1 ] || mkdir -p $1; } && cd $1 ; }
 
 
 
