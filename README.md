@@ -34,7 +34,7 @@ combination of small bash scripts.
 
 
 All features are optional, and most can also be customized to your liking.
-Once installed, the scripts are called from within you `.bashrc` file and
+Once installed, the scripts are called from within your `.bashrc` file and
 become part of the bash session. You can find more details and similar 
 tools on [Yet Another Linux'n Electronics Blog](https://yalneb.blogspot.com/).
 
