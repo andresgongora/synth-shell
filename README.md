@@ -263,3 +263,5 @@ Copyright (c) 2014-2021, Andres Gongora - www.andresgongora.com
 * If you need a closed-source version of this software
   for commercial purposes, please contact the [authors](AUTHORS.md).
 
+* [silviuxgaming] (https://github.com/silviuXgaming)
+
