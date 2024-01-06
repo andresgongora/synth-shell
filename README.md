@@ -1,7 +1,49 @@
 ![synth-shell](doc/synth-shell.jpg)
 
-**synth-shell**  improves your terminal experience and productivity
-through a combination of the following bash scripts and aliases:
+**synth-shell** improves your terminal experience and productivity by adding color, extra info, and
+convenience. It is not a single tool, but a collection of scripts and aliases (feel free to install
+only those you want) all written in bash. See the [overview section](#overview) for a detailed list
+and options.
+
+<br/><br/>
+<!------------------------------------------------+------------------------------------------------>
+##                                            Quick setup
+<!------------------------------------------------+------------------------------------------------>
+
+This section covers the vary basics if you want to get started as fast as possible. See the
+[setup section](#setup) of this file for more details. Also, before you get started, and to get the
+best possible experience **there are important considerations**:
+
+* **power-line fonts**: install package `powerline-fonts` on Arch or `fonts-powerline` on Ubuntu.
+
+* **terminal font**: configure your terminal emulator to use a nice font. We recommend
+[hack-ttf](https://sourcefoundry.org/hack/) which you can install for most distros under that name.
+
+* **Remember that support for Windows is not guaranteed**. But feel free to fix any bug you
+encounter and contribute to this project.
+
+* **Clone this repository recursively** since there are git submodules in it (you only have to copy
+pase the commands down below as they are).
+
+Once everything is ready, it is as easy as copy-pasting the following commands to run the included
+setup script.
+
+```
+git clone --recursive https://github.com/andresgongora/synth-shell.git
+cd synth-shell
+./setup.sh
+```
+
+When prompted, select **install** (default) and **user** (default). Afterwards, you might need to
+open a new terminal. Afterwards, you can
+[customize everything to your liking](#configurationcustomization).
+
+<br/><br/>
+<!------------------------------------------------+------------------------------------------------>
+##                                             Overview
+<!------------------------------------------------+------------------------------------------------>
+
+The following tools and scripts are included in the **synth-shell** package:
 
 - **System status report** (aka [synth-shell-greeter](https://github.com/andresgongora/synth-shell-greeter)):
   - Shows for every new terminal session (local, SSH, ...).
@@ -27,16 +69,62 @@ through a combination of the following bash scripts and aliases:
 
 ![Example with status.sh and fancy-bash-prompt.sh](doc/screenshot.png)
 
-All features are optional, and most can also be customized to your liking.
-Once installed, the scripts are called from within you `.bashrc` file and
-become part of the bash session. Everything is written in bash and should work
-out of the box on almost any Linux system (you might need to install some
-dependencies, but that is all).
+All features are optional, and most can also be customized to your liking. Once installed, the
+scripts are called from within you `.bashrc` file and become part of the bash session. Everything is
+written in bash and should work out of the box on almost any Linux system (you might need to install
+some dependencies, but that is all).
+
+### status.sh
+`status.sh` provides a summarized system report at a single glance every time you open up a new
+terminal. If it detects that any system parameter (e.g. CPU load, memory, etc.) is over a critical
+threshold, it will provide a warning and additional information about the cause. Last but not least,
+it prints a user-configurable ASCII logo to impress your crush from the library with how awesome you
+are.
+
+Feel free to customize your status report through the many available options in
+`~/.config/synth-shell/status.config` (user-only install) or `/etc/synth-shell/status.config`
+(system-wide install),or by replacing their content with the examples files you can find under the
+same directory.
+
+![status configuration options](doc/status_config_preview.png)
+
+### fancy-bash-prompt.sh
+Adds colors and triangular separators to your bash prompt, and if the current working directory is
+part of a git repository, also git statuses and branches. For best results, consider installing (and
+telling your terminal to use) the `hack-ttf` font alongside the powerline-fonts (the later is
+required for the separators).
+
+As for the git status info, `fancy-bash-prompt.sh` prints an additional, fourth separator with the
+name of the current branch and one of the following icons to indicate the state of the repository
+(can be changed in the config file):
+
+|          Local-Upstream          | Local branch has no changes | Local branch is dirty |
+|:--------------------------------:|:---------------------------:|:---------------------:|
+|            Up to date            |                             |           !           |
+|     Ahead (you have to push)     |              △              |           ▲           |
+|     Behind (you have to pull)    |              ▽              |           ▼           |
+| Diverged (you have to pull-push) |              ○              |           ●           |
+
+### better-ls.sh
+Makes `ls` print more text, but nicely formatted. When called, `ls` will now list all files (`-la`),
+sort folders first, add colors to output, and list hidden files last after a quick separator.
+However, if you chose to call `ls` with your  own parameters (e.g. `ls -l`) it will revert to the
+default behavior except for color and sorting options.
+
+### Alias
+
+- `grep` to `grep --color=auto`.
+- `pacman` to `pacman --color=auto`.
+- `tree` to `tree --dirsfirst -C`.
+- `dmesg` to `dmesg --color=auto --reltime --human --nopager --decode`.
+- `free` to `free -mht`.
+- `sudo` adds `complete -cf sudo` to auto-complete commands.
+- `history` various changes.
 
 <br/><br/>
-<!--------------------------------------+-------------------------------------->
-##                                    Setup
-<!--------------------------------------+-------------------------------------->
+<!------------------------------------------------+------------------------------------------------>
+##                                              Setup
+<!------------------------------------------------+------------------------------------------------>
 
 ### Automatic setup
 
@@ -99,73 +187,9 @@ rm -r ~/.config/synth-shell/
 
 
 <br/><br/>
-<!--------------------------------------+-------------------------------------->
-##                                   Overview
-<!--------------------------------------+-------------------------------------->
-
-### status.sh
-`status.sh` provides a summarized system report at a single glance every time
-you open up a new terminal. If it detects that any system parameter
-(e.g. CPU load, memory, etc.) is over a critical threshold, it will provide a
-warning and additional information about the cause. Last but not least, it
-prints a user-configurable ASCII logo to impress your crush from the library
-with how awesome you are.
-
-Feel free to customize your status report through the many available options
-in `~/.config/synth-shell/status.config` (user-only install) or
-`/etc/synth-shell/status.config` (system-wide install),or by replacing their
-content with the examples files you can find under the same directory.
-
-![status configuration options](doc/status_config_preview.png)
-
-
-
-### fancy-bash-prompt.sh
-Adds colors and triangular separators to your bash prompt, and if the current
-working directory is part of a git repository, also git statuses and branches.
-For best results, consider installing (and telling your terminal to use)
-the `hack-ttf` font alongside the powerline-fonts (the later is required for
-the separators).
-
-As for the git status info, `fancy-bash-prompt.sh` prints an additional, fourth
-separator with the name of the current branch and one of the following icons
-to indicate the state of the repository (can be changed in the config file):
-
-|          Local-Upstream          | Local branch has no changes | Local branch is dirty |
-|:--------------------------------:|:---------------------------:|:---------------------:|
-|            Up to date            |                             |           !           |
-|     Ahead (you have to push)     |              △              |           ▲           |
-|     Behind (you have to pull)    |              ▽              |           ▼           |
-| Diverged (you have to pull-push) |              ○              |           ●           |
-
-
-
-### better-ls.sh
-Makes `ls` print more text, but nicely formatted. When called, `ls` will now list
-all files (`-la`), sort folders first, add colors to output, and list hidden
-files last after a quick separator. However, if you chose to call `ls` with your
- own parameters (e.g. `ls -l`) it will revert to the default behavior except
-for color and sorting options.
-
-
-
-### Alias
-
-- `grep` to `grep --color=auto`.
-- `pacman` to `pacman --color=auto`.
-- `tree` to `tree --dirsfirst -C`.
-- `dmesg` to `dmesg --color=auto --reltime --human --nopager --decode`.
-- `free` to `free -mht`.
-- `sudo` adds `complete -cf sudo` to auto-complete commands.
-- `history` various changes.
-
-
-
-
-<br/><br/>
-<!--------------------------------------+-------------------------------------->
-##                                  Contribute
-<!--------------------------------------+-------------------------------------->
+<!------------------------------------------------+------------------------------------------------>
+##                                            Contribute
+<!------------------------------------------------+------------------------------------------------>
 
 This project is only possible thanks to the effort and passion of many,
 including developers, testers, and of course, our beloved coffee machine.
@@ -208,9 +232,9 @@ There are two branches in this repository:
 
 
 <br/><br/>
-<!--------------------------------------+-------------------------------------->
-#                                     About
-<!--------------------------------------+-------------------------------------->
+<!------------------------------------------------+------------------------------------------------>
+##                                               About
+<!------------------------------------------------+------------------------------------------------>
 
 **synth-shell** started as a loose collection of (very simple) bash scripts I
 used for system maintenance. In the beginning, they were simple aids to make my
@@ -232,9 +256,9 @@ listening to [SynthWave](https://en.wikipedia.org/wiki/Synthwave) to feel like
 
 
 <br/><br/>
-<!--------------------------------------+-------------------------------------->
-#                                    License
-<!--------------------------------------+-------------------------------------->
+<!------------------------------------------------+------------------------------------------------>
+##                                             License
+<!------------------------------------------------+------------------------------------------------>
 
 Copyright (c) 2014-2021, Andres Gongora - www.andresgongora.com
 
