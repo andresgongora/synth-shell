@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ##  +-----------------------------------+-----------------------------------+
 ##  |                                                                       |
-##  | Copyright (c) 2019-2020, Andres Gongora <mail@andresgongora.com>.     |
+##  | Copyright (c) 2019-2024, Andres Gongora <mail@andresgongora.com>.     |
 ##  |                                                                       |
 ##  | This program is free software: you can redistribute it and/or modify  |
 ##  | it under the terms of the GNU General Public License as published by  |
@@ -39,8 +39,8 @@ betterHistory()
 
 	## Set configuration
 	export HISTTIMEFORMAT=`echo -e ${blue}[%F %T] $nocolor `
-	export HISTSIZE=10000
-	export HISTFILESIZE=50000
+	export HISTSIZE=100000
+	export HISTFILESIZE=500000
 	export HISTCONTROL=ignoreboth # don't put duplicate lines or lines starting with space in the history.
 
 	## Save multi-line commands as such (do not rearange in single line)
@@ -56,4 +56,3 @@ betterHistory
 #        # add support for ctrl+o to open selected file in VS Code
 #        export FZF_DEFAULT_OPTS="--bind='ctrl-o:execute(code {})+abort'"
 #fi
-

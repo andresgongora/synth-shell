@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ##  +-----------------------------------+-----------------------------------+
 ##  |                                                                       |
@@ -40,13 +40,13 @@
 
 better_cd()
 {
-	read_key_input()        
-	{ 
+	read_key_input()
+	{
 		local esc=$( printf "\033")
 
 		read -s -n 1 key 2>/dev/null >&2
 		if [[ $key = ""     ]]; then echo "enter"; fi;
-		if [[ $key = $esc ]]; then 
+		if [[ $key = $esc ]]; then
 			read -s -n 2 key 2>/dev/null >&2
 			if [[ $key = [A ]]; then echo "up"; fi
 			if [[ $key = [B ]]; then echo "down"; fi
@@ -63,7 +63,7 @@ better_cd()
 	{
 		## Todo: comprobnar que options no está vacio
 
-		
+
 		local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 		if [ "$(type -t getFormatCode)" != 'function' ]; then
 			source "$dir/../bash-tools/bash-tools/print_utils.sh"
@@ -111,19 +111,19 @@ better_cd()
 				fi
 			done
 
-			
+
 			## READ USER KEY
 			local user_key=$(read_key_input)
 			if [ $user_key == "up" ]; then
 				if [ $index -gt 0 ]; then
 					local index=$((index - 1))
-					
+
 				fi
 
 			elif [ $user_key == "down" ]; then
 				if [ $index -lt $last_index ]; then
 					local index=$((index + 1))
-					
+
 				fi
 
 			else
@@ -138,7 +138,7 @@ better_cd()
 			eraseLines $num_options
 
 
-			
+
 
 
 		done
@@ -150,10 +150,10 @@ better_cd()
 	if [ $# -eq 0 ]; then
 		# USER SELECTION
 		local dir_base="$PWD/"
-		
+
 		while true; do
 
-			## GET CURRENT DIRECTORY TREE	
+			## GET CURRENT DIRECTORY TREE
 			local dirs=$("ls" -F "${dir_base}" | "grep" \/)
 
 			readarray -t dir_array <<< "$dirs" ## Split array
@@ -175,7 +175,7 @@ better_cd()
 				local dir_base=$(echo "$dir_base" | sed -n 's/[^\/]*\/[^\/]*$//p')
 			fi
 		done
-		
+
 	else
 		"cd" $@
 	fi
