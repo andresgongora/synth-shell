@@ -23,7 +23,7 @@ best possible experience **there are important considerations**:
 encounter and contribute to this project.
 
 * **Clone this repository recursively** since there are git submodules in it (you only have to copy
-pase the commands down below as they are).
+paste the commands down below as they are).
 
 Once everything is ready, it is as easy as copy-pasting the following commands to run the included
 setup script.
