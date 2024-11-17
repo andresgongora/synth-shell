@@ -142,7 +142,7 @@ cd synth-shell
 ```
 
 Note that for `fancy-bash-prompt.sh` you might also need
-[power-line fonts](https://github.com/powerline/fonts). You can instal it
+[power-line fonts](https://github.com/powerline/fonts). You can install it
 as follows (the exact name of the package varies from distro to distro):
 
 * ArchLinux: `sudo pacman -S powerline-fonts`
