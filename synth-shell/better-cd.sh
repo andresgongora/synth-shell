@@ -21,6 +21,7 @@
 
 
 
+## Modified 2026-10-24: preserve directory argument boundaries.
 ##
 ##	DESCRIPTION:
 ##	Overrides 'cd' command to either work as usual if a directory is
