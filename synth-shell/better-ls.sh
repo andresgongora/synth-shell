@@ -123,7 +123,7 @@ function better_ls()
 
 	## IF ARGUMENT IS A SINGLE FILE
 	elif [ $# -eq 1 -a -f "$1" ]; then
-		$LS -l --color=auto --human-readable --time-style=long-iso "$1"
+		$LS -l --color=auto --human-readable --time-style=long-iso -- "$1"
 
 
 
