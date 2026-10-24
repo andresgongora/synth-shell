@@ -436,6 +436,9 @@ installerUser() {
 		printSuccess "synth-shell was uninstalled"
 		;;
 	"" | install)
+		if [ "$user_shell" = zsh ]; then
+			printf '\nWARNING: synth-shell scripts are Bash-only. Installing for Zsh may cause errors in new terminals.\n\n'
+		fi
 		printInfo "Installing synth-shell"
 		installAll
 		printSuccess "synth-shell was installed"
